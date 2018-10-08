@@ -1,39 +1,12 @@
 #ifndef LIBHBP_CPP_RRA_H
 #define LIBHBP_CPP_RRA_H
 
+#include <utility>
 
 #include <rma.h>
 #include <connection.h>
+#include <register_files.h>
 
-namespace rf
-{
-enum class Readable
-{
-    Driver = 0x8000,
-    Info = 0x8008
-};
-
-enum class ReadWrite
-{
-    HicannChannel = 0x838,
-    HostEndpoint = 0x1090,
-    TraceRingbufferStart = 0x1098,
-    TraceRingbufferCapacity = 0x10a0,
-    ResponseAddress = 0x10a8,
-    HicannRingbufferStart = 0x10b0,
-    HicannRingbufferCapacity = 0x10b8,
-    TraceNotificationBehaviour = 0x10c0,
-    HicannNotificationbehaviour = 0x10c8
-
-};
-
-enum class Writable
-{
-
-};
-
-const ReadWrite HicannChannel = ReadWrite::HicannChannel;
-}
 
 class RegisterFile
 {
@@ -44,9 +17,39 @@ protected:
 public:
     explicit RegisterFile(const Connection&);
 
+    template <typename T>
+    auto read() const -> typename traits::RfResultType<T>::value_type
+    {
+        static_assert(T::rf_address >= 0, "wat");
+        static_assert(T::rf_address <= 0x180d0, "wat");
+
+        using result_type = typename traits::RfResultType<T>::value_type;
+
+        return result_type(read(T::rf_address));
+    }
     uint64_t read(RMA2_NLA) const;
     uint64_t read(rf::Readable) const;
     uint64_t read(rf::ReadWrite) const;
+
+    template <typename T, typename... Args>
+    void write(Args&&... args)
+    {
+        static_assert(T::rf_address >= 0, "wat");
+        static_assert(T::rf_address <= 0x180d0, "wat");
+
+        T data(args...);
+        write(T::rf_address, traits::rf_to_data(data));
+    }
+
+    template <typename T, typename... Args>
+    void write_noblock(Args&&... args)
+    {
+        static_assert(T::rf_address >= 0, "wat");
+        static_assert(T::rf_address <= 0x180d0, "wat");
+
+        T data(args...);
+        write_noblock(T::rf_address, traits::rf_to_data(data));
+    }
 
     void write_noblock(RMA2_NLA, uint64_t);
     void write(RMA2_NLA, uint64_t);

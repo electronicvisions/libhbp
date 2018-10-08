@@ -27,14 +27,19 @@ void print_readable_jtag(JTag& jtag)
 int _main(RMA2_Nodeid node, uint8_t hicann)
 {
     HBP hbp;
-    hbp.configure_partner_host_for(node);
-    auto rf = hbp.rra(node);
+    auto fpga = hbp.fpga(node);
+    auto rf = hbp.register_file(node);
     auto jtag = hbp.jtag(node);
 
-    rf.write(rf::HicannChannel, hicann);
-    cout << "Driver:      " << hex << rf.read(rf::Readable::Driver) << "\n";
-    cout << "Id:          " << hex << rf.read(rf::Readable::Info) << "\n";
-    cout << "Channel:     " << hex << rf.read(rf::HicannChannel) << "\n\n";
+    fpga.reset();
+    fpga.configure_partner_host();
+
+    auto id = rf.read<Info>();
+
+    rf.write<HicannChannel>(hicann);
+    cout << "Driver:      " << hex << rf.read<Driver>() << "\n";
+    cout << "Id:          " << hex << id.node_id << ", " << id.guid << "\n";
+    cout << "Channel:     " << hex << int(rf.read<HicannChannel>()) << "\n\n";
 
     print_readable_jtag(jtag);
 

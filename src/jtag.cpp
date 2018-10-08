@@ -42,7 +42,13 @@ uint64_t JTag::read(jtag::Readable read_command)
 }
 
 uint64_t JTag::read(jtag::ReadWrite read_command)
-{
+{    uint64_t read(uint8_t);
+    uint64_t read(jtag::Readable);
+    uint64_t read(jtag::ReadWrite);
+
+    void write(uint8_t, uint64_t);
+    void write(jtag::ReadWrite, uint64_t);
+    void write(jtag::Writable, uint64_t);
     return JTag::read(static_cast<uint8_t>(read_command));
 }
 

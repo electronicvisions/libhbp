@@ -7,6 +7,7 @@
 
 #include <rma.h>
 #include <register_file.h>
+#include <fpga.h>
 #include <jtag.h>
 #include <connection.h>
 
@@ -17,10 +18,9 @@ private:
 
     std::map<RMA2_Nodeid, Connection> connections;
 public:
-    RegisterFile rra(RMA2_Nodeid node);
+    RegisterFile register_file(RMA2_Nodeid node);
     JTag jtag(RMA2_Nodeid node);
-
-    void configure_partner_host_for(RMA2_Nodeid);
+    Fpga fpga(RMA2_Nodeid node);
 
 private:
     Connection& connect(RMA2_Nodeid node);

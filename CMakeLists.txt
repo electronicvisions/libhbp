@@ -23,18 +23,23 @@ set(HEADERS
         include/connection.h
         include/helper.h
         include/hbp.h
+        include/traits.h
         include/jtag.h
         include/exception.h
+        include/fpga.h
+        include/register_files.h
         )
 
 set(SOURCES
         src/physical_buffer.cpp
         src/register_file.cpp
+        src/register_files.cpp
         src/connection.cpp
         src/hbp.cpp
         src/rma.cpp
         src/jtag.cpp
         src/main.cpp
+        src/fpga.cpp
         )
 
 add_executable(rma ${HEADERS} ${SOURCES})
