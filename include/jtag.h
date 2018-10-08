@@ -53,13 +53,13 @@ class JTag : protected RegisterFile
 public:
     using RegisterFile::RegisterFile;
 
-    uint64_t get(uint8_t);
-    uint64_t get(jtag::Readable);
-    uint64_t get(jtag::ReadWrite);
+    uint64_t read(uint8_t);
+    uint64_t read(jtag::Readable);
+    uint64_t read(jtag::ReadWrite);
 
-    void set(uint8_t, uint64_t);
-    void set(jtag::ReadWrite, uint64_t);
-    void set(jtag::Writable, uint64_t);
+    void write(uint8_t, uint64_t);
+    void write(jtag::ReadWrite, uint64_t);
+    void write(jtag::Writable, uint64_t);
 
     void reset();
 private:

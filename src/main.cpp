@@ -9,19 +9,19 @@ using std::hex;
 void print_readable_jtag(JTag& jtag)
 {
     jtag.reset();
-    //cout << "ID             : " << jtag.get(jtag::ID) << "\n";
+    //cout << "ID             : " << jtag.read(jtag::ID) << "\n";
     jtag.reset();
-    cout << "Systime        : " << jtag.get(jtag::Systime) << "\n";
+    cout << "Systime        : " << jtag.read(jtag::Systime) << "\n";
     jtag.reset();
-    cout << "RxData         : " << jtag.get(jtag::RxData) << "\n";
+    cout << "RxData         : " << jtag.read(jtag::RxData) << "\n";
     jtag.reset();
-    cout << "Status         : " << jtag.get(jtag::Status) << "\n";
-    cout << "CrcCount       : " << jtag.get(jtag::CrcCount) << "\n";
-    cout << "ArqTxPckNum    : " << jtag.get(jtag::ArqTxPckNum) << "\n";
-    cout << "ArqRxPckNum    : " << jtag.get(jtag::ArqRxPckNum) << "\n";
-    cout << "ArqRxDropNum   : " << jtag.get(jtag::ArqRxDropNum) << "\n";
-    cout << "ArqTxTimeoutNum: " << jtag.get(jtag::ArqTxTimeoutNum) << "\n";
-    cout << "ArqRxTimeoutNum: " << jtag.get(jtag::ArqRxTimeoutNum) << "\n";
+    cout << "Status         : " << jtag.read(jtag::Status) << "\n";
+    cout << "CrcCount       : " << jtag.read(jtag::CrcCount) << "\n";
+    cout << "ArqTxPckNum    : " << jtag.read(jtag::ArqTxPckNum) << "\n";
+    cout << "ArqRxPckNum    : " << jtag.read(jtag::ArqRxPckNum) << "\n";
+    cout << "ArqRxDropNum   : " << jtag.read(jtag::ArqRxDropNum) << "\n";
+    cout << "ArqTxTimeoutNum: " << jtag.read(jtag::ArqTxTimeoutNum) << "\n";
+    cout << "ArqRxTimeoutNum: " << jtag.read(jtag::ArqRxTimeoutNum) << "\n";
 }
 
 int _main(RMA2_Nodeid node, uint8_t hicann)
@@ -31,10 +31,10 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
     auto rf = hbp.rra(node);
     auto jtag = hbp.jtag(node);
 
-    rf.set(rf::HicannChannel, hicann);
-    cout << "Driver:      " << hex << rf.get(rf::Driver) << "\n";
-    cout << "Id:          " << hex << rf.get(rf::Info) << "\n";
-    cout << "Channel:     " << hex << rf.get(rf::HicannChannel) << "\n\n";
+    rf.write(rf::HicannChannel, hicann);
+    cout << "Driver:      " << hex << rf.read(rf::Readable::Driver) << "\n";
+    cout << "Id:          " << hex << rf.read(rf::Readable::Info) << "\n";
+    cout << "Channel:     " << hex << rf.read(rf::HicannChannel) << "\n\n";
 
     print_readable_jtag(jtag);
 

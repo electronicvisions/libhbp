@@ -58,7 +58,7 @@ void HBP::configure_partner_host_for(RMA2_Nodeid node)
     for (size_t i = 0; i < 8; ++i)
     {
         RMA2_NLA address = 0x1090 + i * 8;
-        rf.set_noblock(config[i], address);
+        rf.write_noblock(config[i], address);
     }
 
     for (size_t i = 0; i < 8; ++i)

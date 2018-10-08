@@ -13,7 +13,7 @@ RegisterFile::RegisterFile(const Connection& connection)
 {
 }
 
-uint64_t RegisterFile::get(RMA2_NLA address) const
+uint64_t RegisterFile::read(RMA2_NLA address) const
 {
     status = rma2_post_get_qw_direct(
             connection.port,
@@ -27,17 +27,17 @@ uint64_t RegisterFile::get(RMA2_NLA address) const
     return connection.gp_buffer.data()[0];
 }
 
-uint64_t RegisterFile::get(rf::Readable read) const
+uint64_t RegisterFile::read(rf::Readable address) const
 {
-    return get(static_cast<RMA2_NLA>(read));
+    return read(static_cast<RMA2_NLA>(address));
 }
 
-uint64_t RegisterFile::get(rf::ReadWrite read) const
+uint64_t RegisterFile::read(rf::ReadWrite address) const
 {
-    return get(static_cast<RMA2_NLA>(read));
+    return read(static_cast<RMA2_NLA>(address));
 }
 
-void RegisterFile::set_noblock(RMA2_NLA address, uint64_t value)
+void RegisterFile::write_noblock(RMA2_NLA address, uint64_t value)
 {
     status = rma2_post_immediate_put(
             connection.port,
@@ -45,18 +45,18 @@ void RegisterFile::set_noblock(RMA2_NLA address, uint64_t value)
             8, value, address,
             RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT
             );
-    throw_on_error("Failed to set @0x", std::hex, address);
+    throw_on_error("Failed to write to @0x", std::hex, address);
 }
 
-void RegisterFile::set(RMA2_NLA address, uint64_t value)
+void RegisterFile::write(RMA2_NLA address, uint64_t value)
 {
-    set_noblock(address, value);
+    write_noblock(address, value);
     wait_for_notification();
 }
 
-void RegisterFile::set(rf::ReadWrite address, uint64_t value)
+void RegisterFile::write(rf::ReadWrite address, uint64_t value)
 {
-    set(static_cast<RMA2_NLA>(address), value);
+    write(static_cast<RMA2_NLA>(address), value);
 }
 
 template <typename... Args>
@@ -74,4 +74,3 @@ void RegisterFile::wait_for_n_notifications(int n) const
 {
     ::wait_for_n_notifications(connection.port, n);
 }
-
