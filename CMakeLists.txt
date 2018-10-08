@@ -40,6 +40,7 @@ set(SOURCES
         src/jtag.cpp
         src/main.cpp
         src/fpga.cpp
+        src/exception.cpp
         )
 
 add_executable(rma ${HEADERS} ${SOURCES})

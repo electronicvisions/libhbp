@@ -3,18 +3,50 @@
 
 #include <stdexcept>
 
-struct BufferError : std::runtime_error {
-    explicit BufferError(const char* msg) : std::runtime_error(msg) {}
+#include <rma.h>
+
+
+struct RmaError : std::runtime_error
+{
+    using runtime_error::runtime_error;
 };
 
-struct RMAError : std::runtime_error {
-    explicit RMAError(const char* msg) : std::runtime_error(msg) {}
-    explicit RMAError(std::string&& msg) : std::runtime_error(msg) {}
+struct ConnectionFailed : RmaError
+{
+    explicit ConnectionFailed(std::string);
 };
 
-struct ConnectionError : std::runtime_error {
-    explicit ConnectionError(const char* msg) : std::runtime_error(msg) {}
-    explicit ConnectionError(std::string&& msg) : std::runtime_error(msg) {}
+struct RraError : RmaError
+{
+    RraError(std::string, RMA2_Nodeid, RMA2_NLA);
+
+    RMA2_Nodeid node;
+    RMA2_NLA address;
+};
+
+struct FailedToRead : RraError
+{
+    using RraError::RraError;
+    FailedToRead(RMA2_Nodeid node, RMA2_NLA address);
+};
+
+struct FailedToWrite : RraError
+{
+    using RraError::RraError;
+    FailedToWrite(RMA2_Nodeid node, RMA2_NLA address);
+};
+
+struct IoctlError : std::runtime_error
+{
+    explicit IoctlError(std::string);
+};
+
+struct NodeIdNoPcb : std::runtime_error
+{
+    NodeIdNoPcb(RMA2_Nodeid node, uint32_t driver);
+
+    const RMA2_Nodeid node;
+    const uint32_t driver;
 };
 
 #endif //LIBHBP_CPP_EXCEPTION_H

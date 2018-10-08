@@ -33,6 +33,7 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
 
     fpga.reset();
     fpga.configure_partner_host();
+    jtag.reset();
 
     auto id = rf.read<Info>();
 

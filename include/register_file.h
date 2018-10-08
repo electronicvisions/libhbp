@@ -57,9 +57,6 @@ public:
 
     void wait_for_notification() const;
     void wait_for_n_notifications(int) const;
-protected:
-    template <typename... Args>
-    void throw_on_error(Args... args) const;
 };
 
 

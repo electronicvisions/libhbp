@@ -21,11 +21,6 @@ struct Connection
     Connection(const Connection&) = delete;
     Connection& operator=(const Connection&) = delete;
     ~Connection();
-
-    template <typename... Args>
-    void throw_on_error(Args... args) const;
-    template <typename... Args>
-    void throw_now(Args... args) const;
 };
 
 
