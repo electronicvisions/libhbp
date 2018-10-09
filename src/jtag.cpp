@@ -1,5 +1,7 @@
 #include <jtag.h>
 
+#include <register_files.h>
+
 const RMA2_NLA RF_CMD = 0x400;
 const RMA2_NLA RF_STATUS = 0x408;
 const RMA2_NLA RF_SEND = 0x480;
@@ -88,4 +90,29 @@ void JTag::reset()
     write_noblock(RF_CMD, RESET_EXECUTE);
     wait_for_notification();
     wait_until_finished();
+}
+
+void JTag::enable_clock()
+{
+    RegisterFile::write<JtagCmd>(JtagCmdType::EnableClock, 1, false, true);
+    wait_until_finished();
+}
+
+void JTag::disable_clock()
+{
+    RegisterFile::write<JtagCmd>(JtagCmdType::DisableClock, 1, false, true);
+    wait_until_finished();
+}
+
+std::ostream& operator<<(std::ostream& out, const JTag& jtag)
+{
+    auto cmd = jtag.RegisterFile::read<JtagCmd>();
+    auto status = jtag.RegisterFile::read<JtagStatus>();
+
+    out << "Command: " << cmd.type << " length=" << cmd.length
+        << " (pause=" << cmd.pause << ", execute=" << cmd.execute << ")\n";
+    out << "Clock  : " << (status.clock_enabled? "enabled" : "disabled") << "\n";
+    out << "Paused : " << std::boolalpha << status.paused << '\n';
+
+    return out;
 }

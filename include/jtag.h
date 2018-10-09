@@ -53,6 +53,9 @@ class JTag : protected RegisterFile
 public:
     using RegisterFile::RegisterFile;
 
+    void enable_clock();
+    void disable_clock();
+
     uint64_t read(uint8_t);
     uint64_t read(jtag::Readable);
     uint64_t read(jtag::ReadWrite);
@@ -65,7 +68,10 @@ public:
 private:
     void wait_until_finished() const;
 
+    friend std::ostream& operator<<(std::ostream&, const JTag&);
 };
+
+std::ostream& operator<<(std::ostream&, const JTag&);
 
 
 #endif

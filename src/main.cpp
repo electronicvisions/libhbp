@@ -24,7 +24,7 @@ void print_readable_jtag(JTag& jtag)
     cout << "ArqRxTimeoutNum: " << jtag.read(jtag::ArqRxTimeoutNum) << "\n";
 }
 
-int _main(RMA2_Nodeid node, uint8_t hicann)
+int _main2(RMA2_Nodeid node, uint8_t hicann)
 {
     HBP hbp;
     auto fpga = hbp.fpga(node);
@@ -43,6 +43,30 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
     cout << "Channel:     " << hex << int(rf.read<HicannChannel>()) << "\n\n";
 
     print_readable_jtag(jtag);
+
+    return EXIT_SUCCESS;
+}
+
+int _main(RMA2_Nodeid node, uint8_t)
+{
+    HBP hbp;
+    auto fpga = hbp.fpga(node);
+    auto rf = hbp.register_file(node);
+    auto jtag = hbp.jtag(node);
+
+    fpga.reset();
+    fpga.configure_partner_host();
+
+    cout << "Driver: " << hex << rf.read<Driver>() << "\n";
+
+    cout << jtag << "\n";
+
+    cout << "------------------------------------------\n";
+
+    rf.write<JtagCmd>(JtagCmdType::EnableClock, 1, false, true);
+    cout << jtag << "\n";
+
+
 
     return EXIT_SUCCESS;
 }

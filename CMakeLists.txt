@@ -49,3 +49,5 @@ target_include_directories(rma PRIVATE ${RMA_INCLUDE})
 target_link_libraries(rma ${LIBRMARC})
 target_link_libraries(rma ${LIBRMA})
 target_link_libraries(rma dl)
+
+add_executable(scratch scratch.cpp)

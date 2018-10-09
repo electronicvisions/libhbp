@@ -2,6 +2,8 @@
 #define LIBHBP_CPP_REGISTER_FILES_H
 
 #include <cinttypes>
+#include <iostream>
+
 #include <rma.h>
 
 #define REGISTER_FILE(NAME, NLA, FIELDS)\
@@ -21,6 +23,7 @@ struct NAME {\
         : value(TYPE(data)) {}\
     const static RMA2_NLA rf_address = NLA;\
     TYPE value;\
+    using value_type = TYPE;\
 };\
 namespace traits {\
 template <>\
@@ -44,18 +47,43 @@ namespace traits
     }
 }
 
-
+SIMPLE_REGISTER_FILE(JtagReceive, 0x500, uint64_t)
+SIMPLE_REGISTER_FILE(JtagSend, 0x480, uint64_t)
 SIMPLE_REGISTER_FILE(HicannChannel, 0x838, uint8_t)
 SIMPLE_REGISTER_FILE(Driver, 0x8000, uint32_t)
 SIMPLE_REGISTER_FILE(TraceRingbufferStart, 0x1098, uint64_t)
 SIMPLE_REGISTER_FILE(ConfigResponse, 0x10a8, uint64_t)
 SIMPLE_REGISTER_FILE(HicannRingbufferStart, 0x10b0, uint64_t)
 
+enum class JtagCmdType
+{
+    Reset = 0,
+    IR = 1,
+    DR = 2,
+    EnableClock = 4,
+    DisableClock = 5
+};
+
+std::ostream& operator<<(std::ostream&, JtagCmdType);
+
 REGISTER_FILE(Reset, 0x0,
     bool core;
     bool hicann;
     bool arq;
     Reset(bool, bool, bool);
+)
+
+REGISTER_FILE(JtagCmd, 0x400,
+    JtagCmdType type;
+    uint16_t length;
+    bool pause;
+    bool execute;
+    explicit JtagCmd(JtagCmdType, uint16_t=0, bool=false, bool=false);
+)
+
+REGISTER_FILE(JtagStatus, 0x408,
+    bool clock_enabled;
+    bool paused;
 )
 
 REGISTER_FILE(Info, 0x8008,
@@ -107,12 +135,17 @@ namespace rf
 enum class Readable
 {
     Driver = 0x8000,
-    Info = 0x8008
+    Info = 0x8008,
+    JtagStatus = 0x408,
+    JtagReceive = 0x500,
 };
 
 enum class ReadWrite
 {
-    HicannChannel = 0x838
+    JtagCmd = 0x400,
+    JtagSend = 0x480,
+
+    HicannChannel = 0x838,
 };
 
 enum class Writable
