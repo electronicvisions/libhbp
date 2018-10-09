@@ -13,7 +13,7 @@ struct RmaError : std::runtime_error
 
 struct ConnectionFailed : RmaError
 {
-    explicit ConnectionFailed(std::string);
+    using RmaError::RmaError;
 };
 
 struct RraError : RmaError
@@ -38,12 +38,12 @@ struct FailedToWrite : RraError
 
 struct IoctlError : std::runtime_error
 {
-    explicit IoctlError(std::string);
+    using runtime_error::runtime_error;
 };
 
-struct NodeIdNoPcb : std::runtime_error
+struct NodeIsNoFcp : ConnectionFailed
 {
-    NodeIdNoPcb(RMA2_Nodeid node, uint32_t driver);
+    NodeIsNoFcp(RMA2_Nodeid node, uint32_t driver);
 
     const RMA2_Nodeid node;
     const uint32_t driver;

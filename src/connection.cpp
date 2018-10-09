@@ -33,7 +33,7 @@ Connection::Connection(RMA2_Nodeid node)
     auto driver = uint32_t(gp_buffer.data()[0]);
     if (driver != 0xcafebabe)
     {
-        throw NodeIdNoPcb(node, driver);
+        throw NodeIsNoFcp(node, driver);
     }
 }
 
