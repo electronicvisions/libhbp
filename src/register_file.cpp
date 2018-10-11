@@ -27,16 +27,6 @@ uint64_t RegisterFile::read(RMA2_NLA address) const
     return connection.gp_buffer.data()[0];
 }
 
-uint64_t RegisterFile::read(rf::Readable address) const
-{
-    return read(static_cast<RMA2_NLA>(address));
-}
-
-uint64_t RegisterFile::read(rf::ReadWrite address) const
-{
-    return read(static_cast<RMA2_NLA>(address));
-}
-
 void RegisterFile::write_noblock(RMA2_NLA address, uint64_t value)
 {
     status = rma2_post_immediate_put(
@@ -52,11 +42,6 @@ void RegisterFile::write(RMA2_NLA address, uint64_t value)
 {
     write_noblock(address, value);
     wait_for_notification();
-}
-
-void RegisterFile::write(rf::ReadWrite address, uint64_t value)
-{
-    write(static_cast<RMA2_NLA>(address), value);
 }
 
 void RegisterFile::wait_for_notification() const

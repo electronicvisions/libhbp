@@ -17,43 +17,40 @@ protected:
 public:
     explicit RegisterFile(const Connection&);
 
-    template <typename T>
-    auto read() const -> typename traits::RfResultType<T>::value_type
+    template <typename RF>
+    RF read() const
     {
-        static_assert(T::rf_address >= 0, "wat");
-        static_assert(T::rf_address <= 0x180d0, "wat");
+        static_assert(RF::ADDRESS >= 0, "register file address must be positive!");
+        static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
+        static_assert(RF::READABLE, "register file must be readable!");
 
-        using result_type = typename traits::RfResultType<T>::value_type;
-
-        return result_type(read(T::rf_address));
+        return rf::data_to_rf<RF>(read(RF::ADDRESS));
     }
+
+    template <typename RF>
+    void write(RF&& rf)
+    {
+        static_assert(RF::ADDRESS >= 0, "register file address must be positive!");
+        static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
+        static_assert(RF::WRITABLE, "register file must be writable!");
+
+        write(RF::ADDRESS, rf::rf_to_data(std::forward<RF>(rf)));
+    }
+
+    template <typename RF>
+    void write_noblock(RF&& rf)
+    {
+        static_assert(RF::ADDRESS >= 0, "register file address must be positive!");
+        static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
+        static_assert(RF::WRITABLE, "register file must be writable!");
+
+        write_noblock(RF::ADDRESS, rf::rf_to_data(std::forward<RF>(rf)));
+    }
+
     uint64_t read(RMA2_NLA) const;
-    uint64_t read(rf::Readable) const;
-    uint64_t read(rf::ReadWrite) const;
-
-    template <typename T, typename... Args>
-    void write(Args&&... args)
-    {
-        static_assert(T::rf_address >= 0, "wat");
-        static_assert(T::rf_address <= 0x180d0, "wat");
-
-        T data(args...);
-        write(T::rf_address, traits::rf_to_data(data));
-    }
-
-    template <typename T, typename... Args>
-    void write_noblock(Args&&... args)
-    {
-        static_assert(T::rf_address >= 0, "wat");
-        static_assert(T::rf_address <= 0x180d0, "wat");
-
-        T data(args...);
-        write_noblock(T::rf_address, traits::rf_to_data(data));
-    }
 
     void write_noblock(RMA2_NLA, uint64_t);
     void write(RMA2_NLA, uint64_t);
-    void write(rf::ReadWrite, uint64_t);
 
     void wait_for_notification() const;
     void wait_for_n_notifications(int) const;

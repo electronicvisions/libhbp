@@ -1,38 +1,59 @@
 #include <iostream>
+#include <cstring>
+#include <bitset>
 
-enum class Flag
+struct JtagCmd
 {
-    A = 0x01,
-    B = 0x02,
-    C = 0x04,
-    D = 0x08,
-    E = 0x10
+
+
+    uint64_t type : 3;
+    uint64_t length : 10;
+    bool pause : 1;
+    bool execute : 1;
+
+
+    const static bool X = true;
+    const static int YOLO = 3;
 };
 
-std::ostream& operator<<(std::ostream& out, Flag flag)
+struct Reset
 {
-    return out << "Flag: " << std::hex << static_cast<int>(flag);
+    const static int YOLO = 2;
+    const static bool X = true;
+    bool a : 1;
+    bool b : 1;
+    bool c : 1;
+};
+
+template <typename T>
+uint64_t rf_to_data(const T& rf)
+{
+    uint64_t data = 0;
+    memcpy(&data, &rf, sizeof(T));
+    return data;
 }
 
-Flag operator|(Flag lhs, Flag rhs)
+template <typename RF>
+void send(RF&& rf)
 {
-    return static_cast<Flag>(static_cast<int>(lhs) | static_cast<int>(rhs));
+    uint64_t data = rf_to_data(std::forward<RF>(rf));
+
+    std::cout << "SEND: " << std::bitset<16>(data) << "\n";
 }
 
-bool operator&(Flag lhs, Flag rhs)
-{
-    return bool(static_cast<int>(lhs) & static_cast<int>(rhs));
-}
+static_assert(sizeof(JtagCmd) == 8, "Bit Field size incorrect!");
+static_assert(sizeof(Reset) == 1, "Bit Field size incorrect!");
 
+using namespace std;
 
 int main()
 {
-    std::cout << Flag::A << "\n";
+    JtagCmd cmd{3, 10, true, true};
 
-    Flag x = Flag::A | Flag::B;
+    cout << bitset<16>(rf_to_data(cmd)) << "\n";
 
-    std::cout << x << "\n";
+    send(JtagCmd{5, 42, true, false});
+    send<JtagCmd>({7, 10, false, true});
 
-    std::cout << std::boolalpha << (Flag::A & Flag::B) << "\n";
-    std::cout << std::boolalpha << (Flag::A & x) << "\n";
+    send<Reset>({true, false, true});
 }

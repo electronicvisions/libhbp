@@ -3,155 +3,219 @@
 
 #include <cinttypes>
 #include <iostream>
+#include <bitset>
+#include <typeinfo>
 
 #include <rma.h>
 
-#define REGISTER_FILE(NAME, NLA, FIELDS)\
-struct NAME {\
-    explicit NAME(uint64_t data);\
-    const static RMA2_NLA rf_address = NLA;\
-    FIELDS\
-};\
-namespace traits {\
-template <>\
-uint64_t rf_to_data(NAME);\
-}
 
-#define SIMPLE_REGISTER_FILE(NAME, NLA, TYPE)\
-struct NAME {\
-    explicit NAME(uint64_t data)\
-        : value(TYPE(data)) {}\
-    const static RMA2_NLA rf_address = NLA;\
-    TYPE value;\
-    using value_type = TYPE;\
-};\
-namespace traits {\
-template <>\
-struct RfResultType<NAME> {\
-    using value_type = TYPE;\
-};}
-
-
-namespace traits
-{
-    template <typename RF>
-    struct RfResultType
-    {
-        using value_type = RF;
-    };
-
-    template <typename RF>
-    uint64_t rf_to_data(RF rf)
-    {
-        return uint64_t(rf.value);
-    }
-}
-
-SIMPLE_REGISTER_FILE(JtagReceive, 0x500, uint64_t)
-SIMPLE_REGISTER_FILE(JtagSend, 0x480, uint64_t)
-SIMPLE_REGISTER_FILE(HicannChannel, 0x838, uint8_t)
-SIMPLE_REGISTER_FILE(Driver, 0x8000, uint32_t)
-SIMPLE_REGISTER_FILE(TraceRingbufferStart, 0x1098, uint64_t)
-SIMPLE_REGISTER_FILE(ConfigResponse, 0x10a8, uint64_t)
-SIMPLE_REGISTER_FILE(HicannRingbufferStart, 0x10b0, uint64_t)
-
-enum class JtagCmdType
-{
-    Reset = 0,
-    IR = 1,
-    DR = 2,
-    EnableClock = 4,
-    DisableClock = 5
-};
-
-std::ostream& operator<<(std::ostream&, JtagCmdType);
-
-REGISTER_FILE(Reset, 0x0,
-    bool core;
-    bool hicann;
-    bool arq;
-    Reset(bool, bool, bool);
-)
-
-REGISTER_FILE(JtagCmd, 0x400,
-    JtagCmdType type;
-    uint16_t length;
-    bool pause;
-    bool execute;
-    explicit JtagCmd(JtagCmdType, uint16_t=0, bool=false, bool=false);
-)
-
-REGISTER_FILE(JtagStatus, 0x408,
-    bool clock_enabled;
-    bool paused;
-)
-
-REGISTER_FILE(Info, 0x8008,
-    uint32_t guid;
-    uint16_t node_id;
-)
-
-REGISTER_FILE(HostEndpoint, 0x1090,
-    uint16_t node_id;
-    uint16_t protection_domain;
-    uint16_t vpid;
-    uint8_t mode;
-    HostEndpoint(uint16_t, uint16_t, uint16_t, uint8_t);
-)
-
-REGISTER_FILE(TraceRingbufferCapacity, 0x10a0,
-    uint32_t capacity;
-    uint8_t start_change_counter = 0;
-    uint8_t capacity_change_counter = 0;
-    bool init;
-    TraceRingbufferCapacity(uint32_t, bool);
-)
-
-REGISTER_FILE(HicannRingbufferCapacity, 0x10b8,
-    uint32_t capacity;
-    uint8_t start_change_counter = 0;
-    uint8_t capacity_change_counter = 0;
-    bool init;
-    HicannRingbufferCapacity(uint32_t, bool);
-)
-
-REGISTER_FILE(TraceNotificationBehaviour, 0x10c0,
-    uint32_t timeout;
-    uint32_t frequency;
-    TraceNotificationBehaviour(uint32_t, uint32_t);
-)
-
-REGISTER_FILE(HicannNotificationBehaviour, 0x10c8,
-    uint32_t timeout;
-    uint32_t frequency;
-    HicannNotificationBehaviour(uint32_t, uint32_t);
-)
-
-#undef REGISTER_FILE
-#undef SIMPLE_REGISTER_FILE
+#define ADDRESS(VALUE) \
+    const static RMA2_NLA ADDRESS = VALUE
+#define READ_WRITE(READ, WRITE) \
+    const static bool READABLE = READ;\
+    const static bool WRITABLE = WRITE
+#define ASSERT_SIZE(NAME) static_assert(sizeof(NAME) <= 8," " #NAME " is too big!")
 
 namespace rf
 {
-enum class Readable
+template<typename RF>
+uint64_t rf_to_data(const RF& rf)
 {
-    Driver = 0x8000,
-    Info = 0x8008,
-    JtagStatus = 0x408,
-    JtagReceive = 0x500,
-};
-
-enum class ReadWrite
-{
-    JtagCmd = 0x400,
-    JtagSend = 0x480,
-
-    HicannChannel = 0x838,
-};
-
-enum class Writable
-{
-
-};
+    uint64_t data = 0;
+    memcpy(&data, &rf, sizeof(RF));
+    return data;
 }
 
-#endif //LIBHBP_CPP_REGISTER_FILES_H
+template<typename RF>
+RF data_to_rf(uint64_t data)
+{
+    RF rf;
+    memcpy(&rf, &data, sizeof(RF));
+    return rf;
+}
+
+/// Addresses starting @0x0
+/// FPGA reset register file
+
+struct Reset
+{
+    bool core : 1;
+    bool hicann : 1;
+    bool arq : 1;
+    ADDRESS(0x0);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(Reset);
+
+/// Addresses starting @0x400
+/// JTAG control register files
+
+struct JtagCmd
+{
+    enum class Type
+    {
+        Reset = 0,
+        IR = 1,
+        DR = 2,
+        EnableClock = 4,
+        DisableClock = 5
+    };
+
+    Type type : 3;
+    uint16_t length : 10;
+    bool pause : 1;
+    bool execute : 1;
+    ADDRESS(0x400);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(JtagCmd);
+
+struct JtagStatus
+{
+    bool clock_enabled : 1;
+    bool paused : 1;
+    ADDRESS(0x408);
+    READ_WRITE(true, false);
+};
+ASSERT_SIZE(JtagStatus);
+
+struct JtagSend
+{
+    uint64_t data;
+    ADDRESS(0x480);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(JtagSend);
+
+struct JtagReceive
+{
+    uint64_t data;
+    ADDRESS(0x500);
+    READ_WRITE(true, false);
+};
+ASSERT_SIZE(JtagReceive);
+
+/// Addresses starting @0x800
+/// HICANN control register files
+
+struct HicannChannel
+{
+    uint16_t number : 3;
+    ADDRESS(0x838);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(HicannChannel);
+
+/// Addresses starting @1090
+/// Partner host configuration register files
+
+struct HostEndpoint
+{
+    uint64_t node_id : 16;
+    uint64_t protection_domain : 16;
+    uint64_t vpid : 10;
+    uint64_t mode : 6;
+    ADDRESS(0x1090);
+    READ_WRITE(true, true);
+
+
+};
+ASSERT_SIZE(HostEndpoint);
+
+struct TraceRingbufferStart
+{
+    uint64_t address;
+    ADDRESS(0x1098);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(TraceRingbufferStart);
+
+struct TraceRingbufferCapacity
+{
+    uint64_t capacity : 32;
+    uint64_t start_change_counter : 8;
+    uint64_t capacity_change_counter : 8;
+    bool init : 1;
+    ADDRESS(0x10a0);
+    READ_WRITE(true, true);
+
+    TraceRingbufferCapacity(uint32_t, bool);
+};
+ASSERT_SIZE(TraceRingbufferCapacity);
+
+struct ConfigResponse
+{
+    uint64_t address;
+    ADDRESS(0x10a8);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(ConfigResponse);
+
+struct HicannRingbufferStart
+{
+    uint64_t address;
+    ADDRESS(0x10b0);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(HicannRingbufferStart);
+
+struct HicannRingbufferCapacity
+{
+    uint64_t capacity : 32;
+    uint64_t start_change_counter : 8;
+    uint64_t capacity_change_counter : 8;
+    bool init : 1;
+    ADDRESS(0x10b8);
+    READ_WRITE(true, true);
+
+    HicannRingbufferCapacity(uint32_t, bool);
+};
+ASSERT_SIZE(HicannRingbufferCapacity);
+
+struct TraceNotificationBehaviour
+{
+    uint64_t timeout : 32;
+    uint64_t freq : 32;
+    ADDRESS(0x10c0);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(TraceNotificationBehaviour);
+
+struct HicannNotificationBehaviour
+{
+    uint64_t timeout : 32;
+    uint64_t freq : 32;
+    ADDRESS(0x10c8);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(HicannNotificationBehaviour);
+
+/// Info register files
+/// Addresses starting @0x8000
+
+struct Driver
+{
+    uint32_t version;
+    ADDRESS(0x8000);
+    READ_WRITE(true, false);
+};
+ASSERT_SIZE(Driver);
+
+struct Info
+{
+    uint32_t guid : 24;
+    uint32_t node_id : 16;
+    ADDRESS(0x8008);
+    READ_WRITE(true, false);
+};
+ASSERT_SIZE(Info);
+
+}
+
+std::ostream& operator<<(std::ostream&, rf::JtagCmd::Type);
+
+#undef ADDRESS
+#undef READ_WRITE
+#undef ASSERT_SIZE
+
+#endif

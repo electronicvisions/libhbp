@@ -7,6 +7,8 @@ using std::cout;
 using std::cerr;
 using std::hex;
 
+using namespace rf;
+
 void print_readable_jtag(JTag& jtag)
 {
     jtag.reset();
@@ -38,10 +40,10 @@ int _main2(RMA2_Nodeid node, uint8_t hicann)
 
     auto id = rf.read<Info>();
 
-    rf.write<HicannChannel>(hicann);
-    cout << "Driver:      " << hex << rf.read<Driver>() << "\n";
+    rf.write<HicannChannel>({hicann});
+    cout << "Driver:      " << hex << rf.read<Driver>().version << "\n";
     cout << "Id:          " << hex << id.node_id << ", " << id.guid << "\n";
-    cout << "Channel:     " << hex << int(rf.read<HicannChannel>()) << "\n\n";
+    cout << "Channel:     " << hex << rf.read<HicannChannel>().number << "\n\n";
 
     print_readable_jtag(jtag);
 
@@ -55,10 +57,18 @@ int _main(RMA2_Nodeid node, uint8_t)
     // auto rf = hbp.register_file(node);
     auto jtag = hbp.jtag(node);
 
-    cout << "ID     : " << std::hex << jtag.read(jtag::ID) << "\n";
-    cout << "SYSTIME: " << std::dec << jtag.read(jtag::Systime) << "\n";
-    cout << "STATUS : " << std::hex << jtag.read(jtag::Status) << "\n";
+    cout << "ID       : " << std::hex << jtag.read(jtag::ID) << "\n";
+    cout << "SYSTIME  : " << std::dec << jtag.read(jtag::Systime) << "\n";
+    cout << "SYSTIME  : " << std::dec << jtag.read(jtag::Systime) << "\n";
+    cout << "STATUS   : " << std::hex << jtag.read(jtag::Status) << "\n";
+    cout << "CRCCOUNT : " << std::hex << jtag.read(jtag::CrcCount) << "\n";
+    jtag.trigger(jtag::ResetCrcCount);
+    cout << "CRCCOUNT : " << std::hex << jtag.read(jtag::CrcCount) << "\n";
 
+    auto ibias = jtag.read_write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
+    cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
+    ibias = jtag.read_write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
+    cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
 
     std::bitset<16> in("101010101111");
 
@@ -103,6 +113,7 @@ int main(int argc, char** argv)
     }
     catch (std::exception& e)
     {
+        cerr << typeid(e).name() << "\n";
         cerr << "ERROR: " << e.what() << "\n";
     }
 }
