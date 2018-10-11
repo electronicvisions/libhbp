@@ -1,4 +1,5 @@
 #include <iostream>
+#include <bitset>
 
 #include <hbp.h>
 
@@ -50,23 +51,31 @@ int _main2(RMA2_Nodeid node, uint8_t hicann)
 int _main(RMA2_Nodeid node, uint8_t)
 {
     HBP hbp;
-    auto fpga = hbp.fpga(node);
-    auto rf = hbp.register_file(node);
+    //auto fpga = hbp.fpga(node);
+    // auto rf = hbp.register_file(node);
     auto jtag = hbp.jtag(node);
 
-    fpga.reset();
-    fpga.configure_partner_host();
-
-    cout << "Driver: " << hex << rf.read<Driver>() << "\n";
-
-    cout << jtag << "\n";
-
-    cout << "------------------------------------------\n";
-
-    rf.write<JtagCmd>(JtagCmdType::EnableClock, 1, false, true);
-    cout << jtag << "\n";
+    cout << "ID     : " << std::hex << jtag.read(jtag::ID) << "\n";
+    cout << "SYSTIME: " << std::dec << jtag.read(jtag::Systime) << "\n";
+    cout << "STATUS : " << std::hex << jtag.read(jtag::Status) << "\n";
 
 
+    std::bitset<16> in("101010101111");
+
+    cout << "BEFORE BYPASS\n";
+    cout << "IN : " << in << "\n";
+    cout << "OUT: " << jtag.shift_through(in) << "\n\n";
+
+    jtag.set_bypass();
+    cout << "AFTER BYPASS\n";
+
+
+    for (int i = 13; i < 14; ++i)
+    {
+        cout << "SHIFT: " << std::dec << i << "\n";
+        cout << "IN : " << in << "\n";
+        cout << "OUT: " << jtag.shift_through(in) << "\n\n";
+    }
 
     return EXIT_SUCCESS;
 }

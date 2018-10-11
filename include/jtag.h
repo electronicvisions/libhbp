@@ -1,8 +1,9 @@
 #ifndef LIBHBP_CPP_JTAG_H
 #define LIBHBP_CPP_JTAG_H
 
+#include <bitset>
 
-#include "register_file.h"
+#include <register_file.h>
 
 namespace jtag
 {
@@ -53,18 +54,18 @@ class JTag : protected RegisterFile
 public:
     using RegisterFile::RegisterFile;
 
-    void enable_clock();
-    void disable_clock();
+    void reset();
+    void set_bypass();
+    template <size_t S>
+    std::bitset<S> shift_through(const char*);
+    template <size_t S>
+    std::bitset<S> shift_through(std::bitset<S>);
 
     uint64_t read(uint8_t);
     uint64_t read(jtag::Readable);
     uint64_t read(jtag::ReadWrite);
 
-    void write(uint8_t, uint64_t);
-    void write(jtag::ReadWrite, uint64_t);
-    void write(jtag::Writable, uint64_t);
 
-    void reset();
 private:
     void wait_until_finished() const;
 
@@ -73,5 +74,21 @@ private:
 
 std::ostream& operator<<(std::ostream&, const JTag&);
 
+
+template <size_t S>
+std::bitset<S> JTag::shift_through(const char* pattern)
+{
+    return shift_through(std::bitset<S>(pattern));
+}
+
+template <size_t S>
+std::bitset<S> JTag::shift_through(std::bitset<S> pattern)
+{
+    RegisterFile::write<JtagSend>(pattern.to_ullong());
+    RegisterFile::write<JtagCmd>(JtagCmdType::DR, 64, false, true);
+    wait_until_finished();
+
+    return RegisterFile::read<JtagReceive>();
+}
 
 #endif

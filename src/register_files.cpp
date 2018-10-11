@@ -1,5 +1,7 @@
 #include <register_files.h>
 
+#include <bitset>
+
 #define BIT(data, position) bool((data >> position) & 0x1)
 
 Info::Info(uint64_t data)
