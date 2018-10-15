@@ -80,11 +80,11 @@ int _main(RMA2_Nodeid node, uint8_t)
     cout << "AFTER BYPASS\n";
 
 
-    for (int i = 13; i < 14; ++i)
+    for (uint16_t i = 0; i < 14; ++i)
     {
         cout << "SHIFT: " << std::dec << i << "\n";
         cout << "IN : " << in << "\n";
-        cout << "OUT: " << jtag.shift_through(in) << "\n\n";
+        cout << "OUT: " << jtag.shift_through(in, i) << "\n\n";
     }
 
     return EXIT_SUCCESS;

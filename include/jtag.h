@@ -110,9 +110,9 @@ public:
     void reset();
     void set_bypass();
     template <size_t S>
-    std::bitset<S> shift_through(const char*);
+    std::bitset<S> shift_through(const char*, uint16_t length=64);
     template <size_t S>
-    std::bitset<S> shift_through(std::bitset<S>);
+    std::bitset<S> shift_through(std::bitset<S>, uint16_t length=64);
 
 
     uint64_t read(jtag::Readable);
@@ -131,18 +131,18 @@ std::ostream& operator<<(std::ostream&, const JTag&);
 
 
 template <size_t S>
-std::bitset<S> JTag::shift_through(const char* pattern)
+std::bitset<S> JTag::shift_through(const char* pattern, uint16_t length)
 {
-    return shift_through(std::bitset<S>(pattern));
+    return shift_through(std::bitset<S>(pattern), length);
 }
 
 template <size_t S>
-std::bitset<S> JTag::shift_through(std::bitset<S> pattern)
+std::bitset<S> JTag::shift_through(std::bitset<S> pattern, uint16_t length)
 {
     using namespace rf;
 
     RegisterFile::write<JtagSend>({pattern.to_ullong()});
-    RegisterFile::write<JtagCmd>({JtagCmd::Type::DR, 64, false, true});
+    RegisterFile::write<JtagCmd>({JtagCmd::Type::DR, length, false, true});
     wait_until_finished();
 
     return RegisterFile::read(JtagReceive::ADDRESS);
