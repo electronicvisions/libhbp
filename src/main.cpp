@@ -2,6 +2,8 @@
 #include <bitset>
 
 #include <hbp.h>
+#include <tests/test.h>
+#include <tests/switchram.h>
 
 using std::cout;
 using std::cerr;
@@ -9,25 +11,8 @@ using std::hex;
 
 using namespace rf;
 
-void print_readable_jtag(JTag& jtag)
-{
-    jtag.reset();
-    //cout << "ID             : " << jtag.read(jtag::ID) << "\n";
-    jtag.reset();
-    cout << "Systime        : " << jtag.read(jtag::Systime) << "\n";
-    jtag.reset();
-    cout << "RxData         : " << jtag.read(jtag::RxData) << "\n";
-    jtag.reset();
-    cout << "Status         : " << jtag.read(jtag::Status) << "\n";
-    cout << "CrcCount       : " << jtag.read(jtag::CrcCount) << "\n";
-    cout << "ArqTxPckNum    : " << jtag.read(jtag::ArqTxPckNum) << "\n";
-    cout << "ArqRxPckNum    : " << jtag.read(jtag::ArqRxPckNum) << "\n";
-    cout << "ArqRxDropNum   : " << jtag.read(jtag::ArqRxDropNum) << "\n";
-    cout << "ArqTxTimeoutNum: " << jtag.read(jtag::ArqTxTimeoutNum) << "\n";
-    cout << "ArqRxTimeoutNum: " << jtag.read(jtag::ArqRxTimeoutNum) << "\n";
-}
 
-int _main2(RMA2_Nodeid node, uint8_t hicann)
+int _main(RMA2_Nodeid node, uint8_t)
 {
     HBP hbp;
     auto fpga = hbp.fpga(node);
@@ -35,42 +20,24 @@ int _main2(RMA2_Nodeid node, uint8_t hicann)
     auto jtag = hbp.jtag(node);
 
     fpga.reset();
-    fpga.configure_partner_host();
     jtag.reset();
 
-    auto id = rf.read<Info>();
 
-    rf.write<HicannChannel>({hicann});
-    cout << "Driver:      " << hex << rf.read<Driver>().version << "\n";
-    cout << "Id:          " << hex << id.node_id << ", " << id.guid << "\n";
-    cout << "Channel:     " << hex << rf.read<HicannChannel>().number << "\n\n";
-
-    print_readable_jtag(jtag);
-
-    return EXIT_SUCCESS;
-}
-
-int _main(RMA2_Nodeid node, uint8_t)
-{
-    HBP hbp;
-    //auto fpga = hbp.fpga(node);
-    // auto rf = hbp.register_file(node);
-    auto jtag = hbp.jtag(node);
-
-    cout << "ID       : " << std::hex << jtag.read(jtag::ID) << "\n";
-    cout << "SYSTIME  : " << std::dec << jtag.read(jtag::Systime) << "\n";
-    cout << "SYSTIME  : " << std::dec << jtag.read(jtag::Systime) << "\n";
-    cout << "STATUS   : " << std::hex << jtag.read(jtag::Status) << "\n";
-    cout << "CRCCOUNT : " << std::hex << jtag.read(jtag::CrcCount) << "\n";
+    cout << "DRIVER   0x: " << std::hex << rf.read<Driver>().version << "\n";
+    cout << "ID       0x: " << std::hex << jtag.read(jtag::ID) << "\n";
+    cout << "SYSTIME  0x: " << std::dec << jtag.read(jtag::Systime) << "\n";
+    cout << "SYSTIME  0x: " << std::dec << jtag.read(jtag::Systime) << "\n";
+    cout << "STATUS   0x: " << std::hex << jtag.read(jtag::Status) << "\n";
+    cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
     jtag.trigger(jtag::ResetCrcCount);
-    cout << "CRCCOUNT : " << std::hex << jtag.read(jtag::CrcCount) << "\n";
+    cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
 
     auto ibias = jtag.read_write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
     cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
     ibias = jtag.read_write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
     cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
 
-    std::bitset<16> in("101010101111");
+    std::bitset<32> in("101010101111");
 
     cout << "BEFORE BYPASS\n";
     cout << "IN : " << in << "\n";
@@ -86,6 +53,9 @@ int _main(RMA2_Nodeid node, uint8_t)
         cout << "IN : " << in << "\n";
         cout << "OUT: " << jtag.shift_through(in, i) << "\n\n";
     }
+
+    Runner runner;
+    runner.add<SwitchRam>(2);
 
     return EXIT_SUCCESS;
 }

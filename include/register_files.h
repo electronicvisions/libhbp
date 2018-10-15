@@ -15,6 +15,7 @@
     const static bool READABLE = READ;\
     const static bool WRITABLE = WRITE
 #define ASSERT_SIZE(NAME) static_assert(sizeof(NAME) <= 8," " #NAME " is too big!")
+#define DEPRECATED __attribute__ ((deprecated))
 
 namespace rf
 {
@@ -52,7 +53,7 @@ ASSERT_SIZE(Reset);
 
 struct JtagCmd
 {
-    enum class Type
+    enum Type
     {
         Reset = 0,
         IR = 1,
@@ -61,7 +62,7 @@ struct JtagCmd
         DisableClock = 5
     };
 
-    Type type : 3;
+    uint16_t type : 3;
     uint16_t length : 10;
     bool pause : 1;
     bool execute : 1;
@@ -105,6 +106,16 @@ struct HicannChannel
     READ_WRITE(true, true);
 };
 ASSERT_SIZE(HicannChannel);
+
+struct DEPRECATED ArqTimings
+{
+    uint32_t master_timeout : 10;
+    uint32_t target_timeout : 10;
+    uint32_t arbiter_delay : 5;
+    bool bit : 1;
+    ADDRESS(0x840);
+    READ_WRITE(true, true);
+};
 
 /// Addresses starting @1090
 /// Partner host configuration register files

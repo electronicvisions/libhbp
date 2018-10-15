@@ -28,6 +28,12 @@ set(HEADERS
         include/exception.h
         include/fpga.h
         include/register_files.h
+        include/hicann.h
+
+        include/utility/rng.h
+
+        include/tests/switchram.h
+        include/tests/test.h
         )
 
 set(SOURCES
@@ -41,6 +47,10 @@ set(SOURCES
         src/main.cpp
         src/fpga.cpp
         src/exception.cpp
+        src/hicann.cpp
+
+        src/tests/test.cpp
+        src/tests/switchram.cpp
         )
 
 add_executable(rma ${HEADERS} ${SOURCES})

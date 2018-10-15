@@ -17,7 +17,7 @@ struct Connection
 
     RMA2_ERROR status = RMA2_SUCCESS;
 
-    explicit Connection(RMA2_Nodeid);
+    explicit Connection(RMA2_Nodeid, bool);
     Connection(const Connection&) = delete;
     Connection& operator=(const Connection&) = delete;
     ~Connection();

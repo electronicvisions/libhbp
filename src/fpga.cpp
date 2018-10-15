@@ -1,13 +1,20 @@
 #include <fpga.h>
 
-#include "fpga.h"
+#include <chrono>
+#include <thread>
 
 using namespace rf;
 
-void Fpga::reset()
+void Fpga::reset(Reset resets)
 {
-    RegisterFile::write<Reset>({true, true, true});
-    RegisterFile::write<Reset>({false, false, false});
+    reset_set_only(resets);
+    reset_set_only(Reset::None);
+    std::this_thread::sleep_for(std::chrono::microseconds(120));
+}
+
+void Fpga::reset_set_only(Fpga::Reset resets)
+{
+    RegisterFile::write<::Reset>({resets & Core, resets & Hicann, resets & Arq});
 }
 
 void Fpga::configure_partner_host()
@@ -26,4 +33,9 @@ void Fpga::configure_partner_host()
     write_noblock<HicannNotificationBehaviour>({default_timeout, default_frequency});
 
     wait_for_n_notifications(8);
+}
+
+bool operator&(Fpga::Reset flags, Fpga::Reset bit)
+{
+    return static_cast<uint8_t>(bit) & static_cast<uint8_t>(flags);
 }
