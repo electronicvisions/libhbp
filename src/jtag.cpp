@@ -1,6 +1,7 @@
 #include <jtag.h>
 
 #include <register_files.h>
+#include <exception.h>
 
 using namespace rf;
 using namespace jtag;
@@ -80,4 +81,13 @@ uint64_t JTag::read_write(jtag::ReadWrite command, uint64_t data)
     wait_until_finished();
 
     return RegisterFile::read(JtagReceive::ADDRESS);
+}
+
+JTag::JTag(Connection& connection)
+    : RegisterFile(connection)
+{
+    if (read(ID) != 0x14849434)
+    {
+        throw NodeHasNoHicann(connection.node);
+    }
 }

@@ -49,4 +49,11 @@ struct NodeIsNoFcp : ConnectionFailed
     const uint32_t driver;
 };
 
+struct NodeHasNoHicann : ConnectionFailed
+{
+    explicit NodeHasNoHicann(RMA2_Nodeid node);
+
+    const RMA2_Nodeid node;
+};
+
 #endif //LIBHBP_CPP_EXCEPTION_H

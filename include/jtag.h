@@ -105,7 +105,7 @@ class JTag : protected RegisterFile
 {
 
 public:
-    using RegisterFile::RegisterFile;
+    explicit JTag(Connection&);
 
     void reset();
     void set_bypass();
