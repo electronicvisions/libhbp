@@ -6,9 +6,9 @@
 class Hicann
 {
 private:
-    Connection& connection;
+    Endpoint& connection;
 public:
-    explicit Hicann(Connection&);
+    explicit Hicann(Endpoint&);
 };
 
 

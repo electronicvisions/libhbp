@@ -8,7 +8,7 @@
 
 
 
-RegisterFile::RegisterFile(const Connection& connection)
+RegisterFile::RegisterFile(Endpoint& connection)
     : connection(connection), status(RMA2_SUCCESS)
 {
 }
@@ -16,8 +16,8 @@ RegisterFile::RegisterFile(const Connection& connection)
 uint64_t RegisterFile::read(RMA2_NLA address) const
 {
     status = rma2_post_get_qw_direct(
-            connection.port,
-            connection.handle,
+            connection.rra.port,
+            connection.rra.handle,
             connection.gp_buffer.address(),
             8, address,
             RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
@@ -30,8 +30,8 @@ uint64_t RegisterFile::read(RMA2_NLA address) const
 void RegisterFile::write_noblock(RMA2_NLA address, uint64_t value)
 {
     status = rma2_post_immediate_put(
-            connection.port,
-            connection.handle,
+            connection.rra.port,
+            connection.rra.handle,
             8, value, address,
             RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT
             );
@@ -46,10 +46,10 @@ void RegisterFile::write(RMA2_NLA address, uint64_t value)
 
 void RegisterFile::wait_for_notification() const
 {
-    ::wait_for_notification(connection.port);
+    ::wait_for_notification(connection.rra.port);
 }
 
 void RegisterFile::wait_for_n_notifications(int n) const
 {
-    ::wait_for_n_notifications(connection.port, n);
+    ::wait_for_n_notifications(connection.rra.port, n);
 }

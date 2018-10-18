@@ -83,7 +83,7 @@ uint64_t JTag::read_write(jtag::ReadWrite command, uint64_t data)
     return RegisterFile::read(JtagReceive::ADDRESS);
 }
 
-JTag::JTag(Connection& connection)
+JTag::JTag(Endpoint& connection)
     : RegisterFile(connection)
 {
     if (read(ID) != 0x14849434)

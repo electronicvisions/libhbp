@@ -3,5 +3,5 @@
 
 #include "hicann.h"
 
-Hicann::Hicann(Connection& connection)
+Hicann::Hicann(Endpoint& connection)
     : connection(connection) {}

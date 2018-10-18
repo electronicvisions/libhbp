@@ -4,31 +4,34 @@
 #include <rma.h>
 #include <physical_buffer.h>
 
-struct Connection
+struct Endpoint
 {
-    RMA2_Port port;
-    RMA2_Handle handle;
+    struct Connection
+    {
+        RMA2_Port port;
+        RMA2_Handle handle;
+        RMA2_VPID vpid;
+
+        RMA2_ERROR status = RMA2_SUCCESS;
+
+        explicit Connection(RMA2_Nodeid, bool);
+        Connection(const Connection&) = delete;
+        Connection& operator=(const Connection&) = delete;
+        ~Connection();
+    };
+
+    Connection rra;
+    Connection rma;
+
     RMA2_Nodeid node;
-    RMA2_VPID vpid;
 
     PhysicalBuffer gp_buffer;
     PhysicalBuffer trace_data;
     PhysicalBuffer hicann_config;
 
-    RMA2_ERROR status = RMA2_SUCCESS;
-
-    explicit Connection(RMA2_Nodeid, bool);
-    Connection(const Connection&) = delete;
-    Connection& operator=(const Connection&) = delete;
-    ~Connection();
-};
-
-struct Endpoint
-{
-    Connection rra;
-    Connection rma;
-
     explicit Endpoint(RMA2_Nodeid);
+    Endpoint(const Endpoint&) = delete;
+    Endpoint& operator=(const Endpoint&) = delete;
 };
 
 

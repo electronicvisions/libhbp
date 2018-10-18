@@ -7,7 +7,7 @@ const int RMA_CONNECTION = RMA2_CONN_PHYSICAL;
 const int RRA_BIT = RMA2_CONN_RRA;
 const int RRA_CONNECTION = RMA_CONNECTION | RRA_BIT;
 
-Connection::~Connection()
+Endpoint::Connection::~Connection()
 {
     if (this->port != nullptr)
     {
@@ -21,8 +21,7 @@ Connection::~Connection()
 }
 
 
-Connection::Connection(RMA2_Nodeid node, bool rra)
-        : node(node), gp_buffer(1), trace_data(1), hicann_config(1)
+Endpoint::Connection::Connection(RMA2_Nodeid node, bool rra)
 {
     status = rma2_open(&port);
     throw_on_error<ConnectionFailed>(status, "Failed to open port!");
@@ -31,15 +30,15 @@ Connection::Connection(RMA2_Nodeid node, bool rra)
     int options = rra? RRA_CONNECTION : RMA_CONNECTION;
     status = rma2_connect(port, node, vpid, RMA2_Connection_Options(options), &handle);
     throw_on_error<ConnectionFailed>(status, "Failed to connect!");
+}
 
-    if (!rra)
-    {
-        return;
-    }
-
-    status = rma2_post_get_qw_direct(port, handle, gp_buffer.address(), 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+Endpoint::Endpoint(RMA2_Nodeid node)
+    : rra(node, true), rma(node, false),
+    gp_buffer(1), trace_data(1), hicann_config(1)
+{
+    RMA2_ERROR status = rma2_post_get_qw_direct(rra.port, rra.handle, gp_buffer.address(), 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     throw_on_error<FailedToRead>(status, "Failed to query driver", node, 0x8000);
-    wait_for_notification(port);
+    wait_for_notification(rra.port);
 
     auto driver = uint32_t(gp_buffer.data()[0]);
     if (driver != 0xcafebabe)
@@ -47,6 +46,3 @@ Connection::Connection(RMA2_Nodeid node, bool rra)
         throw NodeIsNoFcp(node, driver);
     }
 }
-
-Endpoint::Endpoint(RMA2_Nodeid node)
-    : rra(node, true), rma(node, false) {}

@@ -24,12 +24,12 @@ Endpoint& HBP::connect(RMA2_Nodeid node)
 
 RegisterFile HBP::register_file(RMA2_Nodeid node)
 {
-    return RegisterFile{connect(node).rra};
+    return RegisterFile{connect(node)};
 }
 
 JTag HBP::jtag(RMA2_Nodeid node)
 {
-    return JTag{connect(node).rra};
+    return JTag{connect(node)};
 }
 
 Fpga HBP::fpga(RMA2_Nodeid node)
@@ -39,5 +39,5 @@ Fpga HBP::fpga(RMA2_Nodeid node)
 
 Hicann HBP::hicann(RMA2_Nodeid node)
 {
-    return Hicann{connect(node).rma};
+    return Hicann{connect(node)};
 }

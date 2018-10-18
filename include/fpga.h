@@ -6,8 +6,6 @@
 
 class Fpga : protected RegisterFile
 {
-    Connection& rma;
-
     const static RMA2_NLA CONFIG_ADDRESS = 0x0c1bull << 48ull;
 
     void wait_for_rma_notification();
@@ -41,7 +39,7 @@ public:
         All = 0xfff80000,
     };
 
-    explicit Fpga(Endpoint&);
+    using RegisterFile::RegisterFile;
 
     void reset(Reset = All);
     void reset_set_only(Reset = All);

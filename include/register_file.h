@@ -11,11 +11,11 @@
 class RegisterFile
 {
 protected:
-    const Connection& connection;
+    Endpoint& connection;
     mutable RMA2_ERROR status;
 
 public:
-    explicit RegisterFile(const Connection&);
+    explicit RegisterFile(Endpoint&);
 
     template <typename RF>
     RF read() const
