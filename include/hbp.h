@@ -16,15 +16,7 @@
 class HBP
 {
 private:
-    struct Connections
-    {
-        Connection rra;
-        Connection rma;
-
-        explicit Connections(RMA2_Nodeid);
-    };
-
-    std::map<RMA2_Nodeid, Connections> connections;
+    std::map<RMA2_Nodeid, Endpoint> connections;
 public:
     RegisterFile register_file(RMA2_Nodeid node);
     JTag jtag(RMA2_Nodeid node);
@@ -32,7 +24,7 @@ public:
     Hicann hicann(RMA2_Nodeid node);
 
 private:
-    Connections& connect(RMA2_Nodeid node);
+    Endpoint& connect(RMA2_Nodeid node);
 
     friend class RegisterFile;
 };

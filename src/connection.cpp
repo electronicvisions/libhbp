@@ -48,3 +48,5 @@ Connection::Connection(RMA2_Nodeid node, bool rra)
     }
 }
 
+Endpoint::Endpoint(RMA2_Nodeid node)
+    : rra(node, true), rma(node, false) {}

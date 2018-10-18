@@ -23,5 +23,13 @@ struct Connection
     ~Connection();
 };
 
+struct Endpoint
+{
+    Connection rra;
+    Connection rma;
+
+    explicit Endpoint(RMA2_Nodeid);
+};
+
 
 #endif //LIBHBP_CPP_CONNECTION_H

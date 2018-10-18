@@ -6,6 +6,12 @@
 
 class Fpga : protected RegisterFile
 {
+    Connection& rma;
+
+    const static RMA2_NLA CONFIG_ADDRESS = 0x0c1bull << 48ull;
+
+    void wait_for_rma_notification();
+
 public:
     enum class Reset
     {
@@ -16,7 +22,7 @@ public:
         All = Core | Hicann | Arq
     };
 
-    enum class Config : uint32_t
+    enum class Config : uint64_t
     {
         None = 0,
         ClearPlaybackMemory = 1 << 19,
@@ -31,11 +37,11 @@ public:
         ValidSystemTimeSettings = 1 << 28,
         StartSystemTimeCounter = 1 << 29,
         GlobalModeForSystemTimeCounter = 1 << 30,
-        UseSstSql = 1ul << 31ul,
+        UseSstSql = 1ull << 31ull,
         All = 0xfff80000,
     };
 
-    using RegisterFile::RegisterFile;
+    explicit Fpga(Endpoint&);
 
     void reset(Reset = All);
     void reset_set_only(Reset = All);
@@ -50,6 +56,7 @@ public:
     const static Reset None = Reset::None;
 };
 
+Fpga::Config operator|(Fpga::Config, Fpga::Config);
 bool operator&(Fpga::Reset, Fpga::Reset);
 
 

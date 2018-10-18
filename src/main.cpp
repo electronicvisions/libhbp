@@ -54,6 +54,10 @@ int _main(RMA2_Nodeid node, uint8_t)
         cout << "OUT: " << jtag.shift_through(in, i) << "\n\n";
     }
 
+    fpga.configure_partner_host();
+    fpga.send(Fpga::Config::ClearPlaybackMemory | Fpga::Config::ClearTraceMemory);
+
+
     Runner runner;
     runner.add<SwitchRam>(2);
 

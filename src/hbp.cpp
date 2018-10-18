@@ -6,7 +6,7 @@
 #include <rma.h>
 #include <exception.h>
 
-HBP::Connections& HBP::connect(RMA2_Nodeid node)
+Endpoint& HBP::connect(RMA2_Nodeid node)
 {
     auto it = connections.find(node);
 
@@ -34,14 +34,10 @@ JTag HBP::jtag(RMA2_Nodeid node)
 
 Fpga HBP::fpga(RMA2_Nodeid node)
 {
-    return Fpga{connect(node).rra};
+    return Fpga{connect(node)};
 }
 
 Hicann HBP::hicann(RMA2_Nodeid node)
 {
     return Hicann{connect(node).rma};
 }
-
-
-HBP::Connections::Connections(RMA2_Nodeid node)
-    : rra(node, true), rma(node, false) {}
