@@ -1,14 +1,18 @@
 #ifndef LIBHBP_CPP_HICANN_H
 #define LIBHBP_CPP_HICANN_H
 
-#include <connection.h>
+#include <register_file.h>
 
-class Hicann
+
+class Hicann : public RegisterFile
 {
-private:
-    Endpoint& connection;
+    const static RMA2_NLA CONFIG_ADDRESS = 0x2a1bull << 48ull;
+
 public:
     explicit Hicann(Endpoint&);
+
+    void write(uint16_t address, uint32_t data);
+    uint32_t read(uint16_t address);
 };
 
 

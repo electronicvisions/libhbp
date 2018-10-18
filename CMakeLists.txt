@@ -31,6 +31,7 @@ set(HEADERS
         include/hicann.h
 
         include/utility/rng.h
+        include/utility/watch.h
 
         include/tests/switchram.h
         include/tests/test.h

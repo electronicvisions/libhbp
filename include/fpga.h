@@ -7,9 +7,6 @@
 class Fpga : protected RegisterFile
 {
     const static RMA2_NLA CONFIG_ADDRESS = 0x0c1bull << 48ull;
-
-    void wait_for_rma_notification();
-
 public:
     enum class Reset
     {

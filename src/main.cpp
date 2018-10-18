@@ -18,6 +18,7 @@ int _main(RMA2_Nodeid node, uint8_t)
     auto fpga = hbp.fpga(node);
     auto rf = hbp.register_file(node);
     auto jtag = hbp.jtag(node);
+    auto hicann = hbp.hicann(node);
 
     fpga.reset();
     jtag.reset();
@@ -57,6 +58,8 @@ int _main(RMA2_Nodeid node, uint8_t)
     fpga.configure_partner_host();
     fpga.send(Fpga::Config::ClearPlaybackMemory | Fpga::Config::ClearTraceMemory);
 
+    hicann.write(10, 42);
+    hicann.read(10);
 
     Runner runner;
     runner.add<SwitchRam>(2);

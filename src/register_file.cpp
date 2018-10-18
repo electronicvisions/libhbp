@@ -53,3 +53,13 @@ void RegisterFile::wait_for_n_notifications(int n) const
 {
     ::wait_for_n_notifications(connection.rra.port, n);
 }
+
+void RegisterFile::wait_for_rma_notification() const
+{
+    RMA2_Notification* notification;
+    rma2_noti_get_block(connection.rma.port, &notification);
+
+    rma2_noti_dump(notification);
+
+    rma2_noti_free(connection.rma.port, notification);
+}
