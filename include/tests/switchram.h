@@ -10,9 +10,10 @@ class SwitchRam : public TestBase
 {
 
     RMA2_Nodeid node;
+    uint8_t hicann_number;
 
 public:
-    SwitchRam(HBP&, RMA2_Nodeid);
+    SwitchRam(HBP&, RMA2_Nodeid, uint8_t);
 
     void run() override;
 };

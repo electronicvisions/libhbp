@@ -21,7 +21,7 @@ public:
     RegisterFile register_file(RMA2_Nodeid node);
     JTag jtag(RMA2_Nodeid node);
     Fpga fpga(RMA2_Nodeid node);
-    Hicann hicann(RMA2_Nodeid node);
+    Hicann hicann(RMA2_Nodeid node, int8_t number);
 
 private:
     Endpoint& connect(RMA2_Nodeid node);

@@ -5,6 +5,7 @@
 
 #include <rma.h>
 #include <exception.h>
+#include <cassert>
 
 Endpoint& HBP::connect(RMA2_Nodeid node)
 {
@@ -37,7 +38,9 @@ Fpga HBP::fpga(RMA2_Nodeid node)
     return Fpga{connect(node)};
 }
 
-Hicann HBP::hicann(RMA2_Nodeid node)
+Hicann HBP::hicann(RMA2_Nodeid node, int8_t number)
 {
-    return Hicann{connect(node)};
+    assert(number >= 0 && number <= 7);
+
+    return Hicann{connect(node), uint8_t(number)};
 }

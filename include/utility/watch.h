@@ -24,16 +24,17 @@ constexpr static const char * const WATCH_ERROR_NAMES[7] {
         "Error: Undefined host      "
 };
 
-struct _Watch
+struct Watch
 {
     RegisterFile& rf;
     size_t registers;
     const RMA2_NLA* addresses;
     const char* const* const names;
     uint64_t before[8];
+    bool compare_on_destruction = true;
 
 
-    _Watch(size_t registers, const RMA2_NLA* addresses, const char* const* const names, RegisterFile& rf)
+    Watch(size_t registers, const RMA2_NLA* addresses, const char* const* const names, RegisterFile& rf)
             : rf(rf), registers(registers), addresses(addresses), names(names), before()
     {
         for (size_t i = 0; i < registers; ++i)
@@ -42,21 +43,42 @@ struct _Watch
         }
     }
 
-    ~_Watch()
+    void print()
     {
+        compare_on_destruction = false;
+        for (size_t i = 0; i < registers; ++i)
+        {
+            std::cout << std::dec << names[i] << ": " << rf.read(addresses[i]) << "\n";
+        }
+    }
+
+    ~Watch()
+    {
+        if (!compare_on_destruction)
+        {
+            return;
+        }
+
         for (size_t i = 0; i < 8; ++i)
         {
             auto now = rf.read(addresses[i]);
             if (now != before[i])
             {
-                std::cout << names[i] << ": " << before[i] << "->" << now << "\n";
+                std::cout << std::dec << names[i] << ": " << before[i] << "->" << now << "\n";
             }
         }
     }
 };
 
-#define WATCH_STATUS _Watch _s_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, *this);
-#define WATCH_ERRORS _Watch _e_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, *this);
+#define WATCH_STATUS Watch _s_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, *this);
+#define WATCH_ERRORS Watch _e_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, *this);
+
+#define WATCH_STATUS_FROM(RF) Watch _s_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, RF);
+#define WATCH_ERRORS_FROM(RF) Watch _e_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, RF);
+
+
+#define PRINT_STATUS_FROM(RF) Watch _ps_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, RF); _ps_.print();
+#define PRINT_ERRORS_FROM(RF) Watch _pe_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, RF); _pe_.print();
 
 
 #endif //LIBHBP_CPP_WATCH_H

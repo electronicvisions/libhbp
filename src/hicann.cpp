@@ -13,7 +13,7 @@ union Config
         bool read : 1;
         bool write : 1;
         bool tag : 1;
-        uint64_t : 9;
+        uint64_t : 10;
         uint64_t hicann : 3;
 
     } data;
@@ -22,8 +22,8 @@ union Config
 
 static_assert(sizeof(Config) == 8, "Alignment error!");
 
-Hicann::Hicann(Endpoint& connection)
-    : RegisterFile(connection) {}
+Hicann::Hicann(Endpoint& connection, uint8_t number)
+    : RegisterFile(connection), number(number) {}
 
 void Hicann::write(uint16_t address, uint32_t value)
 {
@@ -33,19 +33,20 @@ void Hicann::write(uint16_t address, uint32_t value)
     payload.data.value = value;
     payload.data.address = address;
     payload.data.write = true;
-    payload.data.tag = true;
-    payload.data.hicann = 1;
+    payload.data.tag = false;
+    payload.data.hicann = number;
 
-    std::cout << "bits: " << std::bitset<64>(payload.raw) << "\n";
+    // std::cout << "bits: " << std::bitset<64>(payload.raw) << "\n";
 
     {
-        WATCH_STATUS
-        WATCH_ERRORS
+        //WATCH_STATUS
+        //WATCH_ERRORS
 
         rma2_post_immediate_put(rma.port, rma.handle, 8, payload.raw, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
         wait_for_rma_notification();
     }
 }
+
 
 uint32_t Hicann::read(uint16_t address)
 {
@@ -53,29 +54,77 @@ uint32_t Hicann::read(uint16_t address)
 
     Config payload;
     payload.data.address = address;
-    payload.data.read = true;
-    payload.data.tag = true;
-    payload.data.hicann = 1;
+    payload.data.read = false;
+    payload.data.tag = false;
+    payload.data.hicann = number;
 
     {
-        WATCH_STATUS
-        WATCH_ERRORS
+        //WATCH_STATUS
+        //WATCH_ERRORS
 
         rma2_post_immediate_put(rma.port, rma.handle, 8, payload.raw, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
         wait_for_rma_notification();
     }
 
-    usleep(1000000);
-
-    for (size_t i = 0; i < connection.hicann_config.byte_size(); ++i)
-    {
-        auto v = connection.hicann_config.data()[i];
-        if (v == 42)
-        {
-            std::cout << i << ": " << connection.hicann_config.data()[i] << "\n";
-        }
-
-    }
+    usleep(10000);
 
     return uint32_t(connection.hicann_config.data()[0]);
+}
+
+void Hicann::clear(PhysicalBuffer& p, size_t amount)
+{
+    if (amount == 0 || amount > p.size())
+    {
+        amount = p.size();
+    }
+
+    for (size_t i = 0; i < amount; ++i)
+    {
+        p.data()[i] = 0xdeadbeef;
+    }
+}
+
+void Hicann::diff(PhysicalBuffer& p, size_t amount)
+{
+    if (amount == 0 || amount > p.size())
+    {
+        amount = p.size();
+    }
+
+    size_t unchanged = 0;
+    for (size_t i = 0; i < amount; ++i)
+    {
+        auto v = p.data()[i];
+        if (v != 0xdeadbeef)
+        {
+            if (unchanged != 0)
+            {
+                std::cout << "unchanged: " << unchanged << "\n";
+                unchanged = 0;
+            }
+            std::cout << i << ": " << v << "\n";
+        }
+        else
+        {
+            ++unchanged;
+        }
+    }
+    if (unchanged != 0)
+    {
+        std::cout << "unchanged: " << unchanged << "\n";
+    }
+}
+
+void Hicann::clear_all()
+{
+    clear(connection.gp_buffer);
+    clear(connection.hicann_config);
+    clear(connection.trace_data);
+}
+
+void Hicann::diff_all()
+{
+    diff(connection.gp_buffer);
+    diff(connection.hicann_config);
+    diff(connection.trace_data);
 }

@@ -20,6 +20,7 @@ public:
     const uint64_t* data() const;
     uint64_t* data();
     uint32_t byte_size() const;
+    uint32_t size() const;
 };
 
 #endif //LIBHBP_CPP_PHYSICAL_BUFFER_H

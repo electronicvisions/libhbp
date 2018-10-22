@@ -12,13 +12,19 @@ using std::hex;
 using namespace rf;
 
 
-int _main(RMA2_Nodeid node, uint8_t)
+int _main(RMA2_Nodeid node, uint8_t hicann_number)
 {
+    Runner runner;
+    runner.add<SwitchRam>(node, hicann_number);
+    runner.run();
+
+    return EXIT_SUCCESS;
+
     HBP hbp;
     auto fpga = hbp.fpga(node);
     auto rf = hbp.register_file(node);
     auto jtag = hbp.jtag(node);
-    auto hicann = hbp.hicann(node);
+    auto hicann = hbp.hicann(node, hicann_number);
 
     fpga.reset();
     jtag.reset();
@@ -58,11 +64,9 @@ int _main(RMA2_Nodeid node, uint8_t)
     fpga.configure_partner_host();
     fpga.send(Fpga::Config::ClearPlaybackMemory | Fpga::Config::ClearTraceMemory);
 
-    hicann.write(10, 42);
-    hicann.read(10);
-
-    Runner runner;
-    runner.add<SwitchRam>(2);
+    hicann.write(0, 1234);
+    hicann.read(0);
+    hicann.probe();
 
     return EXIT_SUCCESS;
 }
@@ -90,7 +94,6 @@ int main(int argc, char** argv)
     }
     catch (std::exception& e)
     {
-        cerr << typeid(e).name() << "\n";
         cerr << "ERROR: " << e.what() << "\n";
     }
 }

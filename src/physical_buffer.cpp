@@ -83,3 +83,8 @@ uint32_t PhysicalBuffer::byte_size() const
 {
     return _byte_size;
 }
+
+uint32_t PhysicalBuffer::size() const
+{
+    return _byte_size / sizeof(*_data);
+}

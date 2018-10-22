@@ -54,7 +54,9 @@ public:
 
     void wait_for_notification() const;
     void wait_for_n_notifications(int) const;
-    void wait_for_rma_notification() const;
+    void wait_for_rma_notification(bool=false) const;
+
+    void probe() const;
 };
 
 
