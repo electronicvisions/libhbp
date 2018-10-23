@@ -1,3 +1,6 @@
+
+#include <tests/test.h>
+
 #include "tests/test.h"
 
 #include "tests/switchram.h"

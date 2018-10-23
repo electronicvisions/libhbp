@@ -2,6 +2,7 @@
 #define LIBHBP_CPP_EXCEPTION_H
 
 #include <stdexcept>
+#include <bitset>
 
 #include <rma.h>
 
@@ -54,6 +55,14 @@ struct NodeHasNoHicann : ConnectionFailed
     explicit NodeHasNoHicann(RMA2_Nodeid node);
 
     const RMA2_Nodeid node;
+};
+
+struct JtagIrShiftFailed : std::runtime_error
+{
+    JtagIrShiftFailed(RMA2_Nodeid, uint8_t);
+
+    const RMA2_Nodeid node;
+    const std::bitset<6> pattern;
 };
 
 #endif //LIBHBP_CPP_EXCEPTION_H

@@ -5,6 +5,8 @@
 
 #include <utility/rng.h>
 #include <utility/watch.h>
+#include <tests/switchram.h>
+
 
 using namespace rf;
 
@@ -25,22 +27,24 @@ void SwitchRam::run()
     fpga.reset();
     jtag.reset();
 
+    fpga.configure_partner_host();
+
     rf.write<ArqTimings>({0x0c8, 0x32, 0x4, true});
     fpga.reset(Fpga::Reset::Arq);
 
     fpga.reset_set_only(Fpga::Reset::Arq);
-    jtag.write(jtag::SystemEnable, 0);
-    jtag.write(jtag::ArqRxTimeoutValue, (10 << 16) | 10);
-    jtag.write(jtag::ArqTxTimeoutValue, (200 << 16) | 200);
+    jtag.write(jtag::SystemEnable, 0, 0);
+    jtag.write(jtag::ArqRxTimeoutValue, (10 << 16) | 10, 0);
+    jtag.write(jtag::ArqTxTimeoutValue, (200 << 16) | 200, 0);
 
-    jtag.write(jtag::ArqControl, (1 << 16) | 1);
-    jtag.write(jtag::ArqControl, 0);
+    jtag.write(jtag::ArqControl, (1 << 16) | 1, 0);
+    jtag.write(jtag::ArqControl, 0, 0);
     fpga.reset_set_only(Fpga::Reset::None);
 
-    jtag.write(jtag::SystemEnable, 0);
-    jtag.write(jtag::SystemEnable, 1);
+    jtag.write(jtag::SystemEnable, 0, 0);
+    jtag.write(jtag::SystemEnable, 1, 0);
     jtag.trigger(jtag::StopLink);
-    jtag.write(jtag::LinkControl, 0x61);
+    jtag.write(jtag::LinkControl, 0x61, 0);
     jtag.trigger(jtag::StopLink);
     jtag.trigger(jtag::StartLink);
     usleep(90000);
@@ -56,8 +60,6 @@ void SwitchRam::run()
         hicann.read(0);
     }
     hicann.diff_all();
-
-    std::cout << "IRRA " << rf.read(0x1078) << "\n";
 
     /*
     std::vector<uint16_t> test_data;

@@ -19,3 +19,6 @@ FailedToWrite::FailedToWrite(RMA2_Nodeid node, RMA2_NLA address)
 NodeHasNoHicann::NodeHasNoHicann(RMA2_Nodeid node)
     : ConnectionFailed("Connection to HICANN failed, because node has not HICANNs"),
     node(node) {}
+
+JtagIrShiftFailed::JtagIrShiftFailed(RMA2_Nodeid node, uint8_t pattern)
+    : std::runtime_error("JTAG IR shift failed"), node(node), pattern(pattern) {}

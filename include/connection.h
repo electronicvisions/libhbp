@@ -29,6 +29,9 @@ struct Endpoint
     PhysicalBuffer trace_data;
     PhysicalBuffer hicann_config;
 
+    uint64_t fpga_config_response() const;
+    RMA2_NLA fpga_config_address() const;
+
     explicit Endpoint(RMA2_Nodeid);
     Endpoint(const Endpoint&) = delete;
     Endpoint& operator=(const Endpoint&) = delete;

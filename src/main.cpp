@@ -4,6 +4,7 @@
 #include <hbp.h>
 #include <tests/test.h>
 #include <tests/switchram.h>
+#include <tests/jtagrw.h>
 
 using std::cout;
 using std::cerr;
@@ -16,6 +17,7 @@ int _main(RMA2_Nodeid node, uint8_t hicann_number)
 {
     Runner runner;
     runner.add<SwitchRam>(node, hicann_number);
+    runner.add<JtagRw>(node, hicann_number);
     runner.run();
 
     return EXIT_SUCCESS;
@@ -39,9 +41,9 @@ int _main(RMA2_Nodeid node, uint8_t hicann_number)
     jtag.trigger(jtag::ResetCrcCount);
     cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
 
-    auto ibias = jtag.read_write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
+    auto ibias = jtag.write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
     cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
-    ibias = jtag.read_write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
+    ibias = jtag.write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
     cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
 
     std::bitset<32> in("101010101111");

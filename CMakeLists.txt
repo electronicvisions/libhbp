@@ -35,6 +35,7 @@ set(HEADERS
 
         include/tests/switchram.h
         include/tests/test.h
+        include/tests/jtagrw.h
         )
 
 set(SOURCES
@@ -45,16 +46,16 @@ set(SOURCES
         src/hbp.cpp
         src/rma.cpp
         src/jtag.cpp
-        src/main.cpp
         src/fpga.cpp
         src/exception.cpp
         src/hicann.cpp
 
         src/tests/test.cpp
         src/tests/switchram.cpp
+        src/tests/jtagrw.cpp
         )
 
-add_executable(rma ${HEADERS} ${SOURCES})
+add_executable(rma src/main.cpp ${HEADERS} ${SOURCES})
 target_include_directories(rma PRIVATE include)
 target_include_directories(rma PRIVATE ${RMA_INCLUDE})
 target_link_libraries(rma ${LIBRMARC})

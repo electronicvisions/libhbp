@@ -116,8 +116,8 @@ public:
 
 
     uint64_t read(jtag::Readable);
-    void write(jtag::Writable, uint64_t);
-    uint64_t read_write(jtag::ReadWrite, uint64_t);
+    void write(jtag::Writable, uint64_t, uint16_t=64);
+    uint64_t write(jtag::ReadWrite, uint64_t, uint16_t=64);
     void trigger(jtag::Trigger);
 
 

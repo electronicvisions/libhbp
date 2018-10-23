@@ -46,3 +46,13 @@ Endpoint::Endpoint(RMA2_Nodeid node)
         throw NodeIsNoFcp(node, driver);
     }
 }
+
+uint64_t Endpoint::fpga_config_response() const
+{
+    return gp_buffer.data()[512];
+}
+
+RMA2_NLA Endpoint::fpga_config_address() const
+{
+    return gp_buffer.address() + 512;
+}

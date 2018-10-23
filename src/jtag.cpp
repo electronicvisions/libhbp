@@ -13,6 +13,12 @@ uint64_t JTag::read(Readable read_command)
     RegisterFile::write<JtagCmd>({Cmd::IR, 6, false, true});
     wait_until_finished();
 
+    auto pattern = RegisterFile::read(JtagReceive::ADDRESS) & 0x3f;
+    if (pattern != 0x3d)
+    {
+        throw JtagIrShiftFailed(connection.node, uint8_t(pattern));
+    }
+
     RegisterFile::write<JtagSend>({0});
     RegisterFile::write<JtagCmd>({Cmd::DR, 64, false, true});
     wait_until_finished();
@@ -20,15 +26,29 @@ uint64_t JTag::read(Readable read_command)
     return RegisterFile::read(JtagReceive::ADDRESS);
 }
 
-void JTag::write(Writable write_command, uint64_t value)
+void JTag::write(jtag::Writable write_command, uint64_t value, uint16_t shift)
 {
-    RegisterFile::write<JtagSend>({value});
-    RegisterFile::write<JtagCmd>({Cmd::DR, 64, false, true});
-    wait_until_finished();
-
     RegisterFile::write<JtagSend>({static_cast<uint8_t>(write_command)});
     RegisterFile::write<JtagCmd>({Cmd::IR, 6, false, true});
     wait_until_finished();
+
+    RegisterFile::write<JtagSend>({value});
+    RegisterFile::write<JtagCmd>({Cmd::DR, shift, false, true});
+    wait_until_finished();
+}
+
+
+uint64_t JTag::write(jtag::ReadWrite command, uint64_t value, uint16_t shift)
+{
+    RegisterFile::write<JtagSend>({static_cast<uint8_t>(command)});
+    RegisterFile::write<JtagCmd>({Cmd::IR, 6, false, true});
+    wait_until_finished();
+
+    RegisterFile::write<JtagSend>({value});
+    RegisterFile::write<JtagCmd>({Cmd::DR, shift, false, true});
+    wait_until_finished();
+
+    return RegisterFile::read(JtagReceive::ADDRESS);
 }
 
 
@@ -68,19 +88,6 @@ void JTag::trigger(jtag::Trigger trigger_command)
     RegisterFile::write<JtagSend>({static_cast<uint8_t>(trigger_command)});
     RegisterFile::write<JtagCmd>({Cmd::IR, 6, false, true});
     wait_until_finished();
-}
-
-uint64_t JTag::read_write(jtag::ReadWrite command, uint64_t data)
-{
-    RegisterFile::write<JtagSend>({static_cast<uint8_t>(command)});
-    RegisterFile::write<JtagCmd>({Cmd::IR, 6, false, true});
-    wait_until_finished();
-
-    RegisterFile::write(JtagSend::ADDRESS, data);
-    RegisterFile::write<JtagCmd>({Cmd::DR, 64, false, true});
-    wait_until_finished();
-
-    return RegisterFile::read(JtagReceive::ADDRESS);
 }
 
 JTag::JTag(Endpoint& connection)
