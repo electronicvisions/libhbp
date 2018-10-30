@@ -36,10 +36,6 @@ static void cmp(RegisterFile* reg, T& rf)
         std::cout << "MUST: " << std::bitset<64>(r) << "\n";
         std::cout << "      " << std::bitset<64>(d ^ r) << "\n\n";
     }
-    else
-    {
-        std::cout << std::hex << T::ADDRESS << " OK\n";
-    }
 }
 
 void Fpga::configure_partner_host()

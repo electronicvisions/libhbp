@@ -9,20 +9,16 @@ void JtagRw::run()
 {
     auto fpga = hbp.fpga(node);
     auto jtag = hbp.jtag(node);
-    auto rf = hbp.register_file(node);
 
+    fpga.reset();
+    jtag.reset();
     fpga.configure_partner_host();
 
     auto id = jtag.read(jtag::ID);
 
     std::cout << "JTAG ID: 0x" << std::hex << id << "\n";
 
-    jtag.set_bypass();
-    std::bitset<64> data(0xffffffffffffffff);
-    auto r = jtag.shift_through(data, 32);
-    auto r2 = jtag.shift_through<64>("1111011011", 10);
-
-    std::cout << r << "\n";
-    std::cout << r2 << "\n";
+    std::cout << "IBIAS  : 0x" << (0x7f & jtag.write(jtag::IBias, 0x27, 15)) << "\n";
+    std::cout << "IBIAS  : 0x" << (0x7f & jtag.write(jtag::IBias, 0x27, 15)) << "\n";
 }
 

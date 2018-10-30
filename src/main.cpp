@@ -13,6 +13,16 @@ using std::hex;
 using namespace rf;
 
 
+void print_systime_diff(JTag& jtag)
+{
+    auto start = jtag.read(jtag::Systime);
+    auto end = jtag.read(jtag::Systime);
+
+    std::cout << std::dec;
+    std::cout << "SYSTIME    : " << end << " - " << start << " = "
+        << ((end - start) & 0x7fff) << "\n";
+}
+
 int _main(RMA2_Nodeid node, uint8_t hicann_number)
 {
     Runner runner;
@@ -34,10 +44,41 @@ int _main(RMA2_Nodeid node, uint8_t hicann_number)
 
     cout << "DRIVER   0x: " << std::hex << rf.read<Driver>().version << "\n";
     cout << "ID       0x: " << std::hex << jtag.read(jtag::ID) << "\n";
-    cout << "SYSTIME  0x: " << std::dec << jtag.read(jtag::Systime) << "\n";
-    cout << "SYSTIME  0x: " << std::dec << jtag.read(jtag::Systime) << "\n";
+    print_systime_diff(jtag);
     cout << "STATUS   0x: " << std::hex << jtag.read(jtag::Status) << "\n";
     cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
+
+    rf.write(JtagSend::ADDRESS, uint64_t(jtag::IBias));
+    rf.write<JtagCmd>({JtagCmd::IR, 6, false, true});
+    usleep(500000);
+
+    rf.write<JtagSend>({0x31});
+    rf.write<JtagCmd>({JtagCmd::DR, 15, false, true});
+    usleep(500000);
+    std::cout << "READ : " << rf.read(JtagReceive::ADDRESS) << "\n";
+
+    rf.write<JtagSend>({0x32});
+    rf.write<JtagCmd>({JtagCmd::DR, 15, false, true});
+    usleep(500000);
+    std::cout << "READ : " << rf.read(JtagReceive::ADDRESS) << "\n";
+
+
+    const char* pattern = "110101";
+
+    auto result = jtag.shift_through<6>(pattern, 15);
+    std::cout << result << "\n";
+
+    result = jtag.shift_through<6>(pattern, 15);
+    std::cout << result << "\n";
+
+    result = jtag.shift_through<6>(pattern, 15);
+    std::cout << result << "\n";
+
+    std::cout << std::hex << jtag.write(jtag::IBias, 0x27, 15) << "\n";
+    std::cout << std::hex << jtag.write(jtag::IBias, 0x27, 15) << "\n";
+
+    return EXIT_SUCCESS;
+
     jtag.trigger(jtag::ResetCrcCount);
     cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
 
