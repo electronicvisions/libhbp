@@ -29,6 +29,7 @@ set(HEADERS
         include/fpga.h
         include/register_files.h
         include/hicann.h
+        include/jtag_registers.h
 
         include/utility/rng.h
         include/utility/watch.h

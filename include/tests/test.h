@@ -13,6 +13,7 @@ protected:
 public:
     explicit TestBase(HBP&);
     virtual void run() = 0;
+    virtual ~TestBase() = default;
 };
 
 

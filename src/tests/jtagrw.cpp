@@ -5,6 +5,8 @@
 JtagRw::JtagRw(HBP& hbp, RMA2_Nodeid node, uint8_t hicann)
     : TestBase(hbp), node(node), hicann_number(hicann) {}
 
+using namespace jtag;
+
 void JtagRw::run()
 {
     auto fpga = hbp.fpga(node);
@@ -14,11 +16,11 @@ void JtagRw::run()
     jtag.reset();
     fpga.configure_partner_host();
 
-    auto id = jtag.read(jtag::ID);
+    auto id = jtag.read<ID>();
 
     std::cout << "JTAG ID: 0x" << std::hex << id << "\n";
 
-    std::cout << "IBIAS  : 0x" << (0x7f & jtag.write(jtag::IBias, 0x27, 15)) << "\n";
-    std::cout << "IBIAS  : 0x" << (0x7f & jtag.write(jtag::IBias, 0x27, 15)) << "\n";
+    std::cout << "IBIAS  : 0x" << jtag.write<IBias>(0x27) << "\n";
+    std::cout << "IBIAS  : 0x" << jtag.write<IBias>(0x27) << "\n";
 }
 

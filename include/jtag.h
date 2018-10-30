@@ -4,101 +4,8 @@
 #include <bitset>
 
 #include <register_file.h>
-
-#define EXPOSER(MEMBER) const Readable MEMBER = Readable::MEMBER
-#define EXPOSEW(MEMBER) const Writable MEMBER = Writable::MEMBER
-
-namespace jtag
-{
-enum class Readable : uint8_t
-{
-    ID = 0x00,
-    Systime = 0x0b,
-    RxData = 0x12,
-    Status = 0x1a,
-    CrcCount = 0x27,
-    ArqTxPckNum = 0x31,
-    ArqRxPckNum = 0x32,
-    ArqRxDropNum = 0x33,
-    ArqTxTimeoutNum = 0x36,
-    ArqRxTimeoutNum = 0x37,
-};
-
-const Readable ID = Readable::ID;
-const Readable Systime = Readable::Systime;
-const Readable RxData = Readable::RxData;
-const Readable Status = Readable::Status;
-const Readable CrcCount = Readable::CrcCount;
-const Readable ArqTxPckNum = Readable::ArqTxPckNum;
-const Readable ArqRxPckNum = Readable::ArqRxPckNum;
-const Readable ArqRxDropNum = Readable::ArqRxDropNum;
-const Readable ArqTxTimeoutNum = Readable::ArqTxTimeoutNum;
-const Readable ArqRxTimeoutNum = Readable::ArqRxTimeoutNum;
-
-enum class Writable : uint8_t
-{
-    LvdsPadsEnable = 0x02,
-    LinkControl = 0x03,
-    Layer1Mode = 0x04,
-    SystemEnable = 0x05,
-    BiasControl = 0x06,
-    StopTimeCount = 0x0a,
-    Set2Xpls = 0x0d,
-    Pll2gControl = 0x10,
-    TxData = 0x11,
-    TestControl = 0x17,
-    PllFarControl = 0x29,
-    ArqControl = 0x30,
-    ArqTxTimeoutValue = 0x34,
-    ArqRxTimeoutValue = 0x35,
-};
-
-const Writable LvdsPadsEnable = Writable::LvdsPadsEnable;
-const Writable LinkControl = Writable::LinkControl;
-const Writable Layer1Mode = Writable::Layer1Mode;
-const Writable SystemEnable = Writable::SystemEnable;
-const Writable BiasControl = Writable::BiasControl;
-const Writable StopTimeCount = Writable::StopTimeCount;
-const Writable Set2Xpls = Writable::Set2Xpls;
-const Writable Pll2gControl = Writable::Pll2gControl;
-const Writable TxData = Writable::TxData;
-const Writable TestControl = Writable::TestControl;
-const Writable PllFarControl = Writable::PllFarControl;
-const Writable ArqControl = Writable::ArqControl;
-const Writable ArqTxTimeoutValue = Writable::ArqTxTimeoutValue;
-const Writable ArqRxTimeoutValue = Writable::ArqRxTimeoutValue;
-
-enum class ReadWrite : uint8_t
-{
-    IBias = 0x07,
-    DelayRxData = 0x21,
-    DelayRxClock = 0x22,
-};
-
-const ReadWrite IBias = ReadWrite::IBias;
-const ReadWrite DelayRxData = ReadWrite::DelayRxData;
-const ReadWrite DelayRxClock = ReadWrite::DelayRxClock;
-
-enum class Trigger : uint8_t
-{
-    StartLink = 0x08,
-    StopLink = 0x09,
-    StartConfigPackage = 0x18,
-    StartPulsePackage = 0x19,
-    SetReset = 0x1b,
-    ReleaseReset = 0x1c,
-    ResetCrcCount = 0x28,
-};
-
-const Trigger StartLink = Trigger::StartLink;
-const Trigger StopLink = Trigger::StopLink;
-const Trigger StartConfigPackage = Trigger::StartConfigPackage;
-const Trigger StartPulsePackage = Trigger::StartPulsePackage;
-const Trigger SetReset = Trigger::SetReset;
-const Trigger ReleaseReset = Trigger::ReleaseReset;
-const Trigger ResetCrcCount = Trigger::ResetCrcCount;
-
-}
+#include <jtag_registers.h>
+#include "exception.h"
 
 
 class JTag : protected RegisterFile
@@ -115,14 +22,19 @@ public:
     std::bitset<S> shift_through(std::bitset<S>, uint16_t length=64);
 
 
-    uint64_t read(jtag::Readable);
-    void write(jtag::Writable, uint64_t, uint16_t=64);
-    uint64_t write(jtag::ReadWrite, uint64_t, uint16_t=64);
-    void trigger(jtag::Trigger);
+    template <typename JR>
+    typename std::enable_if<JR::READABLE && !JR::WRITABLE, uint64_t>::type read();
+    template <typename JR>
+    typename std::enable_if<JR::WRITABLE && !JR::READABLE, void>::type write(uint64_t);
+    template <typename JR>
+    typename std::enable_if<JR::WRITABLE && JR::READABLE, uint64_t>::type write(uint64_t);
+    template <typename JR>
+    void trigger();
 
 
 private:
     void wait_until_finished() const;
+    void assert_ir_shift_succeeded() const;
 
     friend std::ostream& operator<<(std::ostream&, const JTag&);
 };
@@ -146,6 +58,75 @@ std::bitset<S> JTag::shift_through(std::bitset<S> pattern, uint16_t length)
     wait_until_finished();
 
     return RegisterFile::read(JtagReceive::ADDRESS);
+}
+
+template <typename JR>
+typename std::enable_if<JR::READABLE && !JR::WRITABLE, uint64_t>::type
+JTag::read()
+{
+    using namespace rf;
+
+    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
+    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
+    wait_until_finished();
+
+    assert_ir_shift_succeeded();
+
+    RegisterFile::write(JtagSend::ADDRESS, 0);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
+    wait_until_finished();
+
+    return RegisterFile::read(JtagReceive::ADDRESS) & JR::MASK;
+}
+
+template<typename JR>
+typename std::enable_if<JR::WRITABLE && !JR::READABLE, void>::type
+JTag::write(uint64_t value)
+{
+    using namespace rf;
+
+    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
+    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
+    wait_until_finished();
+
+    assert_ir_shift_succeeded();
+
+    RegisterFile::write(JtagSend::ADDRESS, value & JR::MASK);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
+    wait_until_finished();
+}
+
+template <typename JR>
+typename std::enable_if<JR::WRITABLE && JR::READABLE, uint64_t>::type
+JTag::write(uint64_t value)
+{
+    using namespace rf;
+
+    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
+    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
+    wait_until_finished();
+
+    assert_ir_shift_succeeded();
+
+    RegisterFile::write(JtagSend::ADDRESS, value & JR::MASK);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
+    wait_until_finished();
+
+    return RegisterFile::read(JtagReceive::ADDRESS) & JR::MASK;
+}
+
+template<typename JR>
+void JTag::trigger()
+{
+    static_assert(JR::TRIGGER, "JTAG register is not a trigger!");
+
+    using namespace rf;
+
+    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
+    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
+    wait_until_finished();
+
+
 }
 
 #endif

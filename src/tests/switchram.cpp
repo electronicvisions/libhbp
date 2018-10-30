@@ -9,6 +9,7 @@
 
 
 using namespace rf;
+using namespace jtag;
 
 SwitchRam::SwitchRam(HBP& hbp,RMA2_Nodeid node, uint8_t hicann)
     : TestBase(hbp), node(node), hicann_number(hicann) {}
@@ -33,20 +34,22 @@ void SwitchRam::run()
     fpga.reset(Fpga::Reset::Arq);
 
     fpga.reset_set_only(Fpga::Reset::Arq);
-    jtag.write(jtag::SystemEnable, 0, 0);
-    jtag.write(jtag::ArqRxTimeoutValue, (10 << 16) | 10, 0);
-    jtag.write(jtag::ArqTxTimeoutValue, (200 << 16) | 200, 0);
+    jtag.write<SystemEnable>(0);
+    jtag.write<ArqRxTimeoutValue>((10 << 16) | 10);
+    jtag.write<ArqTxTimeoutValue>((200 << 16) | 200);
 
-    jtag.write(jtag::ArqControl, (1 << 16) | 1, 0);
-    jtag.write(jtag::ArqControl, 0, 0);
+    jtag.write<ArqControl>((1 << 16) | 1);
+    jtag.write<ArqControl>(0);
     fpga.reset_set_only(Fpga::Reset::None);
 
-    jtag.write(jtag::SystemEnable, 0, 0);
-    jtag.write(jtag::SystemEnable, 1, 0);
-    jtag.trigger(jtag::StopLink);
-    jtag.write(jtag::LinkControl, 0x61, 0);
-    jtag.trigger(jtag::StopLink);
-    jtag.trigger(jtag::StartLink);
+
+
+    jtag.write<SystemEnable>(0);
+    jtag.write<SystemEnable>(1);
+    jtag.trigger<StopLink>();
+    jtag.write<LinkControl>(0x61);
+    jtag.trigger<StopLink>();
+    jtag.trigger<StartLink>();
     usleep(90000);
 
     for (uint16_t i = 0; i < 111; ++i)

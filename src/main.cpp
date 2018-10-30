@@ -11,12 +11,13 @@ using std::cerr;
 using std::hex;
 
 using namespace rf;
+using namespace jtag;
 
 
 void print_systime_diff(JTag& jtag)
 {
-    auto start = jtag.read(jtag::Systime);
-    auto end = jtag.read(jtag::Systime);
+    auto start = jtag.read<Systime>();
+    auto end = jtag.read<Systime>();
 
     std::cout << std::dec;
     std::cout << "SYSTIME    : " << end << " - " << start << " = "
@@ -29,87 +30,6 @@ int _main(RMA2_Nodeid node, uint8_t hicann_number)
     runner.add<SwitchRam>(node, hicann_number);
     runner.add<JtagRw>(node, hicann_number);
     runner.run();
-
-    return EXIT_SUCCESS;
-
-    HBP hbp;
-    auto fpga = hbp.fpga(node);
-    auto rf = hbp.register_file(node);
-    auto jtag = hbp.jtag(node);
-    auto hicann = hbp.hicann(node, hicann_number);
-
-    fpga.reset();
-    jtag.reset();
-
-
-    cout << "DRIVER   0x: " << std::hex << rf.read<Driver>().version << "\n";
-    cout << "ID       0x: " << std::hex << jtag.read(jtag::ID) << "\n";
-    print_systime_diff(jtag);
-    cout << "STATUS   0x: " << std::hex << jtag.read(jtag::Status) << "\n";
-    cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
-
-    rf.write(JtagSend::ADDRESS, uint64_t(jtag::IBias));
-    rf.write<JtagCmd>({JtagCmd::IR, 6, false, true});
-    usleep(500000);
-
-    rf.write<JtagSend>({0x31});
-    rf.write<JtagCmd>({JtagCmd::DR, 15, false, true});
-    usleep(500000);
-    std::cout << "READ : " << rf.read(JtagReceive::ADDRESS) << "\n";
-
-    rf.write<JtagSend>({0x32});
-    rf.write<JtagCmd>({JtagCmd::DR, 15, false, true});
-    usleep(500000);
-    std::cout << "READ : " << rf.read(JtagReceive::ADDRESS) << "\n";
-
-
-    const char* pattern = "110101";
-
-    auto result = jtag.shift_through<6>(pattern, 15);
-    std::cout << result << "\n";
-
-    result = jtag.shift_through<6>(pattern, 15);
-    std::cout << result << "\n";
-
-    result = jtag.shift_through<6>(pattern, 15);
-    std::cout << result << "\n";
-
-    std::cout << std::hex << jtag.write(jtag::IBias, 0x27, 15) << "\n";
-    std::cout << std::hex << jtag.write(jtag::IBias, 0x27, 15) << "\n";
-
-    return EXIT_SUCCESS;
-
-    jtag.trigger(jtag::ResetCrcCount);
-    cout << "CRCCOUNT 0x: " << std::hex << jtag.read(jtag::CrcCount) << "\n";
-
-    auto ibias = jtag.write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
-    cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
-    ibias = jtag.write(jtag::IBias, std::bitset<15>("101101010111").to_ullong());
-    cout << "IBIAS    : " << std::bitset<15>(ibias) << "\n";
-
-    std::bitset<32> in("101010101111");
-
-    cout << "BEFORE BYPASS\n";
-    cout << "IN : " << in << "\n";
-    cout << "OUT: " << jtag.shift_through(in) << "\n\n";
-
-    jtag.set_bypass();
-    cout << "AFTER BYPASS\n";
-
-
-    for (uint16_t i = 0; i < 14; ++i)
-    {
-        cout << "SHIFT: " << std::dec << i << "\n";
-        cout << "IN : " << in << "\n";
-        cout << "OUT: " << jtag.shift_through(in, i) << "\n\n";
-    }
-
-    fpga.configure_partner_host();
-    fpga.send(Fpga::Config::ClearPlaybackMemory | Fpga::Config::ClearTraceMemory);
-
-    hicann.write(0, 1234);
-    hicann.read(0);
-    hicann.probe();
 
     return EXIT_SUCCESS;
 }
