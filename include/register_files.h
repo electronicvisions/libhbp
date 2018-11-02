@@ -62,8 +62,8 @@ struct JtagCmd
         DisableClock = 5
     };
 
-    uint16_t type : 3;
-    uint16_t length : 10;
+    uint64_t type : 3;
+    uint64_t length : 10;
     bool pause : 1;
     bool execute : 1;
     ADDRESS(0x400);
@@ -101,7 +101,7 @@ ASSERT_SIZE(JtagReceive);
 
 struct HicannChannel
 {
-    uint16_t number : 3;
+    uint64_t number : 3;
     ADDRESS(0x838);
     READ_WRITE(true, true);
 };
@@ -109,9 +109,9 @@ ASSERT_SIZE(HicannChannel);
 
 struct DEPRECATED ArqTimings
 {
-    uint32_t master_timeout : 10;
-    uint32_t target_timeout : 10;
-    uint32_t arbiter_delay : 5;
+    uint64_t master_timeout : 10;
+    uint64_t target_timeout : 10;
+    uint64_t arbiter_delay : 5;
     bool bit : 1;
     ADDRESS(0x840);
     READ_WRITE(true, true);
@@ -214,8 +214,8 @@ ASSERT_SIZE(Driver);
 
 struct Info
 {
-    uint32_t guid : 24;
-    uint32_t node_id : 16;
+    uint64_t guid : 24;
+    uint64_t node_id : 16;
     ADDRESS(0x8008);
     READ_WRITE(true, false);
 };

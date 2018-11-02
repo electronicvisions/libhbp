@@ -17,6 +17,11 @@ struct ConnectionFailed : RmaError
     using RmaError::RmaError;
 };
 
+struct FailedToRegisterRegion : RmaError
+{
+    FailedToRegisterRegion();
+};
+
 struct RraError : RmaError
 {
     RraError(std::string, RMA2_Nodeid, RMA2_NLA);
@@ -37,10 +42,6 @@ struct FailedToWrite : RraError
     FailedToWrite(RMA2_Nodeid node, RMA2_NLA address);
 };
 
-struct IoctlError : std::runtime_error
-{
-    using runtime_error::runtime_error;
-};
 
 struct NodeIsNoFcp : ConnectionFailed
 {

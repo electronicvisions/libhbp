@@ -9,11 +9,36 @@
 TestBase::TestBase(Extoll& hbp)
     : hbp(hbp) {}
 
+void TestBase::report()
+{
+
+    if (fails.empty())
+    {
+        std::clog << "Test Passed\n";
+    }
+    else if(!_critical)
+    {
+        std::clog << "Test Passed With Errors\n";
+    }
+    for (auto& f : fails)
+    {
+        f->report();
+    }
+}
 
 void Runner::run()
 {
     for (auto& test : tests)
     {
-        test->run();
+        try
+        {
+            test->run();
+        }
+        catch (TestFailedCritically& e)
+        {
+            std::cerr << "Test Failed Critically\n";
+        }
+
+        test->report();
     }
 }

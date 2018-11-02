@@ -68,7 +68,7 @@ uint32_t Hicann::read(uint16_t address)
 
     usleep(10000);
 
-    return uint32_t(connection.hicann_config.data()[0]);
+    return uint32_t(connection.hicann_config[0]);
 }
 
 void Hicann::clear(PhysicalBuffer& p, size_t amount)
@@ -80,7 +80,7 @@ void Hicann::clear(PhysicalBuffer& p, size_t amount)
 
     for (size_t i = 0; i < amount; ++i)
     {
-        p.data()[i] = 0xdeadbeef;
+        p[i] = 0xdeadbeef;
     }
 }
 
@@ -94,7 +94,7 @@ void Hicann::diff(PhysicalBuffer& p, size_t amount)
     size_t unchanged = 0;
     for (size_t i = 0; i < amount; ++i)
     {
-        auto v = p.data()[i];
+        auto v = p[i];
         if (v != 0xdeadbeef)
         {
             if (unchanged != 0)

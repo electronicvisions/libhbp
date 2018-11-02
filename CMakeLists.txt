@@ -18,7 +18,7 @@ find_library(LIBRMA NAMES librma2.so PATHS ${RMA_LIB})
 find_library(LIBRMARC NAMES librma2rc.so PATHS ${RMA_LIB})
 
 set(HEADERS
-        include/physical_buffer.h
+        include/buffer.h
         include/register_file.h
         include/connection.h
         include/helper.h
@@ -36,10 +36,11 @@ set(HEADERS
         include/tests/switchram.h
         include/tests/test.h
         include/tests/jtagrw.h
+        include/tests/register_file.h
         )
 
 set(SOURCES
-        src/physical_buffer.cpp
+        src/buffer.cpp
         src/register_file.cpp
         src/register_files.cpp
         src/connection.cpp
@@ -53,6 +54,7 @@ set(SOURCES
         src/tests/test.cpp
         src/tests/switchram.cpp
         src/tests/jtagrw.cpp
+        src/tests/register_file.cpp
         )
 
 

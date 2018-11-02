@@ -3,7 +3,7 @@
 #include <helper.h>
 #include <exception.h>
 
-const int RMA_CONNECTION = RMA2_CONN_PHYSICAL;
+const int RMA_CONNECTION = RMA2_CONN_DEFAULT;
 const int RRA_BIT = RMA2_CONN_RRA;
 const int RRA_CONNECTION = RMA_CONNECTION | RRA_BIT;
 
@@ -34,13 +34,14 @@ Endpoint::Connection::Connection(RMA2_Nodeid node, bool rra)
 
 Endpoint::Endpoint(RMA2_Nodeid node)
     : rra(node, true), rma(node, false),
-    gp_buffer(1), trace_data(1), hicann_config(1)
+    gp_buffer(rra.port, 1), trace_data(rma.port, 1), hicann_config(rma.port, 1)
 {
-    RMA2_ERROR status = rma2_post_get_qw_direct(rra.port, rra.handle, gp_buffer.address(), 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+
     throw_on_error<FailedToRead>(status, "Failed to query driver", node, 0x8000);
     wait_for_notification(rra.port);
 
-    auto driver = uint32_t(gp_buffer.data()[0]);
+    auto driver = gp_buffer.at<uint32_t>(0);
     if (driver != 0xcafebabe)
     {
         throw NodeIsNoFcp(node, driver);
@@ -49,10 +50,10 @@ Endpoint::Endpoint(RMA2_Nodeid node)
 
 uint64_t Endpoint::fpga_config_response() const
 {
-    return gp_buffer.data()[512];
+    return gp_buffer[512];
 }
 
 RMA2_NLA Endpoint::fpga_config_address() const
 {
-    return gp_buffer.address() + 512;
+    return gp_buffer.address(512);
 }

@@ -22,3 +22,6 @@ NodeHasNoHicann::NodeHasNoHicann(RMA2_Nodeid node)
 
 JtagIrShiftFailed::JtagIrShiftFailed(RMA2_Nodeid node, uint8_t pattern)
     : std::runtime_error("JTAG IR shift failed"), node(node), pattern(pattern) {}
+
+FailedToRegisterRegion::FailedToRegisterRegion()
+    : RmaError("Failed to register region") {}

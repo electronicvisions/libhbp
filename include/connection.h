@@ -2,7 +2,7 @@
 #define LIBHBP_CPP_CONNECTION_H
 
 #include <rma.h>
-#include <physical_buffer.h>
+#include <buffer.h>
 
 struct Endpoint
 {
