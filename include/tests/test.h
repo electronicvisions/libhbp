@@ -1,7 +1,7 @@
 #ifndef LIBHBP_CPP_TESTBASE_H
 #define LIBHBP_CPP_TESTBASE_H
 
-#include <hbp.h>
+#include <extoll.h>
 
 #include <vector>
 #include <memory>
@@ -9,9 +9,9 @@
 class TestBase
 {
 protected:
-    HBP& hbp;
+    Extoll& hbp;
 public:
-    explicit TestBase(HBP&);
+    explicit TestBase(Extoll&);
     virtual void run() = 0;
     virtual ~TestBase() = default;
 };
@@ -19,7 +19,7 @@ public:
 
 class Runner
 {
-    HBP hbp{};
+    Extoll hbp{};
     std::vector<std::unique_ptr<TestBase>> tests{};
 
 public:

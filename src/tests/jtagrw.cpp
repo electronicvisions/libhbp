@@ -2,7 +2,7 @@
 
 #include <bitset>
 
-JtagRw::JtagRw(HBP& hbp, RMA2_Nodeid node, uint8_t hicann)
+JtagRw::JtagRw(Extoll& hbp, RMA2_Nodeid node, uint8_t hicann)
     : TestBase(hbp), node(node), hicann_number(hicann) {}
 
 using namespace jtag;
@@ -20,7 +20,7 @@ void JtagRw::run()
 
     std::cout << "JTAG ID: 0x" << std::hex << id << "\n";
 
-    std::cout << "IBIAS  : 0x" << jtag.write<IBias>(0x27) << "\n";
-    std::cout << "IBIAS  : 0x" << jtag.write<IBias>(0x27) << "\n";
+    std::cout << "IBIAS  : 0x" << jtag.write<IBias>(0x28) << "\n";
+    std::cout << "IBIAS  : 0x" << jtag.write<IBias>(0x28) << "\n";
 }
 

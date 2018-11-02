@@ -2,7 +2,7 @@
 #define LIBHBP_CPP_JTAGRW_H
 
 #include <rma.h>
-#include <hbp.h>
+#include <extoll.h>
 
 #include "test.h"
 
@@ -13,7 +13,7 @@ class JtagRw : public TestBase
     uint8_t hicann_number;
 
 public:
-    JtagRw(HBP&, RMA2_Nodeid, uint8_t);
+    JtagRw(Extoll&, RMA2_Nodeid, uint8_t);
 
     void run() override;
 };

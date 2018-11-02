@@ -1,7 +1,7 @@
 #include <iostream>
 #include <bitset>
 
-#include <hbp.h>
+#include <extoll.h>
 #include <tests/test.h>
 #include <tests/switchram.h>
 #include <tests/jtagrw.h>

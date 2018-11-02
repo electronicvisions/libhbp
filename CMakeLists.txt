@@ -22,8 +22,7 @@ set(HEADERS
         include/register_file.h
         include/connection.h
         include/helper.h
-        include/hbp.h
-        include/traits.h
+        include/extoll.h
         include/jtag.h
         include/exception.h
         include/fpga.h
@@ -44,7 +43,7 @@ set(SOURCES
         src/register_file.cpp
         src/register_files.cpp
         src/connection.cpp
-        src/hbp.cpp
+        src/extoll.cpp
         src/rma.cpp
         src/jtag.cpp
         src/fpga.cpp
@@ -56,11 +55,22 @@ set(SOURCES
         src/tests/jtagrw.cpp
         )
 
-add_executable(rma src/main.cpp ${HEADERS} ${SOURCES})
+
+
+add_executable(scratch scratch.cpp)
+
+
+add_library(rma SHARED ${HEADERS} ${SOURCES})
 target_include_directories(rma PRIVATE include)
 target_include_directories(rma PRIVATE ${RMA_INCLUDE})
 target_link_libraries(rma ${LIBRMARC})
 target_link_libraries(rma ${LIBRMA})
 target_link_libraries(rma dl)
 
-add_executable(scratch scratch.cpp)
+add_executable(tests src/main.cpp ${HEADERS})
+target_include_directories(tests PRIVATE include)
+target_include_directories(tests PRIVATE ${RMA_INCLUDE})
+target_link_libraries(tests ${LIBRMARC})
+target_link_libraries(tests ${LIBRMA})
+target_link_libraries(tests dl)
+target_link_libraries(tests rma)

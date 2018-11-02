@@ -13,7 +13,7 @@
 #include <connection.h>
 
 
-class HBP
+class Extoll
 {
 private:
     std::map<RMA2_Nodeid, Endpoint> connections;

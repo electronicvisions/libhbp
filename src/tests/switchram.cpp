@@ -11,7 +11,7 @@
 using namespace rf;
 using namespace jtag;
 
-SwitchRam::SwitchRam(HBP& hbp,RMA2_Nodeid node, uint8_t hicann)
+SwitchRam::SwitchRam(Extoll& hbp,RMA2_Nodeid node, uint8_t hicann)
     : TestBase(hbp), node(node), hicann_number(hicann) {}
 
 
@@ -40,7 +40,7 @@ void SwitchRam::run()
 
     jtag.write<ArqControl>((1 << 16) | 1);
     jtag.write<ArqControl>(0);
-    fpga.reset_set_only(Fpga::Reset::None);
+    // fpga.reset_set_only(Fpga::Reset::None);
 
 
 

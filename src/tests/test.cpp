@@ -6,7 +6,7 @@
 #include "tests/switchram.h"
 
 
-TestBase::TestBase(HBP& hbp)
+TestBase::TestBase(Extoll& hbp)
     : hbp(hbp) {}
 
 

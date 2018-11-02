@@ -1,4 +1,4 @@
-#include <hbp.h>
+#include <extoll.h>
 
 #include <iostream>
 #include <sstream>
@@ -7,7 +7,7 @@
 #include <exception.h>
 #include <cassert>
 
-Endpoint& HBP::connect(RMA2_Nodeid node)
+Endpoint& Extoll::connect(RMA2_Nodeid node)
 {
     auto it = connections.find(node);
 
@@ -23,22 +23,22 @@ Endpoint& HBP::connect(RMA2_Nodeid node)
     return connections.find(node)->second;
 }
 
-RegisterFile HBP::register_file(RMA2_Nodeid node)
+RegisterFile Extoll::register_file(RMA2_Nodeid node)
 {
     return RegisterFile{connect(node)};
 }
 
-JTag HBP::jtag(RMA2_Nodeid node)
+JTag Extoll::jtag(RMA2_Nodeid node)
 {
     return JTag{connect(node)};
 }
 
-Fpga HBP::fpga(RMA2_Nodeid node)
+Fpga Extoll::fpga(RMA2_Nodeid node)
 {
     return Fpga{connect(node)};
 }
 
-Hicann HBP::hicann(RMA2_Nodeid node, int8_t number)
+Hicann Extoll::hicann(RMA2_Nodeid node, int8_t number)
 {
     assert(number >= 0 && number <= 7);
 
