@@ -16,7 +16,7 @@ namespace library {
     const static bool READABLE = READ;\
     const static bool WRITABLE = WRITE
 #define ASSERT_SIZE(NAME) static_assert(sizeof(NAME) <= 8," " #NAME " is too big!")
-#define DEPRECATED __attribute__ ((deprecated))
+#define DEPRECATED_RF __attribute__ ((deprecated))
 
 namespace rf
 {
@@ -108,7 +108,7 @@ struct HicannChannel
 };
 ASSERT_SIZE(HicannChannel);
 
-struct DEPRECATED ArqTimings
+struct DEPRECATED_RF ArqTimings
 {
     uint64_t master_timeout : 10;
     uint64_t target_timeout : 10;
@@ -229,6 +229,7 @@ std::ostream& operator<<(std::ostream&, rf::JtagCmd::Type);
 #undef ADDRESS
 #undef READ_WRITE
 #undef ASSERT_SIZE
+#undef DEPRECATED_RF
 
 }}
 

@@ -4,6 +4,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <rma2.h>
+#undef unlikely
+#undef likely
 #pragma GCC diagnostic pop
 
 namespace extoll {
