@@ -1,0 +1,1039 @@
+bool DNC_start_link(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD_START_LINK, pos_dnc);
+
+		set_jtag_data_chain(wdata, 9, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_stop_link(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD_STOP_LINK, pos_dnc);
+
+		set_jtag_data_chain(wdata, 9, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_channel(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_CHANNEL_SELECT, pos_dnc);
+
+		set_jtag_data_chain(wdata, 4, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_tx_data(uint64_t wdata)
+	{
+		set_jtag_instr_chain_noexec(CMD_SET_TX_DATA, pos_dnc);
+
+		set_jtag_data_chain(wdata, 64, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool DNC_get_rx_data(T& rdata)
+	{
+		set_jtag_instr_chain_noexec(CMD_GET_RX_DATA, pos_dnc);
+		// set_jtag_instr_chain(CMD_GET_RX_DATA,pos_dnc);
+
+		get_jtag_data_chain(rdata, 64, pos_dnc);
+		// get_jtag_data_chain(rdata,64,pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_lvds_pads_en(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD_LVDS_PADS_EN, pos_dnc);
+
+		set_jtag_data_chain(wdata, 9, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// enable loopback mode for HICANN channels.
+	/// 0    :    disable
+	/// 1    :    enable looopback
+	bool DNC_set_loopback(unsigned char wdata)
+	{
+		uint64_t channel = (uint64_t) wdata;
+		set_jtag_instr_chain(CMD_LOOPBACK_CTRL, pos_dnc);
+
+		set_jtag_data_chain(channel, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// set heap mode for 8 memories (equals layer1 channel direction) in 8 HICANN channels
+	/// 0    :    routing memory, receive layer 1 channel from HICANN
+	/// 1    :    memory is heap, transmit pulses to HICANN l1 channel
+	bool DNC_set_l1direction(uint64_t wdata)
+	{
+		uint64_t channel = (uint64_t) wdata;
+		set_jtag_instr_chain(CMD_SET_HEAP_MODE, pos_dnc);
+
+		set_jtag_data_chain(channel, 64, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_write_routing_dat(void)
+	{
+		set_jtag_instr_chain(CMD_START_ROUTE_DAT, pos_dnc);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// GHz PLL control vector.
+	/// bit 0    :    switch PLL: 0:2GHz 1:1GHz
+	/// bit 1    :    enable VCO
+	/// bit 2    :    enable 1GHz
+	/// bit 3    :    enable 500MHz
+	bool DNC_set_GHz_pll_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_PLL2G_CTRL, pos_dnc);
+
+		set_jtag_data_chain(wdata, 4, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_start_cfg_pkg(void)
+	{
+		set_jtag_instr_chain(CMD_START_CFG_PKG, pos_dnc);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_start_pulse_pkg(void)
+	{
+		set_jtag_instr_chain(CMD_START_PULSE_PKG, pos_dnc);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_read_status(uint64_t& rdata)
+	{
+		set_jtag_instr_chain(CMD_READ_STATUS, pos_dnc);
+		get_jtag_data_chain(rdata, 8, pos_dnc);
+		return true;
+	}
+
+	bool DNC_read_channel_sts(unsigned char channel, unsigned char& status)
+	{
+		DNC_set_channel(channel);
+		uint64_t status_tmp;
+		DNC_read_status(status_tmp);
+		status = (unsigned char) status_tmp;
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool DNC_read_crc_count(T& rdata)
+	{
+		uint64_t read_val;
+		set_jtag_instr_chain(CMD_READ_CRC_COUNT, pos_dnc);
+		get_jtag_data_chain(read_val, 8, pos_dnc);
+		rdata = (T) read_val;
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_reset_crc_count(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_RESET_CRC_COUNT, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool DNC_read_heap_count(T& rdata)
+	{
+		set_jtag_instr_chain(CMD_READ_HEAP_COUNT, pos_dnc);
+		get_jtag_data_chain(rdata, 64, pos_dnc);
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_reset_heap_count(uint64_t wdata)
+	{
+		set_jtag_instr_chain(CMD_RESET_HEAP_COUNT, pos_dnc);
+		set_jtag_data_chain(wdata, 64, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_reset(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_RESET_CHANNEL, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_pulse_protocol(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_PULSE_PROTOCOL, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_bias_bypass(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_BIAS_BYPASS, pos_dnc);
+		set_jtag_data_chain(wdata, 1, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_memory_test_mode(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_MEMORY_TEST_MODE, pos_dnc);
+		set_jtag_data_chain(wdata, 1, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_config_protocol(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_CFG_PROTOCOL, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_time_limit(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_SET_TIME_LIMIT, pos_dnc);
+		set_jtag_data_chain(wdata, 10, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Offers possibility to disable use of timestamp in a pulse event.
+	/// This allows direct and low latency pulse event transmission.
+	/// 1 bit for each HICANN connection.
+	bool DNC_set_timestamp_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_TIMESTAMP_CTRL, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_lowspeed_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_SET_LOW_SPEED, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_speed_detect_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_SPEED_DETECT_CTRL, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_dc_coding_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD_DC_CODING, pos_dnc);
+		set_jtag_data_chain(wdata, 8, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_test_mode_en(void)
+	{
+		set_jtag_instr_chain(CMD_TEST_MODE_EN, pos_dnc);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_test_mode_dis(void)
+	{
+		set_jtag_instr_chain(CMD_TEST_MODE_DIS, pos_dnc);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	///	bool set_data_delay(uint64 wdata, uint64 *rdata)
+	///  wdata.size() = 144
+	///  8 times 6 bit + 16 times 6 bit
+	///  143--------------------------------------------------0
+	///  link0 link1 link2 link3 link4 link5 link6 link7 link8
+	///  FPGA channel 15 -----> channel 0
+
+	bool DNC_set_data_delay(const std::vector<bool>& wdata, std::vector<bool>& rdata)
+	{
+		set_jtag_instr_chain(CMD_SET_DELAY_RX_DATA, pos_dnc);
+
+		set_get_jtag_data_chain(wdata, rdata, pos_dnc);
+		// set_get_jtag_data(wdata,rdata,5);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool bypass(const T wdata, unsigned int length, T& rdata)
+	{
+		set_jtag_instr_chain(CMD_BYPASS, chain_length - 1);
+
+		set_get_jtag_data_chain(wdata, rdata, length, chain_length - 1);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_start_pulse(unsigned char channel, uint64_t data)
+	{
+		DNC_set_channel(channel);
+		DNC_set_tx_data(data);
+		DNC_start_pulse_pkg();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_start_config(unsigned char channel, uint64_t data)
+	{
+		DNC_set_channel(channel);
+		DNC_set_tx_data(data);
+		DNC_start_cfg_pkg();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_start_routing(unsigned char channel, uint64_t data)
+	{
+		DNC_set_channel(channel);
+		DNC_set_tx_data(data);
+		DNC_write_routing_dat();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_init_ctrl(unsigned int wdata)
+	{
+		set_jtag_instr_chain(CMD_INIT_CTRL, pos_dnc);
+
+		set_jtag_data_chain(wdata, 17, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool DNC_set_test_lvds_ctrl(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD_LVDS_TEST_CTRL, pos_dnc);
+
+		set_jtag_data_chain(wdata, 9, pos_dnc);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Start of Jtag Chain with 2 elements functions.
+	bool read_id(uint64_t& rdata, unsigned char chip_nr)
+	{
+		set_jtag_instr_chain_noexec(CMD_READID, chip_nr);
+		get_jtag_data_chain(rdata, 32, chip_nr);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Start of Jtag Chain with 2 elements functions.
+	uint64_t read_id(unsigned char chip_nr)
+	{
+		uint64_t rdata;
+		set_jtag_instr_chain_noexec(CMD_READID, chip_nr);
+		get_jtag_data_chain(rdata, 32, chip_nr);
+
+		return rdata;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Read JTAG IDs of all devices in chain with one instruction/data cycle
+	std::vector<uint64_t> read_all_ids()
+	{
+		std::vector<uint64_t> rdata;
+		set_all_ir_chain(CMD_READID);
+		get_jtag_all_data_chain(rdata, 64);
+
+		return rdata;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	/// Manual HICANN reset (pulsed)
+	bool HICANN_chip_reset(void)
+	{
+		set_jtag_instr_chain(CMD3_SET_GLOBAL_RESET, pos_hicann);
+		execute_instr();
+
+		return true;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	/// Manual link reset SET
+	bool HICANN_set_if_reset(void)
+	{
+		set_jtag_instr_chain(CMD3_SET_RESET, pos_hicann);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Manual link reset RELEASE
+	bool HICANN_rel_if_reset(void)
+	{
+		set_jtag_instr_chain(CMD3_REL_RESET, pos_hicann);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_lvds_pads_en(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD3_LVDS_PADS_EN, pos_hicann);
+		set_jtag_data_chain(wdata, 1, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_start_link()
+	{
+		set_jtag_instr_chain(CMD3_START_LINK, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_stop_link()
+	{
+		set_jtag_instr_chain(CMD3_STOP_LINK, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_set_pls64(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD3_SET_2XPLS, pos_hicann);
+		set_jtag_data_chain(wdata, 1, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_start_cfg_pkg()
+	{
+		set_jtag_instr_chain(CMD3_START_CFG_PKG, pos_hicann);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_start_pulse_pkg()
+	{
+		set_jtag_instr_chain(CMD3_START_PULSE_PKG, pos_hicann);
+		execute_instr();
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool HICANN_read_status(T& rdata)
+	{
+		set_jtag_instr_chain(CMD3_READ_STATUS, pos_hicann);
+		get_jtag_data_chain(rdata, 8, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool HICANN_read_crc_count(T& count)
+	{
+		uint64_t crc_data;
+		set_jtag_instr_chain(CMD3_READ_CRC_COUNT, pos_hicann);
+		get_jtag_data_chain(crc_data, 8, pos_hicann);
+		count = crc_data;
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_reset_crc_count()
+	{
+		set_jtag_instr_chain(CMD3_RESET_CRC_COUNT, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Offers restart of system counter after counter is stopped via JTAG.
+	/// After release via JTAG an additial start signal rfom sys_start pin is required.
+	bool HICANN_start_time_counter()
+	{
+		unsigned int one = 0;
+		set_jtag_instr_chain(CMD3_STOP_TIME_COUNT, pos_hicann);
+		set_jtag_data_chain(one, 1, pos_hicann);
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Offers possibility to stop systime counter after it has been started.
+	bool HICANN_stop_time_counter()
+	{
+		unsigned int zero = 1;
+		set_jtag_instr_chain(CMD3_STOP_TIME_COUNT, pos_hicann);
+		set_jtag_data_chain(zero, 1, pos_hicann);
+		return true;
+	}
+
+	/// reset all time counters of all connected HICANNs for hypothetic HICANN version 3
+	bool HICANN_reset_all_time_counters()
+	{
+		set_hicanns_ir_chain((unsigned char) CMD3_RESET_TIME_COUNT);
+		return true;
+	}
+
+	/// reset all time counters of all connected HICANNs for HICANN version 2
+	bool HICANNv2_reset_all_time_counters()
+	{
+		set_hicanns_ir_chain((unsigned char) CMD3_STOP_TIME_COUNT);
+		set_jtag_hicanns_data_chain(0x8000000000000000ULL);
+		set_hicanns_ir_chain((unsigned char) CMD3_STOP_TIME_COUNT);
+		set_jtag_hicanns_data_chain(0x0000000000000000ULL);
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Offers possibility to stop systime counter after it has been started.
+	bool HICANN_restart_time_counter()
+	{
+		HICANN_stop_time_counter();
+		HICANN_start_time_counter();
+#ifdef NCSIM
+		printf("Waiting for Start signal\n");
+#else
+		printf("Press the start button to restart the systime counters (then ENTER)\n");
+		getchar();
+#endif
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_set_tx_data(uint64_t wdata)
+	{
+		set_jtag_instr_chain_noexec(CMD3_SET_TX_DATA, pos_hicann);
+		set_jtag_data_chain(wdata, 64, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool HICANN_get_rx_data(uint64_t& rdata)
+	{
+		set_jtag_instr_chain_noexec(CMD3_GET_RX_DATA, pos_hicann);
+		get_jtag_data_chain(rdata, 64, pos_hicann);
+		// set_jtag_instr_chain (CMD3_GET_RX_DATA, pos_hicann);
+		// get_jtag_data_chain (rdata,64,pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Readout of systime counter.(ATTENTION: Very slow)
+	template <typename T>
+	bool HICANN_read_systime(T& rdata)
+	{
+		set_jtag_instr_chain(CMD3_READ_SYSTIME, pos_hicann);
+		get_jtag_data_chain(rdata, 15, pos_hicann);
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Each bit selects one type of DNC packet
+	/// bit 0 : pulse_enable
+	/// bit 1 : config_enable
+	/// bit 2 : routing_enable
+	/// bit 3 : dnc_cfg_enable
+	/// bit 4 : ram_heap_enable
+	/// bit 5 : limit_enable
+	/// bit 6 : get_dnc_status
+	/// bit 7 : get_dnc_crc
+	/// bit 8 : start dnc_if
+	/// bit 9 : master = 1 / slave = 0
+	bool FPGA_start_dnc_packet(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD2_SET_TX_CTRL, pos_fpga);
+		set_jtag_data_chain(wdata, 10, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_set_channel(unsigned int wdata)
+	{
+		set_jtag_instr_chain(CMD2_SET_TX_CHANNEL, pos_fpga);
+		set_jtag_data_chain(wdata, 24, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_testmode(unsigned int wdata)
+	{
+		set_jtag_instr_chain(CMD2_TESTMODE, pos_fpga);
+		set_jtag_data_chain(wdata, 2, pos_fpga);
+
+		return true;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	/// GHz PLL control vector.
+	/// bit 0    :    enable VCO
+	/// bit 1    :    enable 1GHz
+	/// bit 2    :    enable 500MHz
+	bool HICANN_set_GHz_pll_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD3_PLL2G_CTRL, pos_hicann);
+		set_jtag_data_chain(wdata, 3, pos_hicann);
+
+		return true;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	/// Controls the neuron 0 filter for each layer 1 channel in spl1
+	bool hicannif_nrn0_filter_ctrl(unsigned char wdata)
+	{
+		set_jtag_instr_chain(CMD3_NRN0_FILTER_CTRL, pos_hicann);
+		set_jtag_data_chain(wdata, 8, pos_hicann);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// FPGA control vector.
+	/// bit 0    :    A_SYNC_RESET
+	bool FPGA_set_fpga_ctrl(unsigned short wdata)
+	{
+		set_jtag_instr_chain(CMD2_SET_FPGA_CTRL, pos_fpga);
+		set_jtag_data_chain(wdata, 12, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_set_tx_data(uint64_t wdata)
+	{
+		set_jtag_instr_chain_noexec(CMD2_SET_TX_DATA, pos_fpga);
+		set_jtag_data_chain(wdata, 64, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_set_systime_ctrl(uint64_t wdata)
+	{
+		set_jtag_instr_chain_noexec(CMD2_SYSTIME_CTRL, pos_fpga);
+		set_jtag_data_chain(wdata, 1, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_get_status(uint64_t& rdata)
+	{
+		set_jtag_instr_chain(CMD2_GET_STATUS, pos_fpga);
+		get_jtag_data_chain(rdata, 14, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_get_crc(unsigned char& rdata)
+	{
+		uint64_t state;
+		FPGA_get_status(state);
+		rdata = (unsigned char) (state >> 6);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool FPGA_get_rx_channel(T& rdata)
+	{
+		set_jtag_instr_chain(CMD2_GET_RX_CHANNEL, pos_fpga);
+		get_jtag_data_chain(rdata, 27, pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool FPGA_get_rx_data(T& rdata)
+	{
+		set_jtag_instr_chain_noexec(CMD2_GET_RX_DATA, pos_fpga);
+		get_jtag_data_chain(rdata, 64, pos_fpga);
+		// set_jtag_instr_chain (CMD2_GET_RX_DATA, pos_fpga);
+		// get_jtag_data_chain (rdata,64,pos_fpga);
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Control for continious pulse event creation
+	/// bit 0      :   enable generation
+	/// bit 1      :   poisson random on/off
+	/// bit 9:2    :   Layer 1 channel
+	/// bit 15:10  :   first neuron number
+	/// bit 21:16  :   last neuron number
+	/// bit 24:22  :   selects one of 8 HICANNs
+	/// bit 38:25  :   mean time delay
+	/// bit 62:39  :   seed
+	bool FPGA_set_cont_pulse_ctrl(
+		unsigned char start,
+		unsigned char channel,
+		unsigned char poisson,
+		unsigned short delay,
+		unsigned int seed,
+		unsigned char nrn_start,
+		unsigned char nrn_end,
+		unsigned char hicann)
+	{
+		// initialize FPGA JTAG TX data with 0's to avoid wrong SPl1 content
+		FPGA_set_tx_data(0);
+		set_jtag_instr_chain(CMD2_CONT_PULSE_CTRL, pos_fpga);
+
+		uint64_t wdata = 0;
+		wdata |= (((uint64_t) start & 0x1) << 0);
+		wdata |= (((uint64_t) poisson & 0x1) << 1);
+		wdata |= (((uint64_t) channel & 0xff) << 2);
+		wdata |= (((uint64_t) nrn_start & 0x3f) << 10);
+		wdata |= (((uint64_t) nrn_end & 0x3f) << 16);
+		wdata |= (((uint64_t) hicann & 0x7) << 22);
+		wdata |= (((uint64_t)(delay - 2) & 0x3fff) << 25);
+		wdata |= (((uint64_t) seed & 0xffffff) << 39);
+
+		set_jtag_data_chain(wdata, 63, pos_fpga);
+
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_start_pulse_event(unsigned char channel, uint64_t wdata)
+	{
+		FPGA_set_channel(channel);
+		FPGA_set_tx_data(wdata);
+		FPGA_start_dnc_packet((0x1 << 9) + (0x1 << 8) + (0x1 & 0xff));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_start_config_packet(unsigned char channel, uint64_t wdata)
+	{
+		FPGA_set_channel(channel);
+		FPGA_set_tx_data(wdata);
+		FPGA_start_dnc_packet((0x1 << 9) + (0x1 << 8) + (0x2 & 0xff));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_cfg_dnc_l1direction(unsigned char channel, uint64_t wdata)
+	{
+		FPGA_set_channel(1 << channel);
+		FPGA_set_tx_data(wdata);
+		FPGA_start_dnc_packet((0x1 << 9) + (0x1 << 8) + (0x10 & 0xff));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_write_playback_fifo(uint64_t wdata)
+	{
+		FPGA_set_tx_data(wdata);
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			((unsigned int) 1 << 11));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_enable_pulsefifo()
+	{
+		pulsefifo_mode = 1;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_disable_pulsefifo()
+	{
+		pulsefifo_mode = 0;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_enable_tracefifo()
+	{
+		tracefifo_mode = 1;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_disable_tracefifo()
+	{
+		tracefifo_mode = 0;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_enable_filter_tracefifo()
+	{
+		filter_nrn0_mode = 1;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_disable_filter_tracefifo()
+	{
+		filter_nrn0_mode = 0;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_enable_fifoloop()
+	{
+		fifoloop_mode = 1;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_disable_fifoloop()
+	{
+		fifoloop_mode = 0;
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Reads last FIFO entry and does a pop afterwards
+	template <typename T>
+	bool FPGA_get_trace_fifo(unsigned int& systime, T& rdata)
+	{
+		systime = 0;
+		uint64_t tmp = 0;
+		set_jtag_instr_chain(CMD2_GET_TRACE_FIFO, pos_fpga);
+		get_jtag_data_chain(rdata, 64, pos_fpga);
+		FPGA_get_rx_channel(tmp);
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5) + (0x1 << 10));
+		execute_instr();
+		systime = (tmp >> 11) & 0xffffffff;
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Reads last FIFO entry and does a pop afterwards
+	template <typename T>
+	bool FPGA_get_trace_fifo(T& rdata)
+	{
+		set_jtag_instr_chain(CMD2_GET_TRACE_FIFO, pos_fpga);
+		get_jtag_data_chain(rdata, 64, pos_fpga);
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5) + (0x1 << 10));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Reads last FIFO entry, determines whether it is a config_packet  and does a pop afterwards
+	template <typename T>
+	bool FPGA_get_trace_fifo(T& rdata, bool& is_config_packet)
+	{
+		uint64_t tmp = 0;
+		set_jtag_instr_chain(CMD2_GET_TRACE_FIFO, pos_fpga);
+		get_jtag_data_chain(rdata, 64, pos_fpga);
+		FPGA_get_rx_channel(tmp);
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5) + (0x1 << 10));
+		execute_instr();
+		is_config_packet = (tmp >> 26) & 0x1;
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	bool FPGA_reset_tracefifo()
+	{
+		FPGA_set_fpga_ctrl(
+			(filter_nrn0_mode << 9) + (fifoloop_mode << 8) + (1 << 7) + (pulsefifo_mode << 6) +
+			(tracefifo_mode << 5));
+		execute_instr();
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// .
+	template <typename T>
+	bool FPGA_get_rx_packet(uint64_t channel, T& rdata)
+	{
+		FPGA_get_rx_channel(channel);
+		FPGA_get_rx_data(rdata);
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	/// Returns Trace FIFO empty
+	bool FPGA_empty_pulsefifo()
+	{
+		uint64_t state = 0;
+		FPGA_get_status(state);
+		return ((state >> 5) & 0x1);
+	}

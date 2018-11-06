@@ -21,6 +21,7 @@ public:
     void set_command(uint64_t command);
     void set_data(uint64_t data, uint16_t length);
     uint64_t set_get_data(uint64_t, uint16_t length);
+    uint64_t get_data(uint16_t length);
     template <size_t S>
     std::bitset<S> shift_through(const char*, uint16_t length=64);
     template <size_t S>
@@ -59,7 +60,7 @@ typename std::enable_if<JR::READABLE && !JR::WRITABLE, uint64_t>::type
 JTag::read()
 {
     set_command(JR::ADDRESS);
-    return set_get_data(0, JR::SIZE) & JR::MASK;
+    return get_data(JR::SIZE) & JR::MASK;
 }
 
 template<typename JR>

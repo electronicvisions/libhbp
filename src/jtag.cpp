@@ -48,6 +48,13 @@ uint64_t JTag::set_get_data(uint64_t data, uint16_t length)
     return RegisterFile::read(JtagReceive::ADDRESS);
 }
 
+uint64_t JTag::get_data(uint16_t length)
+{
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, length, false, true});
+    wait_until_finished();
+    return RegisterFile::read(JtagReceive::ADDRESS);
+}
+
 JTag::JTag(Endpoint& connection)
     : RegisterFile(connection)
 {
