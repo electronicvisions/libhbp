@@ -18,6 +18,9 @@ public:
 
     void reset();
     void set_bypass();
+    void set_command(uint64_t command);
+    void set_data(uint64_t data, uint16_t length);
+    uint64_t set_get_data(uint64_t, uint16_t length);
     template <size_t S>
     std::bitset<S> shift_through(const char*, uint16_t length=64);
     template <size_t S>
@@ -48,76 +51,38 @@ std::bitset<S> JTag::shift_through(const char* pattern, uint16_t length)
 template <size_t S>
 std::bitset<S> JTag::shift_through(std::bitset<S> pattern, uint16_t length)
 {
-    using namespace rf;
-
-    RegisterFile::write<JtagSend>({pattern.to_ullong()});
-    RegisterFile::write<JtagCmd>({JtagCmd::Type::DR, length, false, true});
-    wait_until_finished();
-
-    return RegisterFile::read(JtagReceive::ADDRESS);
+    return set_get_data(pattern.to_ullong(), length);
 }
 
 template <typename JR>
 typename std::enable_if<JR::READABLE && !JR::WRITABLE, uint64_t>::type
 JTag::read()
 {
-    using namespace rf;
-
-    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
-    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
-    wait_until_finished();
-
-    RegisterFile::write(JtagSend::ADDRESS, 0);
-    RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
-    wait_until_finished();
-
-    return RegisterFile::read(JtagReceive::ADDRESS) & JR::MASK;
+    set_command(JR::ADDRESS);
+    return set_get_data(0, JR::SIZE) & JR::MASK;
 }
 
 template<typename JR>
 typename std::enable_if<JR::WRITABLE && !JR::READABLE, void>::type
 JTag::write(uint64_t value)
 {
-    using namespace rf;
-
-    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
-    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
-    wait_until_finished();
-
-    RegisterFile::write(JtagSend::ADDRESS, value & JR::MASK);
-    RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
-    wait_until_finished();
+    set_command(JR::ADDRESS);
+    set_data(value, JR::SIZE);
 }
 
 template <typename JR>
 typename std::enable_if<JR::WRITABLE && JR::READABLE, uint64_t>::type
 JTag::write(uint64_t value)
 {
-    using namespace rf;
-
-    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
-    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
-    wait_until_finished();
-
-    RegisterFile::write(JtagSend::ADDRESS, value & JR::MASK);
-    RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
-    wait_until_finished();
-
-    return RegisterFile::read(JtagReceive::ADDRESS) & JR::MASK;
+    set_command(JR::ADDRESS);
+    return set_get_data(value, JR::SIZE) & JR::MASK;
 }
 
 template<typename JR>
 void JTag::trigger()
 {
     static_assert(JR::TRIGGER, "JTAG register is not a trigger!");
-
-    using namespace rf;
-
-    RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
-    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
-    wait_until_finished();
-
-
+    set_command(JR::ADDRESS);
 }
 
 }}

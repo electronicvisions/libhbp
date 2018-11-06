@@ -28,6 +28,25 @@ void JTag::set_bypass()
     wait_until_finished();
 }
 
+void JTag::set_command(uint64_t command)
+{
+    RegisterFile::write(JtagSend::ADDRESS, command);
+    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
+    wait_until_finished();
+}
+
+void JTag::set_data(uint64_t data, uint16_t length)
+{
+    RegisterFile::write(JtagSend::ADDRESS, data);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, length, false, true});
+    wait_until_finished();
+}
+
+uint64_t JTag::set_get_data(uint64_t data, uint16_t length)
+{
+    set_data(data, length);
+    return RegisterFile::read(JtagReceive::ADDRESS);
+}
 
 JTag::JTag(Endpoint& connection)
     : RegisterFile(connection)
