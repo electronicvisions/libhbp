@@ -7,6 +7,8 @@
 #include <jtag_registers.h>
 #include "exception.h"
 
+namespace extoll {
+namespace library {
 
 class JTag : protected RegisterFile
 {
@@ -35,11 +37,7 @@ public:
 private:
     void wait_until_finished() const;
 
-    friend std::ostream& operator<<(std::ostream&, const JTag&);
 };
-
-std::ostream& operator<<(std::ostream&, const JTag&);
-
 
 template <size_t S>
 std::bitset<S> JTag::shift_through(const char* pattern, uint16_t length)
@@ -121,5 +119,7 @@ void JTag::trigger()
 
 
 }
+
+}}
 
 #endif

@@ -6,6 +6,8 @@
 
 #include <rma.h>
 
+namespace extoll {
+namespace library {
 
 struct RmaError : std::runtime_error
 {
@@ -65,5 +67,7 @@ struct JtagIrShiftFailed : std::runtime_error
     const RMA2_Nodeid node;
     const std::bitset<6> pattern;
 };
+
+}}
 
 #endif //LIBHBP_CPP_EXCEPTION_H

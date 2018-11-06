@@ -7,6 +7,7 @@
 #include <utility/watch.h>
 #include <cassert>
 
+using namespace extoll::library;
 using namespace rf;
 
 

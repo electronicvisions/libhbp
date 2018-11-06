@@ -6,6 +6,9 @@
 
 #include <rma.h>
 
+namespace extoll {
+namespace library {
+
 class PhysicalBuffer
 {
     RMA2_Port port = nullptr;
@@ -30,5 +33,7 @@ public:
         return static_cast<T>(_data[position]);
     }
 };
+
+}}
 
 #endif //LIBHBP_CPP_PHYSICAL_BUFFER_H

@@ -13,7 +13,7 @@ class SwitchRam : public TestBase
     uint8_t hicann_number;
 
 public:
-    SwitchRam(Extoll&, RMA2_Nodeid, uint8_t);
+    SwitchRam(extoll::library::Extoll&, RMA2_Nodeid, uint8_t);
 
     void run() override;
 };

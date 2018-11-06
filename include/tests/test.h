@@ -37,14 +37,14 @@ class TestBase
     template <typename T>
     void fail(const char*, T, T, bool);
 protected:
-    Extoll& hbp;
+    extoll::library::Extoll& hbp;
 
     template <typename T>
     void critical(const char*, T expected, T actual);
     template <typename T>
     void warning(const char*, T expected, T actual);
 public:
-    explicit TestBase(Extoll&);
+    explicit TestBase(extoll::library::Extoll&);
     virtual void run() = 0;
     void report();
     virtual ~TestBase() = default;
@@ -54,7 +54,7 @@ public:
 
 class Runner
 {
-    Extoll hbp{};
+    extoll::library::Extoll hbp{};
     std::vector<std::unique_ptr<TestBase>> tests{};
 
 public:

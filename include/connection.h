@@ -4,6 +4,9 @@
 #include <rma.h>
 #include <buffer.h>
 
+namespace extoll {
+namespace library {
+
 struct Endpoint
 {
     struct Connection
@@ -37,5 +40,6 @@ struct Endpoint
     Endpoint& operator=(const Endpoint&) = delete;
 };
 
+}}
 
 #endif //LIBHBP_CPP_CONNECTION_H

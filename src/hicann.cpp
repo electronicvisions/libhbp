@@ -4,6 +4,8 @@
 #include <iostream>
 #include <utility/watch.h>
 
+using namespace extoll::library;
+
 union Config
 {
     struct

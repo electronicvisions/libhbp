@@ -3,6 +3,9 @@
 
 #include <cinttypes>
 
+namespace extoll {
+namespace library {
+
 #define READ 1
 #define WRITE 2
 #define READWRITE 3
@@ -67,5 +70,7 @@ JTAG_REGISTER(ResetCrcCount, 0x28, 0, TRIG)
 #undef READWRITE
 #undef TRIG
 #undef JTAG_REGISTER
+
+}}
 
 #endif //LIBHBP_CPP_JTAG_REGISTERS_H

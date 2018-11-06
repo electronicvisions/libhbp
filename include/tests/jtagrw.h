@@ -13,7 +13,7 @@ class JtagRw : public TestBase
     uint8_t hicann_number;
 
 public:
-    JtagRw(Extoll&, RMA2_Nodeid, uint8_t);
+    JtagRw(extoll::library::Extoll&, RMA2_Nodeid, uint8_t);
 
     void run() override;
 };

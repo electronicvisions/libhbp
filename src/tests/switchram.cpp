@@ -8,15 +8,15 @@
 #include <tests/switchram.h>
 
 
-using namespace rf;
-using namespace jtag;
-
-SwitchRam::SwitchRam(Extoll& hbp,RMA2_Nodeid node, uint8_t hicann)
+SwitchRam::SwitchRam(extoll::library::Extoll& hbp,RMA2_Nodeid node, uint8_t hicann)
     : TestBase(hbp), node(node), hicann_number(hicann) {}
 
 
 void SwitchRam::run()
 {
+    using namespace extoll::library::rf;
+    using namespace extoll::library::jtag;
+    using extoll::library::Fpga;
     auto fpga = hbp.fpga(node);
     auto jtag = hbp.jtag(node);
     auto rf = hbp.register_file(node);

@@ -11,6 +11,7 @@ using std::cout;
 using std::cerr;
 using std::hex;
 
+using namespace extoll::library;
 using namespace rf;
 using namespace jtag;
 

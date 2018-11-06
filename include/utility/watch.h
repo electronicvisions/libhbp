@@ -4,6 +4,9 @@
 #include <rma.h>
 #include <register_file.h>
 
+namespace extoll {
+namespace library {
+
 constexpr static const RMA2_NLA WATCH_STATUS_ADDRESSES[8] = {
         0x1000, 0x1008, 0x1010, 0x1018,
         0x1020, 0x1028, 0x1030, 0x1040
@@ -70,15 +73,16 @@ struct Watch
     }
 };
 
-#define WATCH_STATUS Watch _s_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, *this);
-#define WATCH_ERRORS Watch _e_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, *this);
+#define WATCH_STATUS extoll::library::Watch _s_(8, extoll::library::WATCH_STATUS_ADDRESSES, extoll::library::WATCH_STATUS_NAMES, *this);
+#define WATCH_ERRORS extoll::library::Watch _e_(7, extoll::library::WATCH_ERROR_ADDRESSES, extoll::library::WATCH_ERROR_NAMES, *this);
 
-#define WATCH_STATUS_FROM(RF) Watch _s_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, RF);
-#define WATCH_ERRORS_FROM(RF) Watch _e_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, RF);
+#define WATCH_STATUS_FROM(RF) extoll::library::Watch _s_(8, extoll::library::WATCH_STATUS_ADDRESSES, extoll::library::WATCH_STATUS_NAMES, RF);
+#define WATCH_ERRORS_FROM(RF) extoll::library::Watch _e_(7, extoll::library::WATCH_ERROR_ADDRESSES, extoll::library::WATCH_ERROR_NAMES, RF);
 
 
-#define PRINT_STATUS_FROM(RF) Watch _ps_(8, WATCH_STATUS_ADDRESSES, WATCH_STATUS_NAMES, RF); _ps_.print();
-#define PRINT_ERRORS_FROM(RF) Watch _pe_(7, WATCH_ERROR_ADDRESSES, WATCH_ERROR_NAMES, RF); _pe_.print();
+#define PRINT_STATUS_FROM(RF) extoll::library::Watch _ps_(8, extoll::library::WATCH_STATUS_ADDRESSES, extoll::library::WATCH_STATUS_NAMES, RF); _ps_.print();
+#define PRINT_ERRORS_FROM(RF) extoll::library::Watch _pe_(7, extoll::library::WATCH_ERROR_ADDRESSES, extoll::library::WATCH_ERROR_NAMES, RF); _pe_.print();
 
+}}
 
 #endif //LIBHBP_CPP_WATCH_H

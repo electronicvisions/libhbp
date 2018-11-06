@@ -8,7 +8,8 @@
 
 #include <rma.h>
 
-
+namespace extoll {
+namespace library {
 #define ADDRESS(VALUE) \
     const static RMA2_NLA ADDRESS = VALUE
 #define READ_WRITE(READ, WRITE) \
@@ -228,5 +229,7 @@ std::ostream& operator<<(std::ostream&, rf::JtagCmd::Type);
 #undef ADDRESS
 #undef READ_WRITE
 #undef ASSERT_SIZE
+
+}}
 
 #endif

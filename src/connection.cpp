@@ -5,6 +5,8 @@
 #include <helper.h>
 #include <exception.h>
 
+using namespace extoll::library;
+
 const int RMA_CONNECTION = RMA2_CONN_DEFAULT;
 const int RRA_BIT = RMA2_CONN_RRA;
 const int RRA_CONNECTION = RMA_CONNECTION | RRA_BIT;

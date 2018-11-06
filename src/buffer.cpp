@@ -11,6 +11,8 @@
 
 #include <exception.h>
 
+using namespace extoll::library;
+
 PhysicalBuffer::PhysicalBuffer(RMA2_Port port, size_t pages)
     : port(port), _data(pages * 1024 * 4 / sizeof(uint64_t))
 {

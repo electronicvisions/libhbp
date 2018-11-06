@@ -7,6 +7,8 @@
 #include <exception.h>
 #include <cassert>
 
+using namespace extoll::library;
+
 Endpoint& Extoll::connect(RMA2_Nodeid node)
 {
     auto it = connections.find(node);

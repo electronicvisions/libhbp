@@ -6,7 +6,7 @@
 #include <exception.h>
 #include <helper.h>
 
-
+using namespace extoll::library;
 
 RegisterFile::RegisterFile(Endpoint& connection)
     : connection(connection), status(RMA2_SUCCESS)

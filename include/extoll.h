@@ -12,6 +12,8 @@
 #include <hicann.h>
 #include <connection.h>
 
+namespace extoll {
+namespace library {
 
 class Extoll
 {
@@ -28,5 +30,7 @@ private:
 
     friend class RegisterFile;
 };
+
+}}
 
 #endif //LIBHBP_CPP_HBP_H

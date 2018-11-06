@@ -3,6 +3,8 @@
 
 #include <register_file.h>
 
+namespace extoll {
+namespace library {
 
 class Hicann : public RegisterFile
 {
@@ -23,5 +25,6 @@ public:
     void diff_all();
 };
 
+}}
 
 #endif //LIBHBP_CPP_HICANN_H

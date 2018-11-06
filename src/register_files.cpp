@@ -2,6 +2,8 @@
 
 #include <bitset>
 
+using namespace extoll::library;
+
 #define BIT(data, position) bool((data >> position) & 0x1)
 
 using rf::JtagCmd;

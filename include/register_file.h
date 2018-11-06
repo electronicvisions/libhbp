@@ -7,6 +7,8 @@
 #include <connection.h>
 #include <register_files.h>
 
+namespace extoll {
+namespace library {
 
 class RegisterFile
 {
@@ -59,5 +61,6 @@ public:
     void probe() const;
 };
 
+}}
 
 #endif

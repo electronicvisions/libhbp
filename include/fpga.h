@@ -3,6 +3,8 @@
 
 #include <register_file.h>
 
+namespace extoll {
+namespace library {
 
 class Fpga : protected RegisterFile
 {
@@ -51,8 +53,9 @@ public:
     const static Reset None = Reset::None;
 };
 
-Fpga::Config operator|(Fpga::Config, Fpga::Config);
-bool operator&(Fpga::Reset, Fpga::Reset);
+}}
 
+extoll::library::Fpga::Config operator|(extoll::library::Fpga::Config, extoll::library::Fpga::Config);
+bool operator&(extoll::library::Fpga::Reset, extoll::library::Fpga::Reset);
 
 #endif //LIBHBP_CPP_FPGA_H

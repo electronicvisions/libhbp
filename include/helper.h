@@ -4,6 +4,8 @@
 #include <rma.h>
 #include <sstream>
 
+namespace extoll {
+namespace library {
 
 template<typename E, typename... Args>
 void throw_on_error(RMA2_ERROR status, Args... args)
@@ -14,5 +16,7 @@ void throw_on_error(RMA2_ERROR status, Args... args)
     }
 
 }
+
+}}
 
 #endif //LIBHBP_CPP_HELPER_H

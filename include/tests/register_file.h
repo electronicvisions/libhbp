@@ -12,7 +12,7 @@ class RegisterFileTest : public TestBase
     RMA2_Nodeid node;
 
 public:
-    RegisterFileTest(Extoll&, RMA2_Nodeid);
+    RegisterFileTest(extoll::library::Extoll&, RMA2_Nodeid);
 
     void run() override;
 };

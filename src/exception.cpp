@@ -2,6 +2,8 @@
 
 #include <utility>
 
+using namespace extoll::library;
+
 NodeIsNoFcp::NodeIsNoFcp(RMA2_Nodeid node, uint32_t driver)
     : ConnectionFailed("Connection to PCB failed, because node is not a PCB!"),
     node(node), driver(driver) {}

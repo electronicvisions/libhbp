@@ -1,4 +1,3 @@
-
 #include <tests/test.h>
 
 #include "tests/test.h"
@@ -6,7 +5,7 @@
 #include "tests/switchram.h"
 
 
-TestBase::TestBase(Extoll& hbp)
+TestBase::TestBase(extoll::library::Extoll& hbp)
     : hbp(hbp) {}
 
 void TestBase::report()

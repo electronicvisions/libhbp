@@ -4,6 +4,9 @@
 #include <random>
 #include <limits>
 
+namespace extoll {
+namespace library {
+
 namespace traits
 {
 template <typename T>
@@ -56,5 +59,6 @@ T Rng<T, Distribution>::roll()
     return distribution(generator);
 }
 
+}}
 
 #endif //LIBHBP_CPP_RNG_H
