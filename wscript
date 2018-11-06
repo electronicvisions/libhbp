@@ -52,7 +52,8 @@ def build(bld):
         source=lib_src,
         target='hbpextoll',
         name=NAME('shared'),
-        includes=['include'],
+        includes='include',
+        export_includes='include',
         use='RMA RMARC DL'
     )
 
@@ -63,6 +64,5 @@ def build(bld):
         source=test_src + lib_src,
         target='extoll-test',
         name=NAME('test'),
-        use=NAME('shared'),
-        includes=['include']
+        use=NAME('shared')
     )
