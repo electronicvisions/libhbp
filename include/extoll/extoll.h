@@ -5,12 +5,12 @@
 #include <map>
 #include <vector>
 
-#include <rma.h>
-#include <register_file.h>
-#include <fpga.h>
-#include <jtag.h>
-#include <hicann.h>
-#include <connection.h>
+#include <extoll/rma.h>
+#include <extoll/register_file.h>
+#include <extoll/fpga.h>
+#include <extoll/jtag.h>
+#include <extoll/hicann.h>
+#include <extoll/connection.h>
 
 namespace extoll {
 namespace library {

@@ -1,8 +1,8 @@
 #ifndef LIBHBP_CPP_JTAGRW_H
 #define LIBHBP_CPP_JTAGRW_H
 
-#include <rma.h>
-#include <extoll.h>
+#include <extoll/rma.h>
+#include <extoll/extoll.h>
 
 #include "test.h"
 

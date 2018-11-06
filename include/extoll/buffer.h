@@ -4,7 +4,7 @@
 #include <cinttypes>
 #include <vector>
 
-#include <rma.h>
+#include <extoll/rma.h>
 
 namespace extoll {
 namespace library {

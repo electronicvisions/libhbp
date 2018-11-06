@@ -1,11 +1,11 @@
-#include <extoll.h>
+#include <extoll/extoll.h>
 
 #include <iostream>
 #include <sstream>
-
-#include <rma.h>
-#include <exception.h>
 #include <cassert>
+
+#include <extoll/rma.h>
+#include <extoll/exception.h>
 
 using namespace extoll::library;
 

@@ -6,7 +6,7 @@
 #include <bitset>
 #include <typeinfo>
 
-#include <rma.h>
+#include <extoll/rma.h>
 
 namespace extoll {
 namespace library {

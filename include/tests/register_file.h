@@ -1,8 +1,8 @@
 #ifndef LIBHBP_CPP_TEST_REGISTER_FILE_H
 #define LIBHBP_CPP_TEST_REGISTER_FILE_H
 
-#include <rma.h>
-#include <extoll.h>
+#include <extoll/rma.h>
+#include <extoll/extoll.h>
 
 #include "test.h"
 

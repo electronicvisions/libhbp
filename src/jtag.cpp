@@ -1,7 +1,7 @@
-#include <jtag.h>
+#include <extoll/jtag.h>
 
-#include <register_files.h>
-#include <exception.h>
+#include <extoll/register_files.h>
+#include <extoll/exception.h>
 
 using namespace extoll::library;
 

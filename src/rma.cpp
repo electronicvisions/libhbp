@@ -1,4 +1,4 @@
-#include <rma.h>
+#include <extoll/rma.h>
 
 
 void extoll::library::wait_for_notification(RMA2_Port port)

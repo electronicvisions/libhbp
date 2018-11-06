@@ -1,4 +1,4 @@
-#include <buffer.h>
+#include <extoll/buffer.h>
 
 #include <iostream>
 #include <cassert>
@@ -9,7 +9,7 @@
 #include <pmap.h>
 #include <unistd.h>
 
-#include <exception.h>
+#include <extoll/exception.h>
 
 using namespace extoll::library;
 

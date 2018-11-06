@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <bitset>
 
-#include <rma.h>
+#include <extoll/rma.h>
 
 namespace extoll {
 namespace library {

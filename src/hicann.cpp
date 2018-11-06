@@ -1,8 +1,9 @@
-#include <hicann.h>
+#include <extoll/hicann.h>
 
 #include <bitset>
 #include <iostream>
-#include <utility/watch.h>
+
+#include <extoll/utility/watch.h>
 
 using namespace extoll::library;
 

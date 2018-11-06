@@ -1,7 +1,7 @@
 #ifndef LIBHBP_CPP_TESTBASE_H
 #define LIBHBP_CPP_TESTBASE_H
 
-#include <extoll.h>
+#include <extoll/extoll.h>
 
 #include <vector>
 #include <memory>

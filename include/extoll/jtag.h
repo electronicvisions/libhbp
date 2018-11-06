@@ -3,9 +3,9 @@
 
 #include <bitset>
 
-#include <register_file.h>
-#include <jtag_registers.h>
-#include "exception.h"
+#include <extoll/register_file.h>
+#include <extoll/jtag_registers.h>
+#include <extoll/exception.h>
 
 namespace extoll {
 namespace library {

@@ -1,8 +1,9 @@
 #ifndef LIBHBP_CPP_HELPER_H
 #define LIBHBP_CPP_HELPER_H
 
-#include <rma.h>
 #include <sstream>
+
+#include <extoll/rma.h>
 
 namespace extoll {
 namespace library {

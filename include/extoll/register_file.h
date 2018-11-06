@@ -3,9 +3,9 @@
 
 #include <utility>
 
-#include <rma.h>
-#include <connection.h>
-#include <register_files.h>
+#include <extoll/rma.h>
+#include <extoll/connection.h>
+#include <extoll/register_files.h>
 
 namespace extoll {
 namespace library {

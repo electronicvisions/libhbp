@@ -1,8 +1,8 @@
 #ifndef LIBHBP_CPP_WATCH_H
 #define LIBHBP_CPP_WATCH_H
 
-#include <rma.h>
-#include <register_file.h>
+#include <extoll/rma.h>
+#include <extoll/register_file.h>
 
 namespace extoll {
 namespace library {

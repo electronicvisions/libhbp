@@ -1,8 +1,8 @@
 #ifndef LIBHBP_CPP_CONNECTION_H
 #define LIBHBP_CPP_CONNECTION_H
 
-#include <rma.h>
-#include <buffer.h>
+#include <extoll/rma.h>
+#include <extoll/buffer.h>
 
 namespace extoll {
 namespace library {

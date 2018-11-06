@@ -3,8 +3,8 @@
 #include <random>
 #include <limits>
 
-#include <utility/rng.h>
-#include <utility/watch.h>
+#include <extoll/utility/rng.h>
+#include <extoll/utility/watch.h>
 #include <tests/switchram.h>
 
 

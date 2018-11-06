@@ -1,7 +1,7 @@
 #ifndef LIBHBP_CPP_HICANN_H
 #define LIBHBP_CPP_HICANN_H
 
-#include <register_file.h>
+#include <extoll/register_file.h>
 
 namespace extoll {
 namespace library {
