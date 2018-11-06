@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <bitset>
+#include <cinttypes>
 
 struct JtagCmd
 {

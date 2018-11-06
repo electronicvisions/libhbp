@@ -48,14 +48,3 @@ JTag::JTag(Endpoint& connection)
         throw NodeHasNoHicann(connection.node);
     }
 }
-
-void JTag::assert_ir_shift_succeeded() const
-{
-    auto pattern = RegisterFile::read(JtagReceive::ADDRESS) & 0x3f;
-    if (pattern != 0x3d)
-    {
-        throw JtagIrShiftFailed(connection.node, uint8_t(pattern));
-    }
-}
-
-

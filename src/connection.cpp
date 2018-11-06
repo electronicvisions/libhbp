@@ -1,5 +1,7 @@
 #include <connection.h>
 
+#include <chrono>
+
 #include <helper.h>
 #include <exception.h>
 
@@ -32,6 +34,29 @@ Endpoint::Connection::Connection(RMA2_Nodeid node, bool rra)
     throw_on_error<ConnectionFailed>(status, "Failed to connect!");
 }
 
+static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> timeout)
+{
+    using namespace std::chrono;
+
+    RMA2_Notification* notification;
+    auto start = high_resolution_clock::now();
+    high_resolution_clock::time_point end;
+    do
+    {
+        RMA2_ERROR status = rma2_noti_probe(port, &notification);
+        if (status == RMA2_SUCCESS)
+        {
+            rma2_noti_free(port, notification);
+            return;
+        }
+
+        end = high_resolution_clock::now();
+    }
+    while(duration_cast<duration<double>>(end - start) < timeout);
+
+    throw ConnectionFailed("No response from node");
+}
+
 Endpoint::Endpoint(RMA2_Nodeid node)
     : rra(node, true), rma(node, false),
     gp_buffer(rra.port, 1), trace_data(rma.port, 1), hicann_config(rma.port, 1)
@@ -39,7 +64,8 @@ Endpoint::Endpoint(RMA2_Nodeid node)
     RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
 
     throw_on_error<FailedToRead>(status, "Failed to query driver", node, 0x8000);
-    wait_for_notification(rra.port);
+    std::chrono::milliseconds timeout(1);
+    wait_with_timeout(rra.port, timeout);
 
     auto driver = gp_buffer.at<uint32_t>(0);
     if (driver != 0xcafebabe)

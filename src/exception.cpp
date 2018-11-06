@@ -17,7 +17,7 @@ FailedToWrite::FailedToWrite(RMA2_Nodeid node, RMA2_NLA address)
     : RraError("Failed to write!", node, address) {}
 
 NodeHasNoHicann::NodeHasNoHicann(RMA2_Nodeid node)
-    : ConnectionFailed("Connection to HICANN failed, because node has not HICANNs"),
+    : ConnectionFailed("Connection to HICANN failed, because node has no HICANNs"),
     node(node) {}
 
 JtagIrShiftFailed::JtagIrShiftFailed(RMA2_Nodeid node, uint8_t pattern)

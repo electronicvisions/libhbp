@@ -10,6 +10,7 @@
 struct IFail
 {
     virtual void report() = 0;
+    virtual ~IFail() = default;
 };
 
 template <typename T>

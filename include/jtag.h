@@ -34,7 +34,6 @@ public:
 
 private:
     void wait_until_finished() const;
-    void assert_ir_shift_succeeded() const;
 
     friend std::ostream& operator<<(std::ostream&, const JTag&);
 };
@@ -70,8 +69,6 @@ JTag::read()
     RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
     wait_until_finished();
 
-    assert_ir_shift_succeeded();
-
     RegisterFile::write(JtagSend::ADDRESS, 0);
     RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
     wait_until_finished();
@@ -89,8 +86,6 @@ JTag::write(uint64_t value)
     RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
     wait_until_finished();
 
-    assert_ir_shift_succeeded();
-
     RegisterFile::write(JtagSend::ADDRESS, value & JR::MASK);
     RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
     wait_until_finished();
@@ -105,8 +100,6 @@ JTag::write(uint64_t value)
     RegisterFile::write(JtagSend::ADDRESS, JR::ADDRESS);
     RegisterFile::write<JtagCmd>({JtagCmd::IR, 6, false, true});
     wait_until_finished();
-
-    assert_ir_shift_succeeded();
 
     RegisterFile::write(JtagSend::ADDRESS, value & JR::MASK);
     RegisterFile::write<JtagCmd>({JtagCmd::DR, JR::SIZE, false, true});
