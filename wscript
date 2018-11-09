@@ -1,39 +1,18 @@
-from __future__ import print_function
-
-from os import environ
-from os.path import join
-
-
 NAME = 'extoll-hbp-lib-{}'.format
 
+
 def options(opt):
+    opt.load('compiler_c')
     opt.load('compiler_cxx')
 
 
 def configure(cfg):
-    cfg.env.CXX = environ.get('CXX', cfg.env.CXX)
+    cfg.load('compiler_c')
     cfg.load('compiler_cxx')
-
-    try:
-        extoll_home = environ['EXTOLL_R2_HOME']
-    except KeyError:
-        cfg.fatal("$EXTOLL_R2_HOME must be set")
-
-    lib_path = join(extoll_home, 'lib')
-    cfg.find_file('librma2.so', lib_path)
-    cfg.find_file('librma2rc.so', lib_path)
-
-    cfg.env.INCLUDES_RMA = join(extoll_home, 'include')
-    cfg.find_file('rma2.h', cfg.env.INCLUDES_RMA)
-    cfg.env.LIB_RMA = 'rma2'
-    cfg.env.LIBPATH_RMA = lib_path
-
-    cfg.env.INCLUDES_RMARC = join(extoll_home, 'include')
-    cfg.env.LIB_RMARC = 'rma2rc'
-    cfg.env.LIBPATH_RMARC = lib_path
-
-    cfg.env.LIB_DL = 'dl'
-
+    cfg.check_cc(header_name='rma2.h', uselib_store='RMA2')
+    cfg.check_cc(lib='rma2', uselib_store='RMA2')
+    cfg.check_cc(lib='dl')
+    cfg.check_cc(lib='rma2rc', use='DL RMA2')
 
 
 def build(bld):
@@ -41,7 +20,7 @@ def build(bld):
         source='scratch.cpp',
         target='scratch',
         name=NAME('scratch')
-        )
+    )
 
     lib_src = '''
     buffer connection exception extoll fpga hicann jtag
@@ -54,7 +33,7 @@ def build(bld):
         name=NAME('shared'),
         includes='include',
         export_includes='include',
-        use='RMA RMARC DL'
+        use='RMA2 RMA2RC DL'
     )
 
     test_src = 'jtagrw register_file switchram test'.split()
