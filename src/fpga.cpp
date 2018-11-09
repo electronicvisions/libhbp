@@ -107,7 +107,19 @@ Fpga::Config operator|(Fpga::Config flags, Fpga::Config bit)
     );
 }
 
+Fpga::Reset operator|(Fpga::Reset flags, Fpga::Reset bit)
+{
+    return static_cast<Fpga::Reset>(
+        static_cast<uint64_t>(flags) | static_cast<uint64_t>(bit)
+    );
+}
+
 bool operator&(Fpga::Reset flags, Fpga::Reset bit)
+{
+    return static_cast<uint8_t>(bit) & static_cast<uint8_t>(flags);
+}
+
+bool operator&(Fpga::Config flags, Fpga::Config bit)
 {
     return static_cast<uint8_t>(bit) & static_cast<uint8_t>(flags);
 }

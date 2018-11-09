@@ -56,6 +56,8 @@ public:
 }}
 
 extoll::library::Fpga::Config operator|(extoll::library::Fpga::Config, extoll::library::Fpga::Config);
+extoll::library::Fpga::Reset operator|(extoll::library::Fpga::Reset, extoll::library::Fpga::Reset);
+bool operator&(extoll::library::Fpga::Config, extoll::library::Fpga::Config);
 bool operator&(extoll::library::Fpga::Reset, extoll::library::Fpga::Reset);
 
 #endif //LIBHBP_CPP_FPGA_H

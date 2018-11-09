@@ -20,12 +20,4 @@ void JtagRw::run()
     jtag.write<cmd::IBias>(0x28);
     auto ibias = jtag.write<cmd::IBias>(0x28);
     critical<uint64_t>("scratch test", 0x28, ibias);
-
-    jtag.read<cmd::ID>();
-    std::cout << "Status: " << std::hex << jtag.read<cmd::Status>() << "\n";
-    jtag.read<cmd::ID>();
-
-    jtag.set_command(0x1a);
-    std::cin.get();
-    std::cout << "Data: " << std::hex << jtag.get_data(8) << "\n";
 }
