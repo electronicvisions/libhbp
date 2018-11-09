@@ -108,6 +108,71 @@ struct HicannIfState
     ADDRESS(0x800);
     READ_WRITE(true, false);
 };
+ASSERT_SIZE(HicannIfState);
+
+struct HicannIfRxConfig
+{
+    uint64_t data;
+    ADDRESS(0x808);
+    READ_WRITE(true, false);
+};
+ASSERT_SIZE(HicannIfRxConfig);
+
+struct HicannIfRxPulse
+{
+    uint64_t data : 24;
+    ADDRESS(0x810);
+    READ_WRITE(true, false);
+};
+ASSERT_SIZE(HicannIfRxPulse);
+
+struct HicannIfConfig
+{
+    uint64_t start_link : 1;
+    uint64_t loopback_enable : 1;
+    uint64_t auto_init : 1;
+    uint64_t init_master : 1;
+    uint64_t use_timestamp : 1;
+    uint64_t auto_limit : 1;
+    uint64_t pulse_protocol : 1;
+    uint64_t config_protocol : 1;
+    uint64_t heap_mode : 8;
+    uint64_t limit : 11;
+    uint64_t dc_coding : 1;
+    ADDRESS(0x818);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(HicannIfConfig);
+
+struct HicannIfControls
+{
+    uint64_t tx_hicann_pulse_enable : 1;
+    uint64_t tx_hicann_config_enable : 1;
+    uint64_t routing_data_enable : 1;
+    uint64_t channel_reset : 1;
+    uint64_t crc_count_reset : 1;
+    ADDRESS(0x820);
+    READ_WRITE(false, true);
+};
+ASSERT_SIZE(HicannIfControls);
+
+struct HicannIfTxData
+{
+    uint64_t data;
+    ADDRESS(0x828);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(HicannIfTxData);
+
+struct HicannPacketGen
+{
+    uint64_t count : 25;
+    uint64_t error : 1;
+    uint64_t enable : 1;
+    ADDRESS(0x830);
+    READ_WRITE(true, true);
+};
+ASSERT_SIZE(HicannPacketGen);
 
 struct HicannChannel
 {
@@ -117,7 +182,7 @@ struct HicannChannel
 };
 ASSERT_SIZE(HicannChannel);
 
-struct DEPRECATED_RF ArqTimings
+struct ArqTimings
 {
     uint64_t master_timeout : 10;
     uint64_t target_timeout : 10;
@@ -126,6 +191,7 @@ struct DEPRECATED_RF ArqTimings
     ADDRESS(0x840);
     READ_WRITE(true, true);
 };
+ASSERT_SIZE(ArqTimings);
 
 /// Addresses starting @1090
 /// Partner host configuration register files
@@ -138,8 +204,6 @@ struct HostEndpoint
     uint64_t mode : 6;
     ADDRESS(0x1090);
     READ_WRITE(true, true);
-
-
 };
 ASSERT_SIZE(HostEndpoint);
 
