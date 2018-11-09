@@ -100,6 +100,15 @@ ASSERT_SIZE(JtagReceive);
 /// Addresses starting @0x800
 /// HICANN control register files
 
+struct HicannIfState
+{
+    uint64_t channel_status : 8;
+    uint64_t crc_count : 8;
+    uint64_t systime : 14;
+    ADDRESS(0x800);
+    READ_WRITE(true, false);
+};
+
 struct HicannChannel
 {
     uint64_t number : 3;
