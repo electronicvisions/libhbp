@@ -18,20 +18,20 @@ find_library(LIBRMA NAMES librma2.so PATHS ${RMA_LIB})
 find_library(LIBRMARC NAMES librma2rc.so PATHS ${RMA_LIB})
 
 set(HEADERS
-        include/buffer.h
-        include/register_file.h
-        include/connection.h
-        include/helper.h
-        include/extoll.h
-        include/jtag.h
-        include/exception.h
-        include/fpga.h
-        include/register_files.h
-        include/hicann.h
-        include/jtag_registers.h
+        include/extoll/buffer.h
+        include/extoll/register_file.h
+        include/extoll/connection.h
+        include/extoll/helper.h
+        include/extoll/extoll.h
+        include/extoll/jtag.h
+        include/extoll/exception.h
+        include/extoll/fpga.h
+        include/extoll/register_files.h
+        include/extoll/hicann.h
+        include/extoll/jtag_registers.h
 
-        include/utility/rng.h
-        include/utility/watch.h
+        include/extoll/utility/rng.h
+        include/extoll/utility/watch.h
 
         include/tests/switchram.h
         include/tests/test.h
