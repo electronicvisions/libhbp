@@ -46,8 +46,3 @@ Hicann Extoll::hicann(RMA2_Nodeid node, int8_t number)
 
     return Hicann{connect(node), uint8_t(number)};
 }
-
-Extoll::~Extoll()
-{
-    std::cout << "EXTOLL OBJECT WAS DELETED\n";
-}

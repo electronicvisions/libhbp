@@ -4,8 +4,8 @@
 
 using namespace extoll::library;
 
-NodeIsNoFcp::NodeIsNoFcp(RMA2_Nodeid node, uint32_t driver)
-    : ConnectionFailed("Connection to PCB failed, because node is not a PCB!"),
+NodeIsNoFpga::NodeIsNoFpga(RMA2_Nodeid node, uint32_t driver)
+    : ConnectionFailed("Connection to FPGA failed, because node is not an FPGA!"),
     node(node), driver(driver) {}
 
 RraError::RraError(std::string msg, RMA2_Nodeid node, RMA2_NLA address)

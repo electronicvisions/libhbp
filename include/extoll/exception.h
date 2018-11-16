@@ -45,9 +45,9 @@ struct FailedToWrite : RraError
 };
 
 
-struct NodeIsNoFcp : ConnectionFailed
+struct NodeIsNoFpga : ConnectionFailed
 {
-    NodeIsNoFcp(RMA2_Nodeid node, uint32_t driver);
+    NodeIsNoFpga(RMA2_Nodeid node, uint32_t driver);
 
     const RMA2_Nodeid node;
     const uint32_t driver;

@@ -25,7 +25,6 @@ public:
     Fpga fpga(RMA2_Nodeid node);
     Hicann hicann(RMA2_Nodeid node, int8_t number);
     Endpoint& connect(RMA2_Nodeid node);
-    ~Extoll();
 private:
 
 

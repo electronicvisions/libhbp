@@ -4,6 +4,7 @@
 
 #include <extoll/helper.h>
 #include <extoll/exception.h>
+#include <extoll/utility/rng.h>
 
 using namespace extoll::library;
 
@@ -36,7 +37,7 @@ Endpoint::Connection::Connection(RMA2_Nodeid node, bool rra)
     throw_on_error<ConnectionFailed>(status, "Failed to connect!");
 }
 
-static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> timeout)
+static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> timeout=std::chrono::milliseconds(1))
 {
     using namespace std::chrono;
 
@@ -64,15 +65,40 @@ Endpoint::Endpoint(RMA2_Nodeid node)
     gp_buffer(rra.port, 1), trace_data(rma.port, 1), hicann_config(rma.port, 1)
 {
     RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
-
     throw_on_error<FailedToRead>(status, "Failed to query driver", node, 0x8000);
-    std::chrono::milliseconds timeout(1);
-    wait_with_timeout(rra.port, timeout);
+    wait_with_timeout(rra.port);
 
     auto driver = gp_buffer.at<uint32_t>(0);
     if (driver != 0xcafebabe)
     {
-        throw NodeIsNoFcp(node, driver);
+        throw NodeIsNoFpga(node, driver);
+    }
+
+    Rng<uint64_t> rng;
+    for (RMA2_NLA address = 0x480; address < 0x500; ++address)
+    {
+        auto pattern = rng.roll();
+        perform_write_test(address, pattern);
+        perform_read_test(address, pattern);
+    }
+}
+
+void Endpoint::perform_write_test(RMA2_NLA address, uint64_t value)
+{
+    RMA2_ERROR status = rma2_post_immediate_put(rra.port, rra.handle, 8, value, address, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    throw_on_error<FailedToWrite>(status, "Failed to send write command", node, address);
+    wait_with_timeout(rra.port);
+}
+
+void Endpoint::perform_read_test(RMA2_NLA address, uint64_t expected)
+{
+    RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, address, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    throw_on_error<FailedToRead>(status, "Failed to send read command", node, address);
+    wait_with_timeout(rra.port);
+
+    if (expected != gp_buffer.at<uint64_t>(0))
+    {
+        throw FailedToRead("Read test failed", node, address);
     }
 }
 

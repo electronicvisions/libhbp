@@ -38,6 +38,9 @@ struct Endpoint
     explicit Endpoint(RMA2_Nodeid);
     Endpoint(const Endpoint&) = delete;
     Endpoint& operator=(const Endpoint&) = delete;
+
+    void perform_read_test(RMA2_NLA, uint64_t);
+    void perform_write_test(RMA2_NLA, uint64_t);
 };
 
 }}
