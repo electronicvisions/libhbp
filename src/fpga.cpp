@@ -51,7 +51,7 @@ void Fpga::configure_partner_host()
     RMA2_Nodeid local_node = rma2_get_nodeid(rma.port);
     write_noblock<HostEndpoint>({local_node, rma.vpid, 0, 1 << 2});
     write_noblock<TraceRingbufferStart>({connection.trace_data.address()});
-    write_noblock<TraceRingbufferCapacity>({connection.trace_data.byte_size(),0, 0 true});
+    write_noblock<TraceRingbufferCapacity>({connection.trace_data.byte_size(), 0, 0, true});
     write_noblock<ConfigResponse>({connection.fpga_config_address()});
     write_noblock<HicannRingbufferStart>({connection.hicann_config.address()});
     write_noblock<HicannRingbufferCapacity>({connection.hicann_config.byte_size(), 0, 0, true});
