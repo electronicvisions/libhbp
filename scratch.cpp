@@ -2,59 +2,61 @@
 #include <cstring>
 #include <bitset>
 #include <cinttypes>
+#include <type_traits>
 
-struct JtagCmd
-{
-
-
-    uint64_t type : 3;
-    uint64_t length : 10;
-    bool pause : 1;
-    bool execute : 1;
-
-
-    const static bool X = true;
-    const static int YOLO = 3;
-};
-
-struct Reset
-{
-    const static int YOLO = 2;
-    const static bool X = true;
-    bool a : 1;
-    bool b : 1;
-    bool c : 1;
-};
-
-template <typename T>
-uint64_t rf_to_data(const T& rf)
-{
-    uint64_t data = 0;
-    memcpy(&data, &rf, sizeof(T));
-    return data;
-}
-
-template <typename RF>
-void send(RF&& rf)
-{
-    uint64_t data = rf_to_data(std::forward<RF>(rf));
-
-    std::cout << "SEND: " << std::bitset<16>(data) << "\n";
-}
-
-static_assert(sizeof(JtagCmd) == 8, "Bit Field size incorrect!");
-static_assert(sizeof(Reset) == 1, "Bit Field size incorrect!");
 
 using namespace std;
 
+using RMA2_NLA = int;
+
+struct JtagCmd {
+    union {
+        struct {
+            uint64_t type: 3;
+            uint64_t length: 10;
+            bool pause: 1;
+            bool execute: 1;
+        };
+        uint64_t raw;
+    };
+
+    enum Type {
+        Reset = 0,
+        IR = 1,
+        DR = 2,
+        EnableClock = 4,
+        DisableClock = 5,
+    };
+    const static RMA2_NLA ADDRESS = 0x400;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(JtagCmd) == sizeof(uint64_t), "FAIL");
+static_assert(std::is_trivial<JtagCmd>::value, "FAIL");
+static_assert(std::has_trivial_copy_constructor<JtagCmd>::value, "FAIL");
+
+template <typename RF>
+void write(RF&& rf)
+{
+    static_assert(RF::ADDRESS >= 0, "register file address must be positive!");
+    static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
+    static_assert(RF::WRITABLE, "register file must be writable!");
+
+    std::cout << std::bitset<64>(rf.raw) << "\n";
+    std::cout << rf.type << "\n";
+    std::cout << rf.length << "\n";
+    std::cout << rf.pause << "\n";
+    std::cout << rf.execute << "\n";
+}
+
 int main()
 {
-    JtagCmd cmd{3, 10, true, true};
 
-    cout << bitset<16>(rf_to_data(cmd)) << "\n";
+    // JtagCmd j{1, 10, true, false};
+    JtagCmd j;
+    j.raw = 100;
 
-    send(JtagCmd{5, 42, true, false});
-    send<JtagCmd>({7, 10, false, true});
-
-    send<Reset>({true, false, true});
+    std::cout << std::bitset<64>(j.raw) << "\n";
+    std::cout << j.type << ", " << j.length << ", " << j.pause << ", " << j.execute << "\n";
 }

@@ -59,7 +59,8 @@ set(SOURCES
 
 
 add_executable(scratch scratch.cpp)
-
+target_include_directories(scratch PRIVATE include)
+target_include_directories(scratch PRIVATE ${RMA_INCLUDE})
 
 add_library(rma SHARED ${HEADERS} ${SOURCES})
 target_include_directories(rma PRIVATE include)
