@@ -24,7 +24,7 @@ def build(bld):
 
     lib_src = '''
     buffer connection exception extoll fpga hicann jtag
-    register_file register_files rma
+    register_file rma
     '''.split()
     lib_src = ['src/{}.cpp'.format(file) for file in lib_src]
     bld.shlib(
