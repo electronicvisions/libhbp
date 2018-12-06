@@ -34,7 +34,6 @@ struct JtagCmd {
 
 static_assert(sizeof(JtagCmd) == sizeof(uint64_t), "FAIL");
 static_assert(std::is_trivial<JtagCmd>::value, "FAIL");
-static_assert(std::has_trivial_copy_constructor<JtagCmd>::value, "FAIL");
 
 template <typename RF>
 void write(RF&& rf)
