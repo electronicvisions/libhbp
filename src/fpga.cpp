@@ -4,6 +4,7 @@
 #include <thread>
 #include <array>
 #include <cassert>
+#include <bitset>
 
 #include <extoll/utility/watch.h>
 
@@ -32,7 +33,7 @@ static void cmp(RegisterFile* reg, T& rf)
 
     if (memcmp(&rf, &r, 8) != 0)
     {
-        auto d = rf_to_data(rf);
+        auto d = rf.raw;
         std::cout << std::hex << T::ADDRESS << " FAIL\n";
         std::cout << "IS  : " << std::bitset<64>(d) << "\n";
         std::cout << "MUST: " << std::bitset<64>(r) << "\n";

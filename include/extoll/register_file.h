@@ -5,7 +5,7 @@
 
 #include <extoll/rma.h>
 #include <extoll/connection.h>
-#include <extoll/register_files.h>
+#include <extoll/hbp_def.h>
 
 namespace extoll {
 namespace library {
@@ -26,7 +26,9 @@ public:
         static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
         static_assert(RF::READABLE, "register file must be readable!");
 
-        return rf::data_to_rf<RF>(read(RF::ADDRESS));
+        RF rf;
+        rf.raw = read(RF::ADDRESS);
+        return rf;
     }
 
     template <typename RF>
@@ -36,7 +38,7 @@ public:
         static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
         static_assert(RF::WRITABLE, "register file must be writable!");
 
-        write(RF::ADDRESS, rf::rf_to_data(std::forward<RF>(rf)));
+        write(RF::ADDRESS, rf.raw);
     }
 
     template <typename RF>
@@ -46,7 +48,7 @@ public:
         static_assert(RF::ADDRESS <= 0x180d0, "register file address too large!");
         static_assert(RF::WRITABLE, "register file must be writable!");
 
-        write_noblock(RF::ADDRESS, rf::rf_to_data(std::forward<RF>(rf)));
+        write_noblock(RF::ADDRESS, rf.raw);
     }
 
     uint64_t read(RMA2_NLA) const;

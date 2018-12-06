@@ -1,6 +1,8 @@
 #ifndef LIBHBP_CPP_WATCH_H
 #define LIBHBP_CPP_WATCH_H
 
+#include <iostream>
+
 #include <extoll/rma.h>
 #include <extoll/register_file.h>
 

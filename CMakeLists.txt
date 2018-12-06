@@ -4,7 +4,7 @@ project(libhbp_cpp)
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_options(
-        "-Wall" "-Wpedantic" "-Wextra"
+        "-Wall" "-Wpedantic" "-Wextra" "-fms-extensions"
 )
 
 if (NOT EXISTS $ENV{EXTOLL_R2_HOME})
@@ -26,7 +26,7 @@ set(HEADERS
         include/extoll/jtag.h
         include/extoll/exception.h
         include/extoll/fpga.h
-        include/extoll/register_files.h
+        include/extoll/hbp_def.h
         include/extoll/hicann.h
         include/extoll/jtag_registers.h
 
@@ -42,7 +42,6 @@ set(HEADERS
 set(SOURCES
         src/buffer.cpp
         src/register_file.cpp
-        src/register_files.cpp
         src/connection.cpp
         src/extoll.cpp
         src/rma.cpp
