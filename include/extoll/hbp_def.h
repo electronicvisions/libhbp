@@ -32,7 +32,6 @@ struct Reset {
 };
 static_assert(sizeof(Reset) == sizeof(uint64_t), "sizeof register file 'Reset' != sizeof uint64_t");
 static_assert(std::is_trivial<Reset>::value, "'Reset' is not trivial");
-static_assert(std::has_trivial_copy_constructor<Reset>::value, "'Reset' has no trivial copy constructor");
 
 struct JtagCmd {
     union {
@@ -58,7 +57,6 @@ struct JtagCmd {
 };
 static_assert(sizeof(JtagCmd) == sizeof(uint64_t), "sizeof register file 'JtagCmd' != sizeof uint64_t");
 static_assert(std::is_trivial<JtagCmd>::value, "'JtagCmd' is not trivial");
-static_assert(std::has_trivial_copy_constructor<JtagCmd>::value, "'JtagCmd' has no trivial copy constructor");
 
 struct JtagStatus {
     union {
@@ -75,7 +73,6 @@ struct JtagStatus {
 };
 static_assert(sizeof(JtagStatus) == sizeof(uint64_t), "sizeof register file 'JtagStatus' != sizeof uint64_t");
 static_assert(std::is_trivial<JtagStatus>::value, "'JtagStatus' is not trivial");
-static_assert(std::has_trivial_copy_constructor<JtagStatus>::value, "'JtagStatus' has no trivial copy constructor");
 
 struct JtagSend {
     union {
@@ -91,7 +88,6 @@ struct JtagSend {
 };
 static_assert(sizeof(JtagSend) == sizeof(uint64_t), "sizeof register file 'JtagSend' != sizeof uint64_t");
 static_assert(std::is_trivial<JtagSend>::value, "'JtagSend' is not trivial");
-static_assert(std::has_trivial_copy_constructor<JtagSend>::value, "'JtagSend' has no trivial copy constructor");
 
 struct JtagReceive {
     union {
@@ -107,7 +103,6 @@ struct JtagReceive {
 };
 static_assert(sizeof(JtagReceive) == sizeof(uint64_t), "sizeof register file 'JtagReceive' != sizeof uint64_t");
 static_assert(std::is_trivial<JtagReceive>::value, "'JtagReceive' is not trivial");
-static_assert(std::has_trivial_copy_constructor<JtagReceive>::value, "'JtagReceive' has no trivial copy constructor");
 
 struct HicannIfState {
     union {
@@ -125,7 +120,6 @@ struct HicannIfState {
 };
 static_assert(sizeof(HicannIfState) == sizeof(uint64_t), "sizeof register file 'HicannIfState' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannIfState>::value, "'HicannIfState' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannIfState>::value, "'HicannIfState' has no trivial copy constructor");
 
 struct HicannIfRxConfig {
     union {
@@ -141,7 +135,6 @@ struct HicannIfRxConfig {
 };
 static_assert(sizeof(HicannIfRxConfig) == sizeof(uint64_t), "sizeof register file 'HicannIfRxConfig' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannIfRxConfig>::value, "'HicannIfRxConfig' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannIfRxConfig>::value, "'HicannIfRxConfig' has no trivial copy constructor");
 
 struct HicannIfRxPulse {
     union {
@@ -157,7 +150,6 @@ struct HicannIfRxPulse {
 };
 static_assert(sizeof(HicannIfRxPulse) == sizeof(uint64_t), "sizeof register file 'HicannIfRxPulse' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannIfRxPulse>::value, "'HicannIfRxPulse' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannIfRxPulse>::value, "'HicannIfRxPulse' has no trivial copy constructor");
 
 struct HicannIfConfig {
     union {
@@ -183,7 +175,6 @@ struct HicannIfConfig {
 };
 static_assert(sizeof(HicannIfConfig) == sizeof(uint64_t), "sizeof register file 'HicannIfConfig' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannIfConfig>::value, "'HicannIfConfig' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannIfConfig>::value, "'HicannIfConfig' has no trivial copy constructor");
 
 struct HicannIfControls {
     union {
@@ -203,7 +194,6 @@ struct HicannIfControls {
 };
 static_assert(sizeof(HicannIfControls) == sizeof(uint64_t), "sizeof register file 'HicannIfControls' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannIfControls>::value, "'HicannIfControls' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannIfControls>::value, "'HicannIfControls' has no trivial copy constructor");
 
 struct HicannIfTxData {
     union {
@@ -219,7 +209,6 @@ struct HicannIfTxData {
 };
 static_assert(sizeof(HicannIfTxData) == sizeof(uint64_t), "sizeof register file 'HicannIfTxData' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannIfTxData>::value, "'HicannIfTxData' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannIfTxData>::value, "'HicannIfTxData' has no trivial copy constructor");
 
 struct HicannPacketGen {
     union {
@@ -237,7 +226,6 @@ struct HicannPacketGen {
 };
 static_assert(sizeof(HicannPacketGen) == sizeof(uint64_t), "sizeof register file 'HicannPacketGen' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannPacketGen>::value, "'HicannPacketGen' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannPacketGen>::value, "'HicannPacketGen' has no trivial copy constructor");
 
 struct HicannChannel {
     union {
@@ -253,7 +241,6 @@ struct HicannChannel {
 };
 static_assert(sizeof(HicannChannel) == sizeof(uint64_t), "sizeof register file 'HicannChannel' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannChannel>::value, "'HicannChannel' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannChannel>::value, "'HicannChannel' has no trivial copy constructor");
 
 struct ArqTimings {
     union {
@@ -272,7 +259,6 @@ struct ArqTimings {
 };
 static_assert(sizeof(ArqTimings) == sizeof(uint64_t), "sizeof register file 'ArqTimings' != sizeof uint64_t");
 static_assert(std::is_trivial<ArqTimings>::value, "'ArqTimings' is not trivial");
-static_assert(std::has_trivial_copy_constructor<ArqTimings>::value, "'ArqTimings' has no trivial copy constructor");
 
 struct HostEndpoint {
     union {
@@ -291,7 +277,6 @@ struct HostEndpoint {
 };
 static_assert(sizeof(HostEndpoint) == sizeof(uint64_t), "sizeof register file 'HostEndpoint' != sizeof uint64_t");
 static_assert(std::is_trivial<HostEndpoint>::value, "'HostEndpoint' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HostEndpoint>::value, "'HostEndpoint' has no trivial copy constructor");
 
 struct TraceRingbufferStart {
     union {
@@ -307,7 +292,6 @@ struct TraceRingbufferStart {
 };
 static_assert(sizeof(TraceRingbufferStart) == sizeof(uint64_t), "sizeof register file 'TraceRingbufferStart' != sizeof uint64_t");
 static_assert(std::is_trivial<TraceRingbufferStart>::value, "'TraceRingbufferStart' is not trivial");
-static_assert(std::has_trivial_copy_constructor<TraceRingbufferStart>::value, "'TraceRingbufferStart' has no trivial copy constructor");
 
 struct TraceRingbufferCapacity {
     union {
@@ -326,7 +310,6 @@ struct TraceRingbufferCapacity {
 };
 static_assert(sizeof(TraceRingbufferCapacity) == sizeof(uint64_t), "sizeof register file 'TraceRingbufferCapacity' != sizeof uint64_t");
 static_assert(std::is_trivial<TraceRingbufferCapacity>::value, "'TraceRingbufferCapacity' is not trivial");
-static_assert(std::has_trivial_copy_constructor<TraceRingbufferCapacity>::value, "'TraceRingbufferCapacity' has no trivial copy constructor");
 
 struct ConfigResponse {
     union {
@@ -342,7 +325,6 @@ struct ConfigResponse {
 };
 static_assert(sizeof(ConfigResponse) == sizeof(uint64_t), "sizeof register file 'ConfigResponse' != sizeof uint64_t");
 static_assert(std::is_trivial<ConfigResponse>::value, "'ConfigResponse' is not trivial");
-static_assert(std::has_trivial_copy_constructor<ConfigResponse>::value, "'ConfigResponse' has no trivial copy constructor");
 
 struct HicannRingbufferStart {
     union {
@@ -358,7 +340,6 @@ struct HicannRingbufferStart {
 };
 static_assert(sizeof(HicannRingbufferStart) == sizeof(uint64_t), "sizeof register file 'HicannRingbufferStart' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannRingbufferStart>::value, "'HicannRingbufferStart' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannRingbufferStart>::value, "'HicannRingbufferStart' has no trivial copy constructor");
 
 struct HicannRingbufferCapacity {
     union {
@@ -377,7 +358,6 @@ struct HicannRingbufferCapacity {
 };
 static_assert(sizeof(HicannRingbufferCapacity) == sizeof(uint64_t), "sizeof register file 'HicannRingbufferCapacity' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannRingbufferCapacity>::value, "'HicannRingbufferCapacity' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannRingbufferCapacity>::value, "'HicannRingbufferCapacity' has no trivial copy constructor");
 
 struct TraceNotificationBehaviour {
     union {
@@ -394,7 +374,6 @@ struct TraceNotificationBehaviour {
 };
 static_assert(sizeof(TraceNotificationBehaviour) == sizeof(uint64_t), "sizeof register file 'TraceNotificationBehaviour' != sizeof uint64_t");
 static_assert(std::is_trivial<TraceNotificationBehaviour>::value, "'TraceNotificationBehaviour' is not trivial");
-static_assert(std::has_trivial_copy_constructor<TraceNotificationBehaviour>::value, "'TraceNotificationBehaviour' has no trivial copy constructor");
 
 struct HicannNotificationBehaviour {
     union {
@@ -411,7 +390,6 @@ struct HicannNotificationBehaviour {
 };
 static_assert(sizeof(HicannNotificationBehaviour) == sizeof(uint64_t), "sizeof register file 'HicannNotificationBehaviour' != sizeof uint64_t");
 static_assert(std::is_trivial<HicannNotificationBehaviour>::value, "'HicannNotificationBehaviour' is not trivial");
-static_assert(std::has_trivial_copy_constructor<HicannNotificationBehaviour>::value, "'HicannNotificationBehaviour' has no trivial copy constructor");
 
 struct Driver {
     union {
@@ -427,7 +405,6 @@ struct Driver {
 };
 static_assert(sizeof(Driver) == sizeof(uint64_t), "sizeof register file 'Driver' != sizeof uint64_t");
 static_assert(std::is_trivial<Driver>::value, "'Driver' is not trivial");
-static_assert(std::has_trivial_copy_constructor<Driver>::value, "'Driver' has no trivial copy constructor");
 
 struct Info {
     union {
@@ -444,7 +421,6 @@ struct Info {
 };
 static_assert(sizeof(Info) == sizeof(uint64_t), "sizeof register file 'Info' != sizeof uint64_t");
 static_assert(std::is_trivial<Info>::value, "'Info' is not trivial");
-static_assert(std::has_trivial_copy_constructor<Info>::value, "'Info' has no trivial copy constructor");
 
 #pragma GCC diagnostic pop
 }}}
