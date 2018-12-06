@@ -149,8 +149,6 @@ def print_definition(d, write):
     write(f', "sizeof register file {d.name!r} != sizeof uint64_t");')
     write(f'static_assert(std::is_trivial<{d.name}>::value', end='')
     write(f', "{d.name!r} is not trivial");')
-    write(f'static_assert(std::has_trivial_copy_constructor<{d.name}>::value', end='')
-    write(f', "{d.name!r} has no trivial copy constructor");')
     write()
 
 
