@@ -41,6 +41,7 @@ def build(bld):
     bld.program(
         source=test_src + lib_src,
         target='extoll-test',
+        includes='external',
         name=NAME('test'),
         use=NAME('shared')
     )
