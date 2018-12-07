@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 06.12.2018 19:39:55.276149 
+ * 07.12.2018 18:08:11.154664 
  */
 
 #pragma once
@@ -22,6 +22,7 @@ struct Reset {
             bool core: 1;
             bool hicann: 1;
             bool arq: 1;
+            bool pulse_mem: 1;
         };
         uint64_t raw;
     };

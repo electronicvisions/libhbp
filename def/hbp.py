@@ -5,6 +5,7 @@ class Reset(Address(0x0), ReadWrite):
     core: 1
     hicann: 1
     arq: 1
+    pulse_mem: 1
 
 
 class JtagCmd(Address(0x400), ReadWrite):

@@ -16,7 +16,8 @@ public:
         Core = 1,
         Hicann = 2,
         Arq = 4,
-        All = Core | Hicann | Arq
+        PulseMem = 8,
+        All = Core | Hicann | Arq | PulseMem
     };
 
     enum class Config : uint64_t

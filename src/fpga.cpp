@@ -20,9 +20,9 @@ void Fpga::reset(Reset resets)
     std::this_thread::sleep_for(std::chrono::microseconds(120));
 }
 
-void Fpga::reset_set_only(Fpga::Reset resets)
+void Fpga::reset_set_only(Reset resets)
 {
-    RegisterFile::write<::Reset>({resets & Core, resets & Hicann, resets & Arq});
+    RegisterFile::write(rf::Reset::ADDRESS, static_cast<uint64_t>(resets));
 }
 
 
