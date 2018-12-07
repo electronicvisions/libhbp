@@ -36,9 +36,8 @@ def build(bld):
         use='RMA2 RMA2RC DL'
     )
 
-    test_src = 'jtagrw register_file switchram test'.split()
+    test_src = 'hbp_def jtag rra run util'.split()
     test_src = ['src/tests/{}.cpp'.format(file) for file in test_src]
-    test_src.append('src/main.cpp')
     bld.program(
         source=test_src + lib_src,
         target='extoll-test',
