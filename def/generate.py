@@ -57,7 +57,17 @@ def read_meta(file_name, local):
         error("namespace parts must be valid identifiert, defaulting to empty namespace")
         namespace = ()
 
-    return namespace, datetime.fromtimestamp(getmtime(file_name))
+    try:
+        test_include = local['TEST_INCLUDE']
+    except KeyError:
+        warning("no test include given, compiling the test will probably fail")
+        test_include = ''
+
+    if not isinstance(test_include, str):
+        error("test include must be a str")
+        exit()
+
+    return namespace, datetime.fromtimestamp(getmtime(file_name)), test_include
 
 
 def is_dunder(string):
@@ -152,14 +162,15 @@ def print_definition(d, write):
     write()
 
 
-def print_all(defs, out, meta):
-    def write(*args, **kwargs):
-        print(*args, file=out, **kwargs)
-
-    namespace, time = meta
-
+def print_warning(write, time):
     write("/**\n * This is a generated file - do not change it")
     write(" *", time.strftime('%d.%m.%Y %H:%M:%S.%f'), "\n */\n")
+
+
+def print_all(defs, write, meta):
+    namespace, time, _ = meta
+
+    print_warning(write, time)
 
     write('#pragma once')
     write()
@@ -182,12 +193,77 @@ def print_all(defs, out, meta):
     write('}' * len(namespace))
 
 
+TEST_VALUES = [
+    0,
+    0xffffffffffffffff,
+    0xaaaaaaaaaaaaaaaa,
+    0x5555555555555555,
+    0xcafedeadbabebeef
+]
+
+
+def print_test_section(d):
+    write(f'TEST_CASE("Generated definition {d.name!r}", "[definitions]")\n{{')
+
+    write(f'    SECTION("write raw - read fields")\n    {{')
+    write(f'        {d.name} rf;')
+    for value in TEST_VALUES:
+        write(f'\n        rf.raw = 0x{value:x};')
+        write()
+
+        offset = 0
+        binary = f'{value:064b}'[::-1]
+        for f in d.fields:
+            pattern = binary[offset:offset + f.width][::-1]
+            expected = int(pattern, 2)
+            offset += f.width
+
+            write(f'        CHECK(rf.{f.name} == 0x{expected:x});')
+    write('    }')
+
+    write(f'\n    SECTION("write fields - read raw")\n    {{')
+    write(f'        {d.name} rf;')
+    for value in TEST_VALUES:
+        write()
+        offset = 0
+        binary = f'{value:064b}'[::-1]
+        for f in d.fields:
+            pattern = binary[offset:offset + f.width][::-1]
+            expected = int(pattern, 2)
+            offset += f.width
+
+            write(f'        rf.{f.name} = 0x{expected:x};')
+        raw = int(binary[:offset][::-1], 2)
+        mask = (2 ** offset) - 1
+        write(f'\n        REQUIRE((rf.raw & 0x{mask:x}) == 0x{raw:x});')
+    write('    }')
+
+    write('}')
+
+
+def print_tests(defs, write, meta):
+    namespace, time, test_include = meta
+
+    print_warning(write, time)
+
+    write('#include <catch.hpp>')
+    write(f'#include {test_include}\n\n')
+
+    namespace = '::'.join(namespace)
+    write(f'using namespace {namespace};\n')
+
+    for d in defs:
+        print_test_section(d);
+
+
 parser = ArgumentParser("generate header files for register file definitions.")
 parser.add_argument('file_name', metavar='DEFINITIONS',
     help="the file that contains the register file definitions")
 parser.add_argument('-o', '--out',
     default=stdout.fileno(),
     help="the file to write into (default is stdout)")
+parser.add_argument('-t', '--test', default=False, action='store_true',
+    help="generate tests instead of definitions")
 
 
 if __name__ == '__main__':
@@ -196,4 +272,10 @@ if __name__ == '__main__':
     defs, meta = read_definition(args.file_name)
 
     with open(args.out, 'w', closefd=args.out != stdout.fileno()) as fout:
-        print_all(defs, fout, meta)
+        def write(*args, **kwargs):
+            print(*args, file=fout, **kwargs)
+
+        if args.test:
+            print_tests(defs, write, meta)
+        else:
+            print_all(defs, write, meta)

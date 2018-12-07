@@ -18,45 +18,42 @@ find_library(LIBRMA NAMES librma2.so PATHS ${RMA_LIB})
 find_library(LIBRMARC NAMES librma2rc.so PATHS ${RMA_LIB})
 
 set(HEADERS
-        include/extoll/buffer.h
-        include/extoll/register_file.h
-        include/extoll/connection.h
-        include/extoll/helper.h
-        include/extoll/extoll.h
-        include/extoll/jtag.h
-        include/extoll/exception.h
-        include/extoll/fpga.h
-        include/extoll/hbp_def.h
-        include/extoll/hicann.h
-        include/extoll/jtag_registers.h
+    include/extoll/buffer.h
+    include/extoll/register_file.h
+    include/extoll/connection.h
+    include/extoll/helper.h
+    include/extoll/extoll.h
+    include/extoll/jtag.h
+    include/extoll/exception.h
+    include/extoll/fpga.h
+    include/extoll/hbp_def.h
+    include/extoll/hicann.h
+    include/extoll/jtag_registers.h
 
-        include/extoll/utility/rng.h
-        include/extoll/utility/watch.h
-
-        include/tests/switchram.h
-        include/tests/test.h
-        include/tests/jtagrw.h
-        include/tests/register_file.h
-        )
+    include/extoll/utility/rng.h
+    include/extoll/utility/watch.h
+)
 
 set(SOURCES
-        src/buffer.cpp
-        src/register_file.cpp
-        src/connection.cpp
-        src/extoll.cpp
-        src/rma.cpp
-        src/jtag.cpp
-        src/fpga.cpp
-        src/exception.cpp
-        src/hicann.cpp
+    src/buffer.cpp
+    src/register_file.cpp
+    src/connection.cpp
+    src/extoll.cpp
+    src/rma.cpp
+    src/jtag.cpp
+    src/fpga.cpp
+    src/exception.cpp
+    src/hicann.cpp
+)
 
-        src/tests/test.cpp
-        src/tests/switchram.cpp
-        src/tests/jtagrw.cpp
-        src/tests/register_file.cpp
-        )
+set(TESTS
+    tests/util.h
+    tests/util.cpp
 
-
+    tests/rra.cpp
+    tests/jtag.cpp
+    tests/hbp_def.cpp
+)
 
 add_executable(scratch scratch.cpp)
 target_include_directories(scratch PRIVATE include)
@@ -69,8 +66,9 @@ target_link_libraries(rma ${LIBRMARC})
 target_link_libraries(rma ${LIBRMA})
 target_link_libraries(rma dl)
 
-add_executable(tests src/main.cpp ${HEADERS})
+add_executable(tests tests/run.cpp ${TESTS} ${HEADERS})
 target_include_directories(tests PRIVATE include)
+target_include_directories(tests PRIVATE external)
 target_include_directories(tests PRIVATE ${RMA_INCLUDE})
 target_link_libraries(tests ${LIBRMARC})
 target_link_libraries(tests ${LIBRMA})

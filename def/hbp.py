@@ -1,4 +1,5 @@
 NAMESPACE = 'extoll', 'library', 'rf'
+TEST_INCLUDE = '<extoll/hbp_def.h>'
 
 
 class Reset(Address(0x0), ReadWrite):
