@@ -37,7 +37,7 @@ def build(bld):
     )
 
     test_src = 'hbp_def jtag rra run util'.split()
-    test_src = ['src/tests/{}.cpp'.format(file) for file in test_src]
+    test_src = ['tests/{}.cpp'.format(file) for file in test_src]
     bld.program(
         source=test_src + lib_src,
         target='extoll-test',
