@@ -44,7 +44,7 @@ static void cmp(RegisterFile* reg, T& rf)
 void Fpga::configure_partner_host()
 {
     const static uint32_t default_timeout = 125000;
-    const static uint32_t default_frequency = (1024 * 4 / 512 - 5);
+    const static uint32_t default_frequency = (1024 * 4 / 512 - 8);
 
     const Endpoint::Connection& rma = connection.rma;
 
