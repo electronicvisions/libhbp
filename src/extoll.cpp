@@ -46,3 +46,17 @@ Hicann Extoll::hicann(RMA2_Nodeid node, int8_t number)
 
     return Hicann{connect(node), uint8_t(number)};
 }
+
+
+std::unique_ptr<Extoll> Extoll::instance = nullptr;
+
+Extoll& Extoll::Instance()
+{
+    if (!instance)
+    {
+        // C++11 does not have std::make_unique
+        instance.reset(new Extoll());
+    }
+
+    return *instance;
+}

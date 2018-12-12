@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <map>
 #include <vector>
+#include <memory>
 
 #include <extoll/rma.h>
 #include <extoll/register_file.h>
@@ -19,12 +20,16 @@ class Extoll
 {
 private:
     std::map<RMA2_Nodeid, Endpoint> connections;
+
+    static std::unique_ptr<Extoll> instance;
 public:
     RegisterFile register_file(RMA2_Nodeid node);
     JTag jtag(RMA2_Nodeid node);
     Fpga fpga(RMA2_Nodeid node);
     Hicann hicann(RMA2_Nodeid node, int8_t number);
     Endpoint& connect(RMA2_Nodeid node);
+
+    static Extoll& Instance();
 private:
 
 
