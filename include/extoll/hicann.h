@@ -21,6 +21,9 @@ public:
     void write(uint16_t address, uint32_t data);
     uint32_t read(uint16_t address);
 
+    void send(uint64_t data);
+    uint64_t receive();
+
     void clear_all();
     void diff_all();
 };

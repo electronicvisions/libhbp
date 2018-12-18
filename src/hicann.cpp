@@ -50,6 +50,13 @@ void Hicann::write(uint16_t address, uint32_t value)
     }
 }
 
+void Hicann::send(uint64_t data)
+{
+    auto& rma = connection.rma;
+
+    rma2_post_immediate_put(rma.port, rma.handle, 8, data, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+}
+
 
 uint32_t Hicann::read(uint16_t address)
 {
@@ -72,6 +79,14 @@ uint32_t Hicann::read(uint16_t address)
     usleep(10000);
 
     return uint32_t(connection.hicann_config[0]);
+}
+
+uint64_t Hicann::receive()
+{
+    // TODO: look up in the ringbuffer
+    // TODO: wait for notis
+
+    return 0xdead;
 }
 
 void Hicann::clear(PhysicalBuffer& p, size_t amount)
