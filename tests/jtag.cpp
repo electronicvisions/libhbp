@@ -2,77 +2,86 @@
 
 using namespace extoll::library::jtag;
 
-TEST_CASE("FPGA without HICANN cannot open JTAG connection", "[jtag]")
-{
-	Extoll e;
+#define FOR_EACH_HICANN for (uint8_t hicann = 0; hicann < j.active_hicanns(); ++hicann)
 
-	REQUIRE_THROWS_WITH(e.jtag(FPGA), Contains("no HICANN"));
+#define EX Extoll::Instance()
+#define CREATE() auto j = Extoll::Instance().jtag(FPGA_HICANN);\
+	j.reset();
+
+
+
+TEST_CASE("FPGA without HICANN cannot open JTAG connection", "[jtag][throw]")
+{
+	REQUIRE_THROWS_WITH(EX.jtag(FPGA), Contains("no HICANN"));
+}
+
+TEST_CASE("FPGA with HICANN counts HICANNs", "[jtag]")
+{
+	CREATE()
+
+	REQUIRE(j.active_hicanns() > 0);
 }
 
 
 TEST_CASE("FPGA can query static READID", "[jtag]")
 {
-	Extoll e;
-	auto j = e.jtag(FPGA_HICANN);
+	CREATE()
 
-	CHECK(j.read<ID>() == 0x14849434);
-	CHECK(j.read<ID>() == 0x14849434);
+	FOR_EACH_HICANN {
+		CHECK(j.read<ID>(hicann) == 0x14849434);
+		CHECK(j.read<ID>(hicann) == 0x14849434);
+	}
 }
 
 
-TEST_CASE("FPGA can query changing register", "[jtag]")
+TEST_CASE("FPGA can query changing register", "[jtag][ok]")
 {
-	Extoll e;
-	auto j = e.jtag(FPGA_HICANN);
+	CREATE()
 
-	REQUIRE(j.read<Systime>() != j.read<Systime>());
+	FOR_EACH_HICANN {
+		CHECK(j.read<Systime>(hicann) != j.read<Systime>(hicann));
+	}
 }
 
 
 TEST_CASE("FPGA can read back sent JTAG data", "[jtag]")
 {
-	Extoll e;
-	auto j = e.jtag(FPGA_HICANN);
+	CREATE()
 
 	SECTION("writing a certain value")
 	{
-		j.write<IBias>(0x7fff);
-		CHECK(j.write<IBias>(0x0) == 0x7fff);
+		FOR_EACH_HICANN {
+			j.write<IBias>(0x7fff, hicann);
+			CHECK(j.write<IBias>(0x0, hicann) == 0x7fff);
+		}
 	}
 
 	SECTION("writing all bits")
 	{
-		for (auto bit : all_bits(15))
-		{
-			CHECK(j.write<IBias>(bit) == 0x0);
-			CHECK(j.write<IBias>(0x0) == bit);
+		FOR_EACH_HICANN {
+			for (auto bit : all_bits(15))
+			{
+				CHECK(j.write<IBias>(bit, hicann) == 0x0);
+				CHECK(j.write<IBias>(0x0, hicann) == bit);
+			}
 		}
 	}
-
 }
 
-
-TEST_CASE("JTAG BYPASS offset", "[jtag][bypass]")
+TEST_CASE("FPGA can mix read/write to different HICANNs", "[jtag]")
 {
-	Extoll e;
-	auto j = e.jtag(FPGA_HICANN);
+	CREATE()
 
-	j.set_bypass();
-
-	SECTION("shift width = data length + 1")
+	CHECKED_IF(j.active_hicanns() > 1)
 	{
-		j.set_data(0, 64);
-		CHECK(j.set_get_data(0xaa, 9) == 0x154);
-		j.set_data(0, 64);
-		CHECK(j.set_get_data(0x555, 13) == 0xaaa);
-	}
+		FOR_EACH_HICANN
+		{
+			j.write<IBias>(0xc4 + hicann, hicann);
+		}
 
-	SECTION("shift width = data length")
-	{
-		j.set_data(0, 64);
-		CHECK(j.set_get_data(0xaa, 8) == 0x54);
-		j.set_data(0, 64);
-		CHECK(j.set_get_data(0x555, 11) == 0x2aa);
+		FOR_EACH_HICANN
+		{
+			CHECK(j.write<IBias>(0, hicann) == 0xc4 + hicann);
+		}
 	}
-
 }

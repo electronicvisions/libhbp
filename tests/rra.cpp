@@ -1,45 +1,42 @@
 #include "util.h"
 
+#define EX Extoll::Instance()
+#define CREATE(NODE) auto r = Extoll::Instance().register_file(NODE);\
 
 using namespace extoll::library::rf;
 
-TEST_CASE("Failing connections", "[rf]")
+TEST_CASE("Failing connections", "[rf][throw]")
 {
-	Extoll e;
 
 	SECTION("Cannot connect to host")
 	{
-		REQUIRE_THROWS(e.register_file(HOST));
+		REQUIRE_THROWS(EX.register_file(HOST));
 	}
 
 	SECTION("Cannot connect to non-existing node")
 	{
-		REQUIRE_THROWS(e.register_file(UNKNOWN));
+		REQUIRE_THROWS(EX.register_file(UNKNOWN));
 	}
 }
 
-TEST_CASE("Successful connections to FPGAs", "[rf]")
+TEST_CASE("Successful connections to FPGAs", "[rf][success]")
 {
-	Extoll e;
-
 	SECTION("FPGA without HICANNs")
 	{
-		REQUIRE_NOTHROW(e.register_file(FPGA));
+		REQUIRE_NOTHROW(EX.register_file(FPGA));
 	}
 
 	SECTION("FPGA with HICANNs")
 	{
-		REQUIRE_NOTHROW(e.register_file(FPGA_HICANN));
+		REQUIRE_NOTHROW(EX.register_file(FPGA_HICANN));
 	}
 }
 
-TEST_CASE("Read static registers", "[rf]")
+TEST_CASE("Read static registers", "[rf][static]")
 {
-	Extoll e;
-
 	SECTION("FPGA without HICANN")
 	{
-		auto r = e.register_file(FPGA);
+		auto r = EX.register_file(FPGA);
 
 		CHECK(r.read<Driver>().version == 0xcafebabe);
 
@@ -49,7 +46,7 @@ TEST_CASE("Read static registers", "[rf]")
 
 	SECTION("FPGA with HICANN")
 	{
-		auto r = e.register_file(FPGA_HICANN);
+		auto r = EX.register_file(FPGA_HICANN);
 
 		CHECK(r.read<Driver>().version == 0xcafebabe);
 
@@ -59,13 +56,11 @@ TEST_CASE("Read static registers", "[rf]")
 }
 
 
-TEST_CASE("Write and read back", "[rf]")
+TEST_CASE("Write and read back", "[rf][rw]")
 {
-	Extoll e;
-
 	SECTION("FPGA without HICANN")
 	{
-		auto r = e.register_file(FPGA);
+		auto r = EX.register_file(FPGA);
 
 		r.write<JtagSend>({0xdeadbeef});
 		CHECK(r.read<JtagSend>().raw == 0xdeadbeef);
@@ -80,7 +75,7 @@ TEST_CASE("Write and read back", "[rf]")
 
 	SECTION("FPGA with HICANN")
 	{
-		auto r = e.register_file(FPGA_HICANN);
+		auto r = EX.register_file(FPGA_HICANN);
 
 		r.write<JtagSend>({0xdeadbeef});
 		CHECK(r.read<JtagSend>().raw == 0xdeadbeef);

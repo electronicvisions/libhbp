@@ -52,7 +52,7 @@ set(TESTS
 
     tests/rra.cpp
     tests/jtag.cpp
-    tests/static.cpp
+    tests/if.cpp
     tests/hbp_def.cpp
 )
 
