@@ -18,7 +18,9 @@ int main(int argc, char** argv)
 		| Opt(NodesWithoutHicanns, "non-hicann nodes")
 			["-j"]["--non-hicann-nodes"]
 		| Opt(HostNode, "host node")
-			["-k"]["--host-node"];
+			["-k"]["--host-node"]
+		| Opt(NotExistingNode, "not existing node")
+			["--not-existing-node"];
 
 	session.cli(cli);
 
@@ -28,6 +30,15 @@ int main(int argc, char** argv)
 	{
 		std::cerr << "Host node must be provided\n";
 		return EXIT_FAILURE;
+	}
+
+	if (NotExistingNode == 0)
+	{
+		std::cout << "Skipping not-existing-node test\n";
+	}
+	else
+	{
+		std::cout << "Not-existing-node: " << NotExistingNode << "\n";
 	}
 
 	if (NodesWithHicanns.size() == 0)

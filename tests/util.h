@@ -14,6 +14,6 @@ std::vector<uint64_t> all_bits(size_t n=64);
 extern std::vector<RMA2_Nodeid> NodesWithHicanns;
 extern std::vector<RMA2_Nodeid> NodesWithoutHicanns;
 extern RMA2_Nodeid HostNode;
-const RMA2_Nodeid UNKNOWN = 100;
+extern RMA2_Nodeid NotExistingNode;
 
 #endif

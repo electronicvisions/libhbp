@@ -14,3 +14,4 @@ std::vector<uint64_t> all_bits(size_t n)
 std::vector<RMA2_Nodeid> NodesWithHicanns{};
 std::vector<RMA2_Nodeid> NodesWithoutHicanns{};
 RMA2_Nodeid HostNode{0};
+RMA2_Nodeid NotExistingNode{0};

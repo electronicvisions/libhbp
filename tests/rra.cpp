@@ -13,9 +13,12 @@ TEST_CASE("Failing connections", "[rf][throw]")
 		REQUIRE_THROWS(EX.register_file(HostNode));
 	}
 
-	SECTION("Cannot connect to non-existing node")
+	if (NotExistingNode)
 	{
-		REQUIRE_THROWS(EX.register_file(UNKNOWN));
+		SECTION("Cannot connect to non-existing node")
+		{
+			REQUIRE_THROWS(EX.register_file(NotExistingNode));
+		}
 	}
 }
 

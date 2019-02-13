@@ -5,6 +5,7 @@
 
 using namespace extoll::library::rf;
 using namespace extoll::library::jtag;
+using extoll::library::Fpga;
 
 
 TEST_CASE("Highspeed Init", "[hs]")
@@ -13,15 +14,18 @@ TEST_CASE("Highspeed Init", "[hs]")
 	{
 		auto rf = EX.register_file(node);
 		auto j = EX.jtag(node);
+		auto fpga = EX.fpga(node);
 
 		FOR_EACH_HICANN {
 			DYNAMIC_SECTION("node is " << node << " hicann is " << int(hicann))
 			{
+				fpga.reset(Fpga::Reset::All);
+
 				rf.write<HicannChannel>({hicann});
 				CHECK(j.read<ID>(hicann) == 0x14849434);
 
 				HicannIfConfig stop;
-				stop.raw = 0x4000c & 0xffffffe;
+				stop.raw = 0x4000c;
 				rf.write<HicannIfConfig>(std::move(stop));
 				j.trigger<StopLink>(hicann);
 
@@ -32,7 +36,7 @@ TEST_CASE("Highspeed Init", "[hs]")
 				j.write<LvdsPadsEnable>(0, hicann);
 				j.trigger<StartLink>(hicann);
 				HicannIfConfig start;
-				start.raw |= 1;
+				start.raw = 0x4000d;
 				rf.write<HicannIfConfig>(std::move(start));
 
 				usleep(10000);

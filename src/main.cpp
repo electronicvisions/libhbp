@@ -1,5 +1,6 @@
 #include <iostream>
 #include <bitset>
+#include <unistd.h>
 
 #include <extoll/extoll.h>
 
@@ -18,19 +19,29 @@ using namespace jtag;
 int _main(RMA2_Nodeid node, uint8_t hicann)
 {
     auto rf = Extoll::Instance().register_file(node);
+
+    std::cout << "Driver: 0x" << std::hex << rf.read<Driver>().version << "\n";
+
+    rf.write<JtagSend>({0xffffffffffff});
+    rf.write<JtagCmd>({JtagCmd::IR, 6*8, false, true});
+    usleep(1000);
+
+    rf.write<JtagSend>({1});
+    rf.write<JtagCmd>({JtagCmd::DR, 9, false, true});
+    usleep(1000);
+
+    uint64_t shifted = rf.read<JtagReceive>().raw % 512;
+    int hicanns_in_chain = -1;
+    while (shifted)
+    {
+        shifted >>= 1;
+        ++hicanns_in_chain;
+    }
+
+    std::cout << "Jtag Chain: " << hicanns_in_chain << "\n";
+
     auto jtag = Extoll::Instance().jtag(node);
-
-    std::cout << jtag.read<ID>(hicann) << "\n";
-    int i;
-    rf.write<JtagSend>({0});
-    std::cin >> i;
-    rf.write<JtagCmd>({0, 6, false, true});
-    std::cin >> i;
-    rf.write<JtagCmd>({JtagCmd::DR, 32, false, true});
-    std::cin >> i;
-    std::cout << std::hex << rf.read<JtagReceive>().raw << "\n";
-
-    
+    std::cout << "Hicann ID: 0x" << std::hex << jtag.read<ID>(hicann) << "\n";
 
     return EXIT_SUCCESS;
 }
