@@ -54,6 +54,7 @@ set(TESTS
     tests/jtag.cpp
     tests/if.cpp
     tests/hbp_def.cpp
+    tests/highspeed.cpp
 )
 
 add_executable(scratch scratch.cpp)
