@@ -1,12 +1,11 @@
 #include <extoll/fpga.h>
 
+#include <iostream>
 #include <chrono>
 #include <thread>
 #include <array>
 #include <cassert>
 #include <bitset>
-
-#include <extoll/utility/watch.h>
 
 
 using namespace extoll::library;
@@ -46,15 +45,15 @@ void Fpga::configure_partner_host()
     const static uint32_t default_timeout = 125000;
     const static uint32_t default_frequency = (1024 * 4 / 512 - 8);
 
-    const Endpoint::Connection& rma = connection.rma;
+    const Endpoint::Connection& rma = _connection.rma;
 
     RMA2_Nodeid local_node = rma2_get_nodeid(rma.port);
     write_noblock<HostEndpoint>({local_node, rma.vpid, 0, 1 << 2});
-    write_noblock<TraceRingbufferStart>({connection.trace_data.address()});
-    write_noblock<TraceRingbufferCapacity>({connection.trace_data.byte_size(), 0, 0, true});
-    write_noblock<ConfigResponse>({connection.fpga_config_address()});
-    write_noblock<HicannRingbufferStart>({connection.hicann_config.address()});
-    write_noblock<HicannRingbufferCapacity>({connection.hicann_config.byte_size(), 0, 0, true});
+    write_noblock<TraceRingbufferStart>({_connection.trace_data.address()});
+    write_noblock<TraceRingbufferCapacity>({_connection.trace_data.byte_size(), 0, 0, true});
+    write_noblock<ConfigResponse>({_connection.fpga_config_address()});
+    write_noblock<HicannRingbufferStart>({_connection.hicann_config.address()});
+    write_noblock<HicannRingbufferCapacity>({_connection.hicann_config.byte_size(), 0, 0, true});
     write_noblock<TraceNotificationBehaviour>({default_timeout, default_frequency});
     write_noblock<HicannNotificationBehaviour>({default_timeout, default_frequency});
 
@@ -63,20 +62,20 @@ void Fpga::configure_partner_host()
     HostEndpoint he{local_node, rma.vpid, 0, 1 << 2};
     cmp(this, he);
 
-    TraceRingbufferStart trs{connection.trace_data.address()};
+    TraceRingbufferStart trs{_connection.trace_data.address()};
     cmp(this, trs);
 
     auto r = read(TraceRingbufferCapacity::ADDRESS) & 0xffffffff;
-    assert(r == connection.trace_data.byte_size());
+    assert(r == _connection.trace_data.byte_size());
 
-    ConfigResponse cr{connection.fpga_config_address()};
+    ConfigResponse cr{_connection.fpga_config_address()};
     cmp(this, cr);
 
-    HicannRingbufferStart hrs{connection.hicann_config.address()};
+    HicannRingbufferStart hrs{_connection.hicann_config.address()};
     cmp(this, hrs);
 
     r = read(HicannRingbufferCapacity::ADDRESS) & 0xffffffff;
-    assert(r == connection.hicann_config.byte_size());
+    assert(r == _connection.hicann_config.byte_size());
 
     TraceNotificationBehaviour tnb{default_timeout, default_frequency};
     cmp(this, tnb);
@@ -87,18 +86,13 @@ void Fpga::configure_partner_host()
 
 void Fpga::send(Fpga::Config config)
 {
-    const Endpoint::Connection& rma = connection.rma;
+    const Endpoint::Connection& rma = _connection.rma;
 
-    {
-        WATCH_STATUS
-        WATCH_ERRORS
-
-        connection.gp_buffer[0] = 0xdeadbeef;
-        auto payload = static_cast<uint64_t>(config);
-        rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
-        wait_for_rma_notification();
-        std::cout << "GP:   " << std::hex << connection.fpga_config_response() << "\n";
-    }
+    _connection.gp_buffer[0] = 0xdeadbeef;
+    auto payload = static_cast<uint64_t>(config);
+    rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    wait_for_rma_notification();
+    std::cout << "GP:   " << std::hex << _connection.fpga_config_response() << "\n";
 }
 
 Fpga::Config operator|(Fpga::Config flags, Fpga::Config bit)

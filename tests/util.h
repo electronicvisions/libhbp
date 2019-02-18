@@ -7,6 +7,7 @@
 #include <vector>
 
 using Extoll = extoll::library::Extoll;
+using JTag = extoll::library::JTag;
 using namespace Catch::Matchers;
 
 std::vector<uint64_t> all_bits(size_t n=64);
@@ -34,5 +35,8 @@ using Wrapper = Catch::Generators::GeneratorWrapper<T>;
 
 Wrapper<RMA2_Nodeid> hicann_nodes();
 Wrapper<RMA2_Nodeid> non_hicann_nodes();
+
+#define FOR_EACH_HICANN for (uint8_t hicann = 0; hicann < j.active_hicanns(); ++hicann)
+#define EX Extoll::Instance()
 
 #endif

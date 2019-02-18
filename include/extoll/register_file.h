@@ -13,11 +13,14 @@ namespace library {
 class RegisterFile
 {
 protected:
-    Endpoint& connection;
-    mutable RMA2_ERROR status;
+    Endpoint& _connection;
+    mutable RMA2_ERROR _status;
 
 public:
     explicit RegisterFile(Endpoint&);
+    RegisterFile(const RegisterFile&) = delete;
+    RegisterFile(RegisterFile&&) noexcept = default;
+    RegisterFile& operator=(const RegisterFile&) = delete;
 
     template <typename RF>
     RF read() const

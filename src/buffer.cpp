@@ -14,11 +14,11 @@
 using namespace extoll::library;
 
 PhysicalBuffer::PhysicalBuffer(RMA2_Port port, size_t pages)
-    : port(port), _data(pages * 1024 * 4 / sizeof(uint64_t))
+    : _port(port), _data(pages * 1024 * 4 / sizeof(uint64_t))
 {
     assert((pages > 0) && (pages <= 1000));
 
-    if (rma2_register(port, _data.data(), _data.size() * sizeof(uint64_t), &_region) != RMA2_SUCCESS)
+    if (rma2_register(_port, _data.data(), _data.size() * sizeof(uint64_t), &_region) != RMA2_SUCCESS)
     {
         throw FailedToRegisterRegion();
     }
@@ -26,7 +26,7 @@ PhysicalBuffer::PhysicalBuffer(RMA2_Port port, size_t pages)
 
 PhysicalBuffer::~PhysicalBuffer()
 {
-    rma2_unregister(port, _region);
+    rma2_unregister(_port, _region);
 }
 
 RMA2_Region* PhysicalBuffer::region()

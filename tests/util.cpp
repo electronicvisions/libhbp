@@ -5,7 +5,7 @@ std::vector<uint64_t> all_bits(size_t n)
 	std::vector<uint64_t> bits;
 	for (uint64_t i = 0; i < n; ++i)
 	{
-		bits.push_back(1 << i);
+		bits.push_back(1ull << i);
 	}
 
 	return bits;
@@ -35,17 +35,17 @@ bool VectorGenerator<T>::next()
 }
 
 using namespace Catch::Generators;
-using If = IGenerator<RMA2_Nodeid>;
+using NodeIf = IGenerator<RMA2_Nodeid>;
 
 Wrapper<RMA2_Nodeid> hicann_nodes()
 {
 	auto gen = new VectorGenerator<RMA2_Nodeid>(NodesWithHicanns);
-	return {std::unique_ptr<If>(gen)};
+	return {std::unique_ptr<NodeIf>(gen)};
 }
 
 
 Wrapper<RMA2_Nodeid> non_hicann_nodes()
 {
 	auto gen = new VectorGenerator<RMA2_Nodeid>(NodesWithoutHicanns);
-	return {std::unique_ptr<If>(gen)};
+	return {std::unique_ptr<NodeIf>(gen)};
 }

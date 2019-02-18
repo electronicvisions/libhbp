@@ -4,8 +4,14 @@ project(libhbp_cpp)
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_options(
-        "-Wall" "-Wpedantic" "-Wextra" "-fms-extensions"
+    "-Wall" "-Wpedantic" "-Wextra" "-fms-extensions"
+    "-Wshadow" "-Wnon-virtual-dtor" "-Wold-style-cast"
+    "-Wcast-align" "-Wunused" "-Woverloaded-virtual"
+    "-Wsign-conversion" "-Wdouble-promotion"
+    "-Wformat=2" "-Wlogical-op" "-Wuseless-cast"
+    "-Wconversion" "-Werror" "-Woverflow"
 )
+
 
 if (NOT EXISTS $ENV{EXTOLL_R2_HOME})
     message(FATAL_ERROR "$EXTOLL_R2_HOME must be set to a directory!")
@@ -31,7 +37,6 @@ set(HEADERS
     include/extoll/jtag_registers.h
 
     include/extoll/utility/rng.h
-    include/extoll/utility/watch.h
 )
 
 set(SOURCES

@@ -10,7 +10,7 @@ class Hicann : public RegisterFile
 {
     const static RMA2_NLA CONFIG_ADDRESS = 0x2a1bull << 48ull;
 
-    uint8_t number;
+    uint8_t _number;
 
 
     void clear(PhysicalBuffer&, size_t=0);

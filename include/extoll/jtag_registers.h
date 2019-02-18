@@ -57,7 +57,7 @@ JTAG_REGISTER(DelayRxClock, 0x22, 6, READWRITE)
 
 JTAG_REGISTER(StartLink, 0x08, 0, TRIG)
 JTAG_REGISTER(StopLink, 0x09, 0, TRIG)
-JTAG_REGISTER(StartConfigPackege, 0x18, 0, TRIG)
+JTAG_REGISTER(StartConfigPackage, 0x18, 0, TRIG)
 JTAG_REGISTER(StartPulsePackage, 0x19, 0, TRIG)
 JTAG_REGISTER(SetReset, 0x1b, 0, TRIG)
 JTAG_REGISTER(ReleaseReset, 0x1c, 0, TRIG)

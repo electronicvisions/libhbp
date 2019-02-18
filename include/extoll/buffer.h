@@ -11,7 +11,7 @@ namespace library {
 
 class PhysicalBuffer
 {
-    RMA2_Port port = nullptr;
+    RMA2_Port _port = nullptr;
     std::vector<uint64_t> _data{};
     RMA2_Region* _region = nullptr;
 

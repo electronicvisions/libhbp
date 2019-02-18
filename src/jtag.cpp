@@ -31,7 +31,8 @@ void JTag::set_bypass()
 void JTag::shift_command(uint64_t command)
 {
     RegisterFile::write(JtagSend::ADDRESS, command);
-    RegisterFile::write<JtagCmd>({JtagCmd::IR, 6 * _hicanns, false, true});
+    auto length = uint16_t(_hicanns * 6);
+    RegisterFile::write<JtagCmd>({JtagCmd::IR, length & 0x3ffu, false, true});
     wait_until_finished();
 }
 
@@ -56,11 +57,11 @@ void JTag::set_command(uint64_t command, uint8_t hicann)
 
 void JTag::set_data(uint64_t data, uint16_t length, uint8_t hicann)
 {
-    length += _hicanns - 1;
+    length = uint16_t(length + _hicanns - 1);
     data = data << (_hicanns - 1 - hicann);
 
     RegisterFile::write(JtagSend::ADDRESS, data);
-    RegisterFile::write<JtagCmd>({JtagCmd::DR, length, false, true});
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, length & 0x3ffu, false, true});
     wait_until_finished();
 }
 
@@ -72,8 +73,8 @@ uint64_t JTag::set_get_data(uint64_t data, uint16_t length, uint8_t hicann)
 
 uint64_t JTag::get_data(uint16_t length, uint8_t hicann)
 {
-    length += _hicanns - 1;
-    RegisterFile::write<JtagCmd>({JtagCmd::DR, length, false, true});
+    length = uint16_t(length + _hicanns - 1);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, length & 0x3ffu, false, true});
     wait_until_finished();
     return RegisterFile::read(JtagReceive::ADDRESS) >> (_hicanns - 1 - hicann);
 }

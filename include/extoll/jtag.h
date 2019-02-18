@@ -15,6 +15,8 @@ class JTag : protected RegisterFile
 
 public:
     explicit JTag(Endpoint&);
+    JTag(const JTag&) = delete;
+    JTag(JTag&&) noexcept = default;
 
     void reset();
     void set_bypass();
@@ -48,7 +50,7 @@ private:
     void wait_until_finished() const;
     void shift_command(uint64_t command);
 
-    size_t _hicanns = 0;
+    uint8_t _hicanns = 0;
 };
 
 template <typename JR>

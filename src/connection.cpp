@@ -60,18 +60,18 @@ static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> time
     throw ConnectionFailed("No response from node");
 }
 
-Endpoint::Endpoint(RMA2_Nodeid node)
-    : rra(node, true), rma(node, false),
+Endpoint::Endpoint(RMA2_Nodeid n)
+    : node(n), rra(n, true), rma(n, false),
     gp_buffer(rra.port, 1), trace_data(rma.port, 1), hicann_config(rma.port, 1)
 {
     RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
-    throw_on_error<FailedToRead>(status, "Failed to query driver", node, 0x8000);
+    throw_on_error<FailedToRead>(status, "Failed to query driver", n, 0x8000);
     wait_with_timeout(rra.port);
 
     auto driver = gp_buffer.at<uint32_t>(0);
     if (driver != 0xcafebabe)
     {
-        throw NodeIsNoFpga(node, driver);
+        throw NodeIsNoFpga(n, driver);
     }
 
     Rng<uint64_t> rng;

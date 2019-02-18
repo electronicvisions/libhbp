@@ -23,10 +23,9 @@ struct Endpoint
         ~Connection();
     };
 
+    RMA2_Nodeid node;
     Connection rra;
     Connection rma;
-
-    RMA2_Nodeid node;
 
     PhysicalBuffer gp_buffer;
     PhysicalBuffer trace_data;

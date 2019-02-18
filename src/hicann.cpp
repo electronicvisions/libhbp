@@ -3,8 +3,6 @@
 #include <bitset>
 #include <iostream>
 
-#include <extoll/utility/watch.h>
-
 using namespace extoll::library;
 
 union Config
@@ -26,47 +24,40 @@ union Config
 static_assert(sizeof(Config) == 8, "Alignment error!");
 
 Hicann::Hicann(Endpoint& connection, uint8_t number)
-    : RegisterFile(connection), number(number) {}
+    : RegisterFile(connection), _number(number) {}
 
-void Hicann::write(uint16_t address, uint32_t value)
+void Hicann::write(uint16_t , uint32_t )
 {
-    Endpoint::Connection& rma = connection.rma;
+    Endpoint::Connection& rma = _connection.rma;
 
     Config payload;
-    payload.data.value = value;
-    payload.data.address = address;
+    payload.data.value = 0;
+    payload.data.address = 0;
     payload.data.write = true;
     payload.data.tag = false;
-    payload.data.hicann = number;
+    payload.data.hicann = _number & 7;
 
-    // std::cout << "bits: " << std::bitset<64>(payload.raw) << "\n";
-
-    {
-        //WATCH_STATUS
-        //WATCH_ERRORS
-
-        rma2_post_immediate_put(rma.port, rma.handle, 8, payload.raw, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
-        wait_for_rma_notification();
-    }
+    rma2_post_immediate_put(rma.port, rma.handle, 8, payload.raw, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    wait_for_rma_notification();
 }
 
 void Hicann::send(uint64_t data)
 {
-    auto& rma = connection.rma;
+    auto& rma = _connection.rma;
 
     rma2_post_immediate_put(rma.port, rma.handle, 8, data, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
 }
 
 
-uint32_t Hicann::read(uint16_t address)
+uint32_t Hicann::read(uint16_t )
 {
-    Endpoint::Connection& rma = connection.rma;
+    Endpoint::Connection& rma = _connection.rma;
 
     Config payload;
-    payload.data.address = address;
+    payload.data.address = 0;
     payload.data.read = false;
     payload.data.tag = false;
-    payload.data.hicann = number;
+    payload.data.hicann = _number & 7;
 
     {
         //WATCH_STATUS
@@ -78,7 +69,7 @@ uint32_t Hicann::read(uint16_t address)
 
     usleep(10000);
 
-    return uint32_t(connection.hicann_config[0]);
+    return uint32_t(_connection.hicann_config[0]);
 }
 
 uint64_t Hicann::receive()
@@ -135,14 +126,14 @@ void Hicann::diff(PhysicalBuffer& p, size_t amount)
 
 void Hicann::clear_all()
 {
-    clear(connection.gp_buffer);
-    clear(connection.hicann_config);
-    clear(connection.trace_data);
+    clear(_connection.gp_buffer);
+    clear(_connection.hicann_config);
+    clear(_connection.trace_data);
 }
 
 void Hicann::diff_all()
 {
-    diff(connection.gp_buffer);
-    diff(connection.hicann_config);
-    diff(connection.trace_data);
+    diff(_connection.gp_buffer);
+    diff(_connection.hicann_config);
+    diff(_connection.trace_data);
 }

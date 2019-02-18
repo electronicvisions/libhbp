@@ -2,49 +2,36 @@
 
 using namespace extoll::library::jtag;
 
-#define FOR_EACH_HICANN for (uint8_t hicann = 0; hicann < j.active_hicanns(); ++hicann)
-
-#define EX Extoll::Instance()
-#define CREATE(node) auto j = Extoll::Instance().jtag(node);\
-	j.reset();
-
-
 
 TEST_CASE("FPGA without HICANN cannot open JTAG connection", "[jtag][throw]")
 {
 	auto node = GENERATE(non_hicann_nodes());
+	CAPTURE(node);
 
-	DYNAMIC_SECTION("node is " << node)
-	{
-		REQUIRE_THROWS_WITH(EX.jtag(node), Contains("no HICANN"));
-	}
+	REQUIRE_THROWS_WITH(EX.jtag(node), Contains("no HICANN"));
 }
 
 TEST_CASE("FPGA with HICANN counts HICANNs", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
+	CAPTURE(node);
 
-	DYNAMIC_SECTION("node is " << node)
-	{
-		CREATE(node)
+	auto j = EX.jtag(node);
 
-		REQUIRE(j.active_hicanns() > 0);
-	}
+	REQUIRE(j.active_hicanns() > 0);
 }
 
 
 TEST_CASE("FPGA can query static READID", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
+	CAPTURE(node);
 
-	DYNAMIC_SECTION("node is " << node)
-	{
-		CREATE(node)
+	auto j = EX.jtag(node);
 
-		FOR_EACH_HICANN {
-			CHECK(j.read<ID>(hicann) == 0x14849434);
-			CHECK(j.read<ID>(hicann) == 0x14849434);
-		}
+	FOR_EACH_HICANN {
+		CHECK(j.read<ID>(hicann) == 0x14849434);
+		CHECK(j.read<ID>(hicann) == 0x14849434);
 	}
 }
 
@@ -52,14 +39,12 @@ TEST_CASE("FPGA can query static READID", "[jtag]")
 TEST_CASE("FPGA can query changing register", "[jtag][ok]")
 {
 	auto node = GENERATE(hicann_nodes());
+	CAPTURE(node);
 
-	DYNAMIC_SECTION("node is " << node)
-	{
-		CREATE(node)
+	auto j = EX.jtag(node);
 
-		FOR_EACH_HICANN {
-			CHECK(j.read<Systime>(hicann) != j.read<Systime>(hicann));
-		}
+	FOR_EACH_HICANN {
+		CHECK(j.read<Systime>(hicann) != j.read<Systime>(hicann));
 	}
 }
 
@@ -67,27 +52,25 @@ TEST_CASE("FPGA can query changing register", "[jtag][ok]")
 TEST_CASE("FPGA can read back sent JTAG data", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
+	CAPTURE(node);
 
-	DYNAMIC_SECTION("node is " << node)
+	auto j = EX.jtag(node);
+
+	SECTION("writing a certain value")
 	{
-		CREATE(node)
-
-		SECTION("writing a certain value")
-		{
-			FOR_EACH_HICANN {
-				j.write<IBias>(0x7fff, hicann);
-				CHECK(j.write<IBias>(0x0, hicann) == 0x7fff);
-			}
+		FOR_EACH_HICANN {
+			j.write<IBias>(0x7fff, hicann);
+			CHECK(j.write<IBias>(0x0, hicann) == 0x7fff);
 		}
+	}
 
-		SECTION("writing all bits")
-		{
-			FOR_EACH_HICANN {
-				for (auto bit : all_bits(15))
-				{
-					CHECK(j.write<IBias>(bit, hicann) == 0x0);
-					CHECK(j.write<IBias>(0x0, hicann) == bit);
-				}
+	SECTION("writing all bits")
+	{
+		FOR_EACH_HICANN {
+			for (auto bit : all_bits(15))
+			{
+				CHECK(j.write<IBias>(bit, hicann) == 0x0);
+				CHECK(j.write<IBias>(0x0, hicann) == bit);
 			}
 		}
 	}
@@ -96,22 +79,20 @@ TEST_CASE("FPGA can read back sent JTAG data", "[jtag]")
 TEST_CASE("FPGA can mix read/write to different HICANNs", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
-	
-	DYNAMIC_SECTION("node is " << node)
+	CAPTURE(node);
+
+	auto j = EX.jtag(node);
+
+	CHECKED_IF(j.active_hicanns() > 1)
 	{
-		CREATE(node)
-
-		CHECKED_IF(j.active_hicanns() > 1)
+		FOR_EACH_HICANN
 		{
-			FOR_EACH_HICANN
-			{
-				j.write<IBias>(0xc4 + hicann, hicann);
-			}
+			j.write<IBias>(0xc4ull + hicann, hicann);
+		}
 
-			FOR_EACH_HICANN
-			{
-				CHECK(j.write<IBias>(0, hicann) == 0xc4 + hicann);
-			}
+		FOR_EACH_HICANN
+		{
+			CHECK(j.write<IBias>(0, hicann) == 0xc4 + hicann);
 		}
 	}
 }
