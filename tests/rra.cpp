@@ -5,7 +5,7 @@
 
 using namespace extoll::library::rf;
 
-TEST_CASE("Failing connections", "[rf][throw]")
+TEST_CASE("Failing connections", "[.][rf][throw]")
 {
 
 	SECTION("Cannot connect to host")

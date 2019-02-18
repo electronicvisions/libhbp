@@ -15,3 +15,37 @@ std::vector<RMA2_Nodeid> NodesWithHicanns{};
 std::vector<RMA2_Nodeid> NodesWithoutHicanns{};
 RMA2_Nodeid HostNode{0};
 RMA2_Nodeid NotExistingNode{0};
+
+
+template <typename T>
+VectorGenerator<T>::VectorGenerator(const std::vector<T>& vec)
+	: it(vec.cbegin()), end(vec.cend())
+{}
+
+template <typename T>
+const T& VectorGenerator<T>::get() const
+{
+	return *it;
+}
+
+template <typename T>
+bool VectorGenerator<T>::next()
+{
+	return ++it != end;
+}
+
+using namespace Catch::Generators;
+using If = IGenerator<RMA2_Nodeid>;
+
+Wrapper<RMA2_Nodeid> hicann_nodes()
+{
+	auto gen = new VectorGenerator<RMA2_Nodeid>(NodesWithHicanns);
+	return {std::unique_ptr<If>(gen)};
+}
+
+
+Wrapper<RMA2_Nodeid> non_hicann_nodes()
+{
+	auto gen = new VectorGenerator<RMA2_Nodeid>(NodesWithoutHicanns);
+	return {std::unique_ptr<If>(gen)};
+}

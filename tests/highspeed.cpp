@@ -3,50 +3,85 @@
 #define EX Extoll::Instance()
 #define FOR_EACH_HICANN for (uint8_t hicann = 0; hicann < j.active_hicanns(); ++hicann)
 
+using namespace extoll::library;
 using namespace extoll::library::rf;
 using namespace extoll::library::jtag;
 using extoll::library::Fpga;
 
 
-TEST_CASE("Highspeed Init", "[hs]")
+void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
 {
-	for (auto node : NodesWithHicanns)
-	{
-		auto rf = EX.register_file(node);
-		auto j = EX.jtag(node);
-		auto fpga = EX.fpga(node);
+	fpga.reset(Fpga::Reset::All);
 
-		FOR_EACH_HICANN {
-			DYNAMIC_SECTION("node is " << node << " hicann is " << int(hicann))
+	rf.write<HicannChannel>({hicann});
+
+	HicannIfConfig stop;
+	stop.raw = 0x4000c;
+	rf.write<HicannIfConfig>(std::move(stop));
+	jtag.trigger<StopLink>(hicann);
+
+	usleep(20);
+	jtag.write<LinkControl>(0x061, hicann);
+	jtag.write<LvdsPadsEnable>(0, hicann);
+	jtag.trigger<StartLink>(hicann);
+	HicannIfConfig start;
+	start.raw = 0x4000d;
+	rf.write<HicannIfConfig>(std::move(start));
+
+	usleep(10000);
+}
+
+
+TEST_CASE("Highspeed Init succeeds", "[hs]")
+{
+	auto node = GENERATE(hicann_nodes());
+
+	auto rf = EX.register_file(node);
+	auto j = EX.jtag(node);
+	auto fpga = EX.fpga(node);
+
+	FOR_EACH_HICANN {
+		DYNAMIC_SECTION("node is " << node << " hicann is " << int(hicann))
+		{
+			highspeed_init(rf, j, fpga, hicann);
+			auto hicann_status = j.read<Status>(hicann) & 0x49;
+			auto fpga_status = rf.read<HicannIfState>().raw & 0x49;
+
+			CHECK(hicann_status == 0x49);
+			CHECK(fpga_status == 0x49);
+		}
+	}
+}
+
+TEST_CASE("Highspeed transmission via JTAG from FPAG to HICANN works", "[hs]")
+{
+	auto node = GENERATE(hicann_nodes());
+
+	auto rf = EX.register_file(node);
+	auto j = EX.jtag(node);
+	auto fpga = EX.fpga(node);
+
+	FOR_EACH_HICANN {
+		DYNAMIC_SECTION("node is " << node << " hicann is " << int(hicann))
+		{
+			highspeed_init(rf, j, fpga, hicann);
+
+			j.write<TestControl>(1, hicann);
+			rf.write<HicannChannel>({hicann});
+			rf.write<HicannPacketGen>({0, 0, false});
+
+			for (int i = 0; i < 100; ++i)
 			{
-				fpga.reset(Fpga::Reset::All);
+				uint64_t sent = 0x1234 << (i % 8);
+				rf.write<HicannIfTxData>({sent});
+				rf.write<HicannIfControls>({false, true, false, false, false});
 
-				rf.write<HicannChannel>({hicann});
-				CHECK(j.read<ID>(hicann) == 0x14849434);
+				usleep(1000);
 
-				HicannIfConfig stop;
-				stop.raw = 0x4000c;
-				rf.write<HicannIfConfig>(std::move(stop));
-				j.trigger<StopLink>(hicann);
+				uint64_t received = j.read<RxData>(hicann) & 0xffffff;
 
-				auto fpga_status = rf.read<HicannIfState>().raw & 0x49;
-
-				usleep(20);
-				j.write<LinkControl>(0x061, hicann);
-				j.write<LvdsPadsEnable>(0, hicann);
-				j.trigger<StartLink>(hicann);
-				HicannIfConfig start;
-				start.raw = 0x4000d;
-				rf.write<HicannIfConfig>(std::move(start));
-
-				usleep(10000);
-				auto hicann_status = j.read<Status>(hicann) & 0x49;
-				fpga_status = rf.read<HicannIfState>().raw & 0x49;
-
-				CHECK(hicann_status == 0x49);
-				CHECK(fpga_status == 0x49);
+				CHECK(received == sent);
 			}
 		}
-
 	}
 }
