@@ -24,8 +24,8 @@ class JtagCmd(Address(0x400), ReadWrite):
 
 
 class JtagStatus(Address(0x408), ReadOnly):
-    clock_enabled: 1;
-    paused: 1;
+    clock_enabled: 1
+    paused: 1
 
 
 class JtagSend(Address(0x480), ReadWrite):

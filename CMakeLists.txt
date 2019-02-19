@@ -75,7 +75,7 @@ target_link_libraries(rma dl)
 
 add_executable(tests tests/run.cpp ${TESTS} ${HEADERS})
 target_include_directories(tests PRIVATE include)
-target_include_directories(tests PRIVATE external)
+target_include_directories(tests PUBLIC external)
 target_include_directories(tests PRIVATE ${RMA_INCLUDE})
 target_link_libraries(tests ${LIBRMARC})
 target_link_libraries(tests ${LIBRMA})
