@@ -28,6 +28,25 @@ void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
 	usleep(10000);
 }
 
+struct HsStatus
+{
+	bool fpga_ok;
+	bool hicann_ok;
+};
+
+std::ostream& operator<<(std::ostream& out, const HsStatus& status)
+{
+	return out << std::boolalpha << "fpga-ok=" << status.fpga_ok << ", hicann-ok=" << status.hicann_ok;
+}
+
+HsStatus highspeed_status(RegisterFile& rf, JTag& jtag, uint8_t hicann)
+{
+	return {
+		(rf.read<HicannIfState>().raw & 0x49) == 0x49,
+		(jtag.read<Status>(hicann & 7u) & 0x49) == 0x49
+	};
+}
+
 
 TEST_CASE("Highspeed Init succeeds", "[hs]")
 {
@@ -41,16 +60,15 @@ TEST_CASE("Highspeed Init succeeds", "[hs]")
 		DYNAMIC_SECTION("hicann is " << int(hicann))
 		{
 			highspeed_init(rf, j, fpga, hicann);
-			auto hicann_status = j.read<Status>(hicann) & 0x49;
-			auto fpga_status = rf.read<HicannIfState>().raw & 0x49;
+			auto status = highspeed_status(rf, j, hicann);
 
-			CHECK(hicann_status == 0x49);
-			CHECK(fpga_status == 0x49);
+			REQUIRE(status.fpga_ok);
+			REQUIRE(status.hicann_ok);
 		}
 	}
 }
 
-TEST_CASE("Highspeed transmission via JTAG from FPAG to HICANN", "[hs]")
+TEST_CASE("Highspeed transmission via JTAG from FPGA to HICANN", "[hs]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);
@@ -62,6 +80,7 @@ TEST_CASE("Highspeed transmission via JTAG from FPAG to HICANN", "[hs]")
 		DYNAMIC_SECTION("hicann is " << int(hicann))
 		{
 			highspeed_init(rf, j, fpga, hicann);
+			CAPTURE(highspeed_status(rf, j, hicann));
 
 			j.write<TestControl>(1, hicann);
 			rf.write<HicannChannel>({hicann & 7u});
@@ -82,7 +101,7 @@ TEST_CASE("Highspeed transmission via JTAG from FPAG to HICANN", "[hs]")
 	}
 }
 
-TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs][!shouldfail]")
+TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);
@@ -94,6 +113,7 @@ TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs][!shouldfa
 		DYNAMIC_SECTION("hicann is " << int(hicann))
 		{
 			highspeed_init(rf, j, fpga, hicann);
+			CAPTURE(highspeed_status(rf, j, hicann));
 
 			j.write<TestControl>(1, hicann);
 			rf.write<HicannChannel>({hicann & 7u});

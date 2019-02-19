@@ -80,15 +80,21 @@ JTag::write(uint64_t value, uint8_t hicann)
 template<typename JR>
 void JTag::trigger()
 {
+    using extoll::library::rf::JtagCmd;
     static_assert(JR::TRIGGER, "JTAG register is not a trigger!");
     set_command(JR::ADDRESS);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, 1, false, true});
+    wait_until_finished();
 }
 
 template<typename JR>
 void JTag::trigger(uint8_t hicann)
 {
+    using extoll::library::rf::JtagCmd;
     static_assert(JR::TRIGGER, "JTAG register is not a trigger!");
     set_command(JR::ADDRESS, hicann);
+    RegisterFile::write<JtagCmd>({JtagCmd::DR, 1, false, true});
+    wait_until_finished();
 }
 
 }}

@@ -35,7 +35,7 @@ void Hicann::write(uint16_t , uint32_t )
     payload.data.address = 0;
     payload.data.write = true;
     payload.data.tag = false;
-    payload.data.hicann = _number & 7;
+    payload.data.hicann = _number & 7u;
 
     rma2_post_immediate_put(rma.port, rma.handle, 8, payload.raw, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     wait_for_rma_notification();
@@ -57,7 +57,7 @@ uint32_t Hicann::read(uint16_t )
     payload.data.address = 0;
     payload.data.read = false;
     payload.data.tag = false;
-    payload.data.hicann = _number & 7;
+    payload.data.hicann = _number & 7u;
 
     {
         //WATCH_STATUS
