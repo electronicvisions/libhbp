@@ -77,7 +77,7 @@ uint64_t Hicann::receive()
     // TODO: look up in the ringbuffer
     // TODO: wait for notis
 
-    return 0xdead;
+    return _connection.hicann_config[0];
 }
 
 void Hicann::clear(PhysicalBuffer& p, size_t amount)
