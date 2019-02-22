@@ -36,6 +36,18 @@ void JTag::shift_command(uint64_t command)
     wait_until_finished();
 }
 
+uint64_t JTag::shift_data_out(uint16_t length, uint8_t hicann)
+{
+    uint64_t data = RegisterFile::read(JtagReceive::ADDRESS) >> hicann;
+
+    if (length > 64)
+    {
+        data |= RegisterFile::read(JtagReceive::ADDRESS + 8) << (64 - hicann);
+    }
+
+    return data;
+}
+
 void JTag::set_command(uint64_t command)
 {
     uint64_t combined = 0;
@@ -58,6 +70,12 @@ void JTag::set_command(uint64_t command, uint8_t hicann)
 void JTag::set_data(uint64_t data, uint16_t length, uint8_t hicann)
 {
     length = uint16_t(length + _hicanns - 1);
+
+    if (length > 64)
+    {
+        auto overflow = data >> (64 - hicann);
+        RegisterFile::write(JtagSend::ADDRESS + 8, overflow);
+    }
     data = data << hicann;
 
     RegisterFile::write(JtagSend::ADDRESS, data);
@@ -68,7 +86,7 @@ void JTag::set_data(uint64_t data, uint16_t length, uint8_t hicann)
 uint64_t JTag::set_get_data(uint64_t data, uint16_t length, uint8_t hicann)
 {
     set_data(data, length, hicann);
-    return RegisterFile::read(JtagReceive::ADDRESS) >> hicann;
+    return shift_data_out(uint16_t(length + _hicanns - 1), hicann);
 }
 
 uint64_t JTag::get_data(uint16_t length, uint8_t hicann)
@@ -76,7 +94,7 @@ uint64_t JTag::get_data(uint16_t length, uint8_t hicann)
     length = uint16_t(length + _hicanns - 1);
     RegisterFile::write<JtagCmd>({JtagCmd::DR, length & 0x3ffu, false, true});
     wait_until_finished();
-    return RegisterFile::read(JtagReceive::ADDRESS) >> hicann;
+    return shift_data_out(length, hicann);
 }
 
 JTag::JTag(Endpoint& connection)

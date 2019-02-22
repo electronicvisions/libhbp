@@ -49,6 +49,7 @@ public:
 private:
     void wait_until_finished() const;
     void shift_command(uint64_t command);
+    uint64_t shift_data_out(uint16_t length, uint8_t hicann);
 
     uint8_t _hicanns = 0;
 };
