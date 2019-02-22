@@ -10,7 +10,8 @@ void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
 {
 	fpga.reset(Fpga::Reset::All);
 
-	rf.write<HicannChannel>({hicann & 7u});
+	auto dnc_index = jtag.active_hicanns() - 1 - hicann;
+	rf.write<HicannChannel>({dnc_index & 7u});
 
 	HicannIfConfig stop;
 	stop.raw = 0x4000c;
@@ -83,7 +84,8 @@ TEST_CASE("Highspeed transmission via JTAG from FPGA to HICANN", "[hs]")
 			CAPTURE(highspeed_status(rf, j, hicann));
 
 			j.write<TestControl>(1, hicann);
-			rf.write<HicannChannel>({hicann & 7u});
+            auto dnc_index = j.active_hicanns() - 1 - hicann;
+			rf.write<HicannChannel>({dnc_index & 7u});
 			rf.write<HicannPacketGen>({0, 0, false});
 
 			for (int i = 0; i < 10; ++i)
@@ -116,7 +118,8 @@ TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs]")
 			CAPTURE(highspeed_status(rf, j, hicann));
 
 			j.write<TestControl>(1, hicann);
-			rf.write<HicannChannel>({hicann & 7u});
+            auto dnc_index = j.active_hicanns() - 1 - hicann;
+			rf.write<HicannChannel>({dnc_index & 7u});
 			rf.write<HicannPacketGen>({0, 0, false});
 
 			for (int i = 0; i < 10; ++i)
