@@ -58,14 +58,12 @@ TEST_CASE("Highspeed Init succeeds", "[hs]")
 	auto fpga = EX.fpga(node);
 
 	FOR_EACH_HICANN {
-		DYNAMIC_SECTION("hicann is " << int(hicann))
-		{
-			highspeed_init(rf, j, fpga, hicann);
-			auto status = highspeed_status(rf, j, hicann);
+        CAPTURE(hicann);
+	    highspeed_init(rf, j, fpga, hicann);
+		auto status = highspeed_status(rf, j, hicann);
 
-			REQUIRE(status.fpga_ok);
-			REQUIRE(status.hicann_ok);
-		}
+		REQUIRE(status.fpga_ok);
+		REQUIRE(status.hicann_ok);
 	}
 }
 
@@ -78,27 +76,25 @@ TEST_CASE("Highspeed transmission via JTAG from FPGA to HICANN", "[hs]")
 	auto fpga = EX.fpga(node);
 
 	FOR_EACH_HICANN {
-		DYNAMIC_SECTION("hicann is " << int(hicann))
+	    highspeed_init(rf, j, fpga, hicann);
+		CAPTURE(highspeed_status(rf, j, hicann));
+		CAPTURE(hicann);
+
+        j.write<TestControl>(1, hicann);
+        auto dnc_index = j.active_hicanns() - 1 - hicann;
+		rf.write<HicannChannel>({dnc_index & 7u});
+		rf.write<HicannPacketGen>({0, false, false});
+
+		for (int i = 0; i < 10; ++i)
 		{
-			highspeed_init(rf, j, fpga, hicann);
-			CAPTURE(highspeed_status(rf, j, hicann));
+			uint64_t sent = 0x1234ull << (i % 8);
+			rf.write<HicannIfTxData>({sent});
+			rf.write<HicannIfControls>({false, true, false, false, false});
 
-			j.write<TestControl>(1, hicann);
-            auto dnc_index = j.active_hicanns() - 1 - hicann;
-			rf.write<HicannChannel>({dnc_index & 7u});
-			rf.write<HicannPacketGen>({0, 0, false});
+			usleep(1000);
 
-			for (int i = 0; i < 10; ++i)
-			{
-				uint64_t sent = 0x1234ull << (i % 8);
-				rf.write<HicannIfTxData>({sent});
-				rf.write<HicannIfControls>({false, true, false, false, false});
-
-				usleep(1000);
-
-				uint64_t received = j.read<RxData>(hicann) & 0xffffff;
-				CHECK(sent == received);
-			}
+			uint64_t received = j.read<RxData>(hicann) & 0xffffff;
+			CHECK(sent == received);
 		}
 	}
 }
@@ -112,27 +108,25 @@ TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs]")
 	auto fpga = EX.fpga(node);
 
 	FOR_EACH_HICANN {
-		DYNAMIC_SECTION("hicann is " << int(hicann))
+	    highspeed_init(rf, j, fpga, hicann);
+		CAPTURE(highspeed_status(rf, j, hicann));
+		CAPTURE(hicann);
+
+		j.write<TestControl>(1, hicann);
+        auto dnc_index = j.active_hicanns() - 1 - hicann;
+		rf.write<HicannChannel>({dnc_index & 7u});
+		rf.write<HicannPacketGen>({0, false, false});
+
+		for (int i = 0; i < 10; ++i)
 		{
-			highspeed_init(rf, j, fpga, hicann);
-			CAPTURE(highspeed_status(rf, j, hicann));
+			uint64_t sent = 0xfedcba98ull << (i %32);
+			j.write<TxData>(sent, hicann);
+			j.trigger<StartConfigPackage>(hicann);
 
-			j.write<TestControl>(1, hicann);
-            auto dnc_index = j.active_hicanns() - 1 - hicann;
-			rf.write<HicannChannel>({dnc_index & 7u});
-			rf.write<HicannPacketGen>({0, 0, false});
+			usleep(1000);
 
-			for (int i = 0; i < 10; ++i)
-			{
-				uint64_t sent = 0xfedcba98ull << (i %32);
-				j.write<TxData>(sent, hicann);
-				j.trigger<StartConfigPackage>(hicann);
-
-				usleep(1000);
-
-				uint64_t received = rf.read<HicannIfRxConfig>().data;
-				CHECK(sent == received);
-			}
+			uint64_t received = rf.read<HicannIfRxConfig>().data;
+			CHECK(sent == received);
 		}
 	}
 }
