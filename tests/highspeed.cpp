@@ -5,13 +5,16 @@ using namespace extoll::library::rf;
 using namespace extoll::library::jtag;
 using extoll::library::Fpga;
 
+uint8_t dnc_index(JTag& jtag, uint8_t hicann)
+{
+	return (jtag.active_hicanns() - 1 - hicann) & 7u;
+}
 
 void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
 {
 	fpga.reset(Fpga::Reset::All);
 
-	auto dnc_index = jtag.active_hicanns() - 1 - hicann;
-	rf.write<HicannChannel>({dnc_index & 7u});
+	rf.write<HicannChannel>({dnc_index(jtag, hicann) & 7u});
 
 	HicannIfConfig stop;
 	stop.raw = 0x4000c;
@@ -80,9 +83,8 @@ TEST_CASE("Highspeed transmission via JTAG from FPGA to HICANN", "[hs]")
 		CAPTURE(highspeed_status(rf, j, hicann));
 		CAPTURE(hicann);
 
-        j.write<TestControl>(1, hicann);
-        auto dnc_index = j.active_hicanns() - 1 - hicann;
-		rf.write<HicannChannel>({dnc_index & 7u});
+		j.write<TestControl>(1, hicann);
+		rf.write<HicannChannel>({dnc_index(j, hicann) & 7u});
 		rf.write<HicannPacketGen>({0, false, false});
 
 		for (int i = 0; i < 10; ++i)
@@ -113,8 +115,7 @@ TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs]")
 		CAPTURE(hicann);
 
 		j.write<TestControl>(1, hicann);
-        auto dnc_index = j.active_hicanns() - 1 - hicann;
-		rf.write<HicannChannel>({dnc_index & 7u});
+		rf.write<HicannChannel>({dnc_index(j, hicann) & 7u});
 		rf.write<HicannPacketGen>({0, false, false});
 
 		for (int i = 0; i < 10; ++i)
