@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 
-#include "util.h"
+#include "helper/util.h"
 
 using namespace Catch::clara;
 

@@ -3,18 +3,27 @@ project(libhbp_cpp)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_compile_options(
-    "-Wall" "-Wpedantic" "-Wextra" "-fms-extensions"
-    "-Wshadow" "-Wnon-virtual-dtor" "-Wold-style-cast"
-    "-Wcast-align" "-Wunused" "-Woverloaded-virtual"
-    "-Wsign-conversion" "-Wdouble-promotion"
-    "-Wformat=2" "-Wlogical-op" "-Wuseless-cast"
-    "-Wconversion" "-Werror" "-Woverflow"
-)
+add_compile_options("-Wall"
+                    "-Wpedantic"
+                    "-Wextra"
+                    "-fms-extensions"
+                    "-Wshadow"
+                    "-Wnon-virtual-dtor"
+                    "-Wold-style-cast"
+                    "-Wcast-align"
+                    "-Wunused"
+                    "-Woverloaded-virtual"
+                    "-Wsign-conversion"
+                    "-Wdouble-promotion"
+                    "-Wformat=2"
+                    "-Wlogical-op"
+                    "-Wuseless-cast"
+                    "-Wconversion"
+                    "-Werror"
+                    "-Woverflow")
 
-
-if (NOT EXISTS $ENV{EXTOLL_R2_HOME})
-    message(FATAL_ERROR "$EXTOLL_R2_HOME must be set to a directory!")
+if(NOT EXISTS $ENV{EXTOLL_R2_HOME})
+  message(FATAL_ERROR "$EXTOLL_R2_HOME must be set to a directory!")
 endif()
 
 set(RMA_INCLUDE $ENV{EXTOLL_R2_HOME}/include)
@@ -35,9 +44,7 @@ set(HEADERS
     include/extoll/hbp_def.h
     include/extoll/hicann.h
     include/extoll/jtag_registers.h
-
-    include/extoll/utility/rng.h
-)
+    include/extoll/utility/rng.h)
 
 set(SOURCES
     src/buffer.cpp
@@ -48,19 +55,17 @@ set(SOURCES
     src/jtag.cpp
     src/fpga.cpp
     src/exception.cpp
-    src/hicann.cpp
-)
+    src/hicann.cpp)
 
 set(TESTS
-    tests/util.h
-    tests/util.cpp
-
+    tests/helper/util.h
+    tests/helper/util.cpp
     tests/rra.cpp
     tests/jtag.cpp
     tests/if.cpp
     tests/hbp_def.cpp
     tests/highspeed.cpp
-)
+    tests/fpga.cpp tests/helper/application_protocol.h tests/helper/application_protocol.cpp)
 
 add_executable(scratch scratch.cpp)
 target_include_directories(scratch PRIVATE include)
