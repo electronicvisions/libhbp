@@ -23,19 +23,19 @@ public:
     enum class Config : uint64_t
     {
         None = 0,
-        ClearPlaybackMemory = 1 << 19,
-        ClearTraceMemory = 1 << 20,
-        StartExperiment = 1 << 21,
-        StartTrace = 1 << 22,
-        StopTrace = 1 << 23,
-        StartReadingTracedPulses = 1 << 24,
-        StartReadingTracedConfigPackets = 1 << 25,
-        FpgaPulseLoopback = 1 << 26,
-        PlaybackTimestampReplacement = 1 << 27,
-        ValidSystemTimeSettings = 1 << 28,
-        StartSystemTimeCounter = 1 << 29,
-        GlobalModeForSystemTimeCounter = 1 << 30,
-        UseSstSql = 1ull << 31ull,
+        ClearPlaybackMemory = 0x80000000,
+        ClearTraceMemory = 0x40000000,
+        StartExperiment = 0x20000000,
+        StartTrace = 0x10000000,
+        StopTrace = 0x8000000,
+        StartReadingTracedPulses = 0x4000000,
+        StartReadingTracedConfigPackets = 0x2000000,
+        FpgaPulseLoopback = 0x1000000,
+        PlaybackTimestampReplacement = 0x800000,
+        ValidSystemTimeSettings = 0x400000,
+        StartSystemTimeCounter = 0x200000,
+        GlobalModeForSystemTimeCounter = 0x100000,
+        UseSstSql = 0x80000,
         All = 0xfff80000,
     };
 
@@ -46,6 +46,7 @@ public:
     void configure_partner_host();
 
     void send(Config);
+    uint64_t config_response() const;
 
     const static Reset Core = Reset::Core;
     const static Reset Hicann = Reset::Hicann;

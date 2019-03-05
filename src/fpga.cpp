@@ -88,11 +88,17 @@ void Fpga::send(Fpga::Config config)
 {
     const Endpoint::Connection& rma = _connection.rma;
 
-    _connection.gp_buffer[0] = 0xdeadbeef;
+    _connection.gp_buffer[512] = 0xdeadbeef;
     auto payload = static_cast<uint64_t>(config);
     rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     wait_for_rma_notification();
+    usleep(100000);
     std::cout << "GP:   " << std::hex << _connection.fpga_config_response() << "\n";
+}
+
+uint64_t Fpga::config_response() const
+{
+    return _connection.fpga_config_response();
 }
 
 Fpga::Config operator|(Fpga::Config flags, Fpga::Config bit)

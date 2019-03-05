@@ -46,6 +46,8 @@ void Hicann::send(uint64_t data)
     auto& rma = _connection.rma;
 
     rma2_post_immediate_put(rma.port, rma.handle, 8, data, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+
+    wait_for_rma_notification();
 }
 
 
