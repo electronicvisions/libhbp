@@ -48,7 +48,7 @@ void Fpga::configure_partner_host()
     const Endpoint::Connection& rma = _connection.rma;
 
     RMA2_Nodeid local_node = rma2_get_nodeid(rma.port);
-    write_noblock<HostEndpoint>({local_node, rma.vpid, 0, 1 << 2});
+    write_noblock<HostEndpoint>({local_node, 0, rma.vpid & 0x3ffu, 1 << 2});
     write_noblock<TraceRingbufferStart>({_connection.trace_data.address()});
     write_noblock<TraceRingbufferCapacity>({_connection.trace_data.byte_size(), 0, 0, true});
     write_noblock<ConfigResponse>({_connection.fpga_config_address()});
@@ -59,7 +59,7 @@ void Fpga::configure_partner_host()
 
     wait_for_n_notifications(8);
 
-    HostEndpoint he{local_node, rma.vpid, 0, 1 << 2};
+    HostEndpoint he{local_node, 0, rma.vpid & 0x3ffu, 1 << 2};
     cmp(this, he);
 
     TraceRingbufferStart trs{_connection.trace_data.address()};

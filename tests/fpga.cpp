@@ -22,7 +22,7 @@ union Config
     uint64_t raw = 0;
 };
 
-TEST_CASE("FPGA Config receives answer", "[fpga]")
+TEST_CASE("HICANN Config receives answer", "[.][hicann][!shouldfail]")
 {
     auto node = GENERATE(hicann_nodes());
     CAPTURE(node);
@@ -71,6 +71,8 @@ TEST_CASE("FPGA Config receives answer", "[fpga]")
         usleep(100000);
         rf.probe();
         hc.diff_all();
+
+        CHECK(false);
     };
 
 }
