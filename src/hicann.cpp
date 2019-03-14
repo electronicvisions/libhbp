@@ -110,7 +110,7 @@ void Hicann::diff(PhysicalBuffer& p, size_t amount)
         {
             if (unchanged != 0)
             {
-                std::cout << "unchanged: " << unchanged << "/" << amount << "\n";
+                std::cout << "unchanged: " << std::dec << unchanged << "/" << amount << "\n";
                 unchanged = 0;
             }
             std::cout << i << ": " << v << "\n";
@@ -122,7 +122,7 @@ void Hicann::diff(PhysicalBuffer& p, size_t amount)
     }
     if (unchanged != 0)
     {
-        std::cout << "unchanged: " << unchanged << "/" << amount << "\n";
+        std::cout << "unchanged: " << std::dec << unchanged << "/" << amount << "\n";
     }
 }
 

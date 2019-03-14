@@ -64,6 +64,7 @@ TEST_CASE("HICANN Config receives answer", "[.][hicann][!shouldfail]")
                             0xcafe, 0xaf, write>0, tag>0, 0, h & 0x7u
                     };
                     hc.send(config.raw);
+                    usleep(10000);
                 }
             }
         }
