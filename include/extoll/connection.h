@@ -28,8 +28,8 @@ struct Endpoint
     Connection rma;
 
     PhysicalBuffer gp_buffer;
-    PhysicalBuffer trace_data;
-    PhysicalBuffer hicann_config;
+    RingBuffer trace_data;
+    RingBuffer hicann_config;
 
     uint64_t fpga_config_response() const;
     RMA2_NLA fpga_config_address() const;

@@ -93,6 +93,30 @@ class ArqTimings(Address(0x840), ReadWrite):
     bit: 1
 
 
+class TestControlEnable(Address(0xc00), ReadWrite):
+    enable: 1
+
+
+class TestControlConfig(Address(0xc08), ReadWrite):
+    quad_words: 8
+    pause_time: 8
+    count_up: 1
+    start: 1
+
+
+class TestControlData(Address(0xc10), ReadWrite):
+    data: 64
+
+
+class TestControlType(Address(0xc18), ReadWrite):
+    type: 16
+
+    class Type:
+        TracePulse = 0x0ca5
+        FpgaConfig = 0x0c1b
+        HicannConfig = 0x2a1b
+
+
 class HostEndpoint(Address(0x1090), ReadWrite):
     node_id: 16
     protection_domain: 16

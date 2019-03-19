@@ -68,7 +68,7 @@ void RegisterFile::wait_for_rma_notification(bool dump) const
     rma2_noti_free(_connection.rma.port, notification);
 }
 
-void RegisterFile::probe() const
+bool RegisterFile::probe() const
 {
     RMA2_Notification* notification;
 
@@ -77,11 +77,14 @@ void RegisterFile::probe() const
         std::cout << "There is an RRA notification\n";
         rma2_noti_dump(notification);
         rma2_noti_free(_connection.rra.port, notification);
+        return true;
     }
     if (rma2_noti_probe(_connection.rma.port, &notification) == RMA2_SUCCESS)
     {
         std::cout << "There is an RMA notification\n";
         rma2_noti_dump(notification);
         rma2_noti_free(_connection.rma.port, notification);
+        return true;
     }
+    return false;
 }

@@ -65,7 +65,9 @@ set(TESTS
     tests/if.cpp
     tests/hbp_def.cpp
     tests/highspeed.cpp
-    tests/fpga.cpp tests/helper/application_protocol.h tests/helper/application_protocol.cpp)
+    tests/fpga.cpp
+    tests/helper/application_protocol.h
+    tests/helper/application_protocol.cpp)
 
 add_executable(scratch scratch.cpp)
 target_include_directories(scratch PRIVATE include)
@@ -86,6 +88,7 @@ target_link_libraries(tests ${LIBRMARC})
 target_link_libraries(tests ${LIBRMA})
 target_link_libraries(tests dl)
 target_link_libraries(tests rma)
+target_link_libraries(tests pthread)
 
 add_executable(main src/main.cpp ${HEADERS})
 target_include_directories(main PRIVATE include)

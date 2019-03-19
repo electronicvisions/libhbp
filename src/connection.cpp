@@ -1,7 +1,9 @@
 #include <extoll/connection.h>
 
 #include <chrono>
+#include <iostream>
 
+#include <extoll/extoll.h>
 #include <extoll/helper.h>
 #include <extoll/exception.h>
 #include <extoll/utility/rng.h>
@@ -14,10 +16,21 @@ const int RRA_CONNECTION = RMA_CONNECTION | RRA_BIT;
 
 Endpoint::Connection::~Connection()
 {
-    if (this->port != nullptr)
+    if (port != nullptr)
     {
-        if (this->handle != nullptr)
+        if (handle != nullptr)
         {
+            size_t ignored_notifications = 0;
+            RMA2_Notification* notification;
+            while (rma2_noti_probe(port, &notification) == RMA2_SUCCESS)
+            {
+                rma2_noti_free(port, notification);
+                ++ignored_notifications;
+            }
+            if (ignored_notifications)
+            {
+                std::cerr << "Ignored Notifications: " << ignored_notifications << "\n";
+            }
             rma2_disconnect(port, handle);
         }
 
@@ -62,7 +75,9 @@ static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> time
 
 Endpoint::Endpoint(RMA2_Nodeid n)
     : node(n), rra(n, true), rma(n, false),
-    gp_buffer(rra.port, 1), trace_data(rma.port, 1), hicann_config(rma.port, 1)
+    gp_buffer(rra.port, 1),
+    trace_data(rma.port, rma.handle, 100, Extoll::TRACE_PULSE),
+    hicann_config(rma.port, rma.handle, 100, Extoll::HICANN_CONFIG)
 {
     RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     throw_on_error<FailedToRead>(status, "Failed to query driver", n, 0x8000);

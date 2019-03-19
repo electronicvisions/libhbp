@@ -27,3 +27,6 @@ JtagIrShiftFailed::JtagIrShiftFailed(RMA2_Nodeid n, uint8_t p)
 
 FailedToRegisterRegion::FailedToRegisterRegion()
     : RmaError("Failed to register region") {}
+
+HicannResponseTimedOut::HicannResponseTimedOut()
+    : RmaError("Hicann response timed out") {}

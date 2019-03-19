@@ -32,6 +32,11 @@ struct RraError : RmaError
     RMA2_NLA address;
 };
 
+struct HicannResponseTimedOut : RmaError
+{
+    HicannResponseTimedOut();
+};
+
 struct FailedToRead : RraError
 {
     using RraError::RraError;

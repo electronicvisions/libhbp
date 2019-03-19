@@ -42,8 +42,9 @@ static void cmp(RegisterFile* reg, T& rf)
 
 void Fpga::configure_partner_host()
 {
-    const static uint32_t default_timeout = 125000;
-    const static uint32_t default_frequency = (1024 * 4 / 512 - 8);
+    const uint32_t default_timeout = 200;
+    const uint32_t default_frequency =
+            (_connection.hicann_config.byte_size() / 512 - 8);
 
     const Endpoint::Connection& rma = _connection.rma;
 
@@ -82,6 +83,10 @@ void Fpga::configure_partner_host()
 
     HicannNotificationBehaviour hnb{default_timeout, default_frequency};
     cmp(this, hnb);
+
+    // poll Ringbuffer Address changes
+    while (RegisterFile::read<HicannRingbufferCapacity>().init) { usleep(1000); }
+    while (RegisterFile::read<TraceRingbufferCapacity>().init) { usleep(1000); }
 }
 
 void Fpga::send(Fpga::Config config)

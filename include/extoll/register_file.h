@@ -2,6 +2,7 @@
 #define LIBHBP_CPP_RRA_H
 
 #include <utility>
+#include <iostream>
 
 #include <extoll/rma.h>
 #include <extoll/connection.h>
@@ -9,6 +10,7 @@
 
 namespace extoll {
 namespace library {
+
 
 class RegisterFile
 {
@@ -63,7 +65,7 @@ public:
     void wait_for_n_notifications(int) const;
     void wait_for_rma_notification(bool=false) const;
 
-    void probe() const;
+    bool probe() const;
 };
 
 }}

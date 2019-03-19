@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 2019-02-19 17:47:05.424308
+ * 2019-02-19 19:46:55.628778
  */
 
 #include <catch.hpp>
@@ -1143,6 +1143,280 @@ TEST_CASE("Definition 'ArqTimings'", "[definitions]")
         rf.bit = true;
 
         REQUIRE((rf.raw & 0x3ffffff) == 0x2bebeef);
+    }
+}
+TEST_CASE("Definition 'TestControlEnable'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TestControlEnable rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.enable);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.enable);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.enable);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.enable);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.enable);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TestControlEnable rf {{{false}}};
+
+        
+        
+        rf.enable = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.enable = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.enable = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.enable = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.enable = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+    }
+}
+TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TestControlConfig rf {{{0, 0, false, false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.quad_words == 0x0);
+        REQUIRE(rf.pause_time == 0x0);
+        REQUIRE(!rf.count_up);
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.quad_words == 0xff);
+        REQUIRE(rf.pause_time == 0xff);
+        REQUIRE(rf.count_up);
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.quad_words == 0xaa);
+        REQUIRE(rf.pause_time == 0xaa);
+        REQUIRE(!rf.count_up);
+        REQUIRE(rf.start);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.quad_words == 0x55);
+        REQUIRE(rf.pause_time == 0x55);
+        REQUIRE(rf.count_up);
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.quad_words == 0xef);
+        REQUIRE(rf.pause_time == 0xbe);
+        REQUIRE(!rf.count_up);
+        REQUIRE(rf.start);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TestControlConfig rf {{{0, 0, false, false}}};
+
+        
+        
+        rf.quad_words = 0x0;
+        rf.pause_time = 0x0;
+        rf.count_up = false;
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x3ffff) == 0x0);
+        
+        rf.quad_words = 0xff;
+        rf.pause_time = 0xff;
+        rf.count_up = true;
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x3ffff) == 0x3ffff);
+        
+        rf.quad_words = 0xaa;
+        rf.pause_time = 0xaa;
+        rf.count_up = false;
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x3ffff) == 0x2aaaa);
+        
+        rf.quad_words = 0x55;
+        rf.pause_time = 0x55;
+        rf.count_up = true;
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x3ffff) == 0x15555);
+        
+        rf.quad_words = 0xef;
+        rf.pause_time = 0xbe;
+        rf.count_up = false;
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x3ffff) == 0x2beef);
+    }
+}
+TEST_CASE("Definition 'TestControlData'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TestControlData rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TestControlData rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'TestControlType'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TestControlType rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.type == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.type == 0xffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.type == 0xaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.type == 0x5555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.type == 0xbeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TestControlType rf {{{0}}};
+
+        
+        
+        rf.type = 0x0;
+
+        REQUIRE((rf.raw & 0xffff) == 0x0);
+        
+        rf.type = 0xffff;
+
+        REQUIRE((rf.raw & 0xffff) == 0xffff);
+        
+        rf.type = 0xaaaa;
+
+        REQUIRE((rf.raw & 0xffff) == 0xaaaa);
+        
+        rf.type = 0x5555;
+
+        REQUIRE((rf.raw & 0xffff) == 0x5555);
+        
+        rf.type = 0xbeef;
+
+        REQUIRE((rf.raw & 0xffff) == 0xbeef);
     }
 }
 TEST_CASE("Definition 'HostEndpoint'", "[definitions]")

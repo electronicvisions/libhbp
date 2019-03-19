@@ -84,9 +84,9 @@ uint64_t Hicann::receive()
 
 void Hicann::clear(PhysicalBuffer& p, size_t amount)
 {
-    if (amount == 0 || amount > p.size())
+    if (amount == 0 || amount > p.capacity())
     {
-        amount = p.size();
+        amount = p.capacity();
     }
 
     for (size_t i = 0; i < amount; ++i)
@@ -97,9 +97,9 @@ void Hicann::clear(PhysicalBuffer& p, size_t amount)
 
 void Hicann::diff(PhysicalBuffer& p, size_t amount)
 {
-    if (amount == 0 || amount > p.size())
+    if (amount == 0 || amount > p.capacity())
     {
-        amount = p.size();
+        amount = p.capacity();
     }
 
     size_t unchanged = 0;

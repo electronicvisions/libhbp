@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 2019-02-19 17:47:05.424308
+ * 2019-02-19 20:01:46.805882
  */
 
 #pragma once
@@ -362,6 +362,104 @@ struct ArqTimings
 
 static_assert(sizeof(ArqTimings) == sizeof(uint64_t), "sizeof register file 'ArqTimings' != sizeof uint64_t");
 static_assert(std::is_trivial<ArqTimings>::value, "'ArqTimings' is not trivial");
+
+struct TestControlEnable
+{
+    union
+    {
+        struct
+        {
+            
+            bool enable : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0xc00;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TestControlEnable) == sizeof(uint64_t), "sizeof register file 'TestControlEnable' != sizeof uint64_t");
+static_assert(std::is_trivial<TestControlEnable>::value, "'TestControlEnable' is not trivial");
+
+struct TestControlConfig
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t quad_words : 8;
+            uint64_t pause_time : 8;
+            bool count_up : 1;
+            bool start : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0xc08;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TestControlConfig) == sizeof(uint64_t), "sizeof register file 'TestControlConfig' != sizeof uint64_t");
+static_assert(std::is_trivial<TestControlConfig>::value, "'TestControlConfig' is not trivial");
+
+struct TestControlData
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0xc10;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TestControlData) == sizeof(uint64_t), "sizeof register file 'TestControlData' != sizeof uint64_t");
+static_assert(std::is_trivial<TestControlData>::value, "'TestControlData' is not trivial");
+
+struct TestControlType
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t type : 16;
+        };
+        uint64_t raw;
+    };
+
+
+    enum Type : uint16_t
+    {
+    
+        TracePulse = 3237,
+        FpgaConfig = 3099,
+        HicannConfig = 10779,
+    };
+
+    const static RMA2_NLA ADDRESS = 0xc18;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TestControlType) == sizeof(uint64_t), "sizeof register file 'TestControlType' != sizeof uint64_t");
+static_assert(std::is_trivial<TestControlType>::value, "'TestControlType' is not trivial");
 
 struct HostEndpoint
 {

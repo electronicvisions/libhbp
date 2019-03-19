@@ -1,3 +1,8 @@
+#include <future>
+#include <chrono>
+
+#include <extoll/register_file.h>
+
 #include "helper/util.h"
 #include "helper/application_protocol.h"
 
@@ -6,74 +11,138 @@ using namespace extoll::library::rf;
 using namespace extoll::library::jtag;
 
 
-const uint32_t ARQ_LOOPBACK = 0x20002;
-
-union Config
+struct TestModeGuard
 {
-    struct
+    extoll::library::RegisterFile& rf;
+
+    explicit TestModeGuard(extoll::library::RegisterFile& rf_)
+        : rf(rf_)
     {
-        uint64_t data : 32;
-        uint64_t address : 16;
-        bool write : 1;
-        bool tag : 1;
-        uint64_t unused : 9;
-        uint64_t hicann : 3;
-    } parts;
-    uint64_t raw = 0;
+        rf.write<TestControlEnable>({true});
+    }
+
+    ~TestModeGuard()
+    {
+        rf.write<TestControlEnable>({false});
+    }
+
+    bool enabled()
+    {
+        return rf.read<TestControlEnable>().enable;
+    }
+
+    void type(TestControlType::Type value)
+    {
+        rf.write<TestControlType>({value & 0xffffu});
+    }
+
+    void run(uint64_t dummy_value, uint8_t count, uint8_t pause, bool count_up)
+    {
+        rf.write<TestControlData>({dummy_value});
+        rf.write<TestControlConfig>({count, pause, count_up, true});
+    }
+
+    void wait()
+    {
+        while(rf.read<TestControlConfig>().start)
+        {
+            usleep(1000);
+        }
+    }
 };
 
-TEST_CASE("HICANN Config receives answer", "[.][hicann][!shouldfail]")
+
+TEST_CASE("Partner Host configuration terminates", "[fpga]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+
+    auto fpga = EX.fpga(node);
+
+    auto future = std::async(std::launch::async, [&]() {
+        fpga.configure_partner_host();
+    });
+
+    std::chrono::seconds timeout(1);
+    REQUIRE(future.wait_for(timeout) == std::future_status::ready);
+
+}
+
+TEST_CASE("Can enable TestMode", "[al]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+
+    auto rf = EX.register_file(node);
+
+    {
+        TestModeGuard tm{rf};
+        CHECK(tm.enabled());
+    }
+}
+
+
+TEST_CASE("Receives Hicann Config", "[al]")
 {
     auto node = GENERATE(hicann_nodes());
     CAPTURE(node);
     auto rf = EX.register_file(node);
     auto fpga = EX.fpga(node);
-    auto j = EX.jtag(node);
-
-    fpga.reset();
-
-    FOR_EACH_HICANN
+    auto& hicann_config = EX.hicann_config(node);
+    const size_t packets = 255;
+    fpga.configure_partner_host();
+    uint64_t undefined_host = rf.read(0x1080);
+    size_t overshot = 0;
     {
-        highspeed_init(rf, j, fpga, hicann);
-        auto status = highspeed_status(rf, j, hicann);
-        REQUIRE(status.fpga_ok);
-        REQUIRE(status.hicann_ok);
+        TestModeGuard tm{rf};
+        tm.type(TestControlType::HicannConfig);
 
-
-        fpga.configure_partner_host();
-
-        j.write<ArqControl>(ARQ_LOOPBACK, hicann);
-    };
-
-    usleep(100000);
-
-    FOR_EACH_HICANN
-    {
-        auto hc = EX.hicann(node, int8_t(hicann & 0x7));
-        hc.clear_all();
-
-        Config config;
-
-        for (int write = 0; write < 2; ++write)
+        for (size_t test_run = 0; test_run < 100; ++test_run)
         {
-            for (int tag = 0; tag < 2; ++tag)
+            CAPTURE(test_run);
+            REQUIRE(hicann_config.size() == 0);
+            uint64_t dummy_value = 0xfff00ffffff00fff;
+            tm.run(dummy_value, packets, 100, true);
+            for (size_t packet = 0; packet < packets; ++packet)
             {
-                for (uint8_t h = 0; h < 2; ++h)
+                CHECK(hicann_config.get() == dummy_value++);
+            }
+            tm.wait();
+            try
+            {
+                while (true)
                 {
-                    config.parts = {
-                            0xcafe, 0xaf, write>0, tag>0, 0, h & 0x7u
-                    };
-                    hc.send(config.raw);
-                    usleep(10000);
+                    hicann_config.get();
+                    ++overshot;
                 }
             }
+            catch(...)
+            {
+
+            }
+            hicann_config.notify();
         }
+    }
+    while (rf.probe());
+    undefined_host = rf.read(0x1080) - undefined_host;
+    REQUIRE(undefined_host == 0);
+    REQUIRE(overshot == 0);
+}
 
-        usleep(100000);
-        rf.probe();
-        hc.diff_all();
 
-        CHECK(false);
-    };
+TEST_CASE("Receives Hicann Config Jtag", "[.][al]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto jtag = EX.jtag(node);
+    auto rf = EX.register_file(node);
+    auto& hicann_config = EX.hicann_config(node);
+    auto hicann = EX.hicann(node, 0);
 
+    jtag.write<ArqControl>(2u | (2u << 16u), 0);
+    auto received = rf.read(0x1030);
+    hicann.send(0xcafe);
+
+    CHECK(hicann_config.get() == 0xcafe);
+    CHECK(rf.read(0x1030) == (received + 1));
 }

@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include <extoll/exception.h>
+#include <extoll/extoll.h>
 
 using namespace extoll::library;
 
@@ -44,7 +45,7 @@ uint64_t& PhysicalBuffer::operator[](size_t position)
     return _data[position];
 }
 
-size_t PhysicalBuffer::size() const
+size_t PhysicalBuffer::capacity() const
 {
     return _data.size();
 }
@@ -58,5 +59,90 @@ RMA2_NLA PhysicalBuffer::address(size_t offset) const
 
 uint32_t PhysicalBuffer::byte_size() const
 {
-    return uint32_t(size() / sizeof(uint64_t));
+    return uint32_t(capacity() * sizeof(uint64_t));
 }
+
+RingBuffer::RingBuffer(RMA2_Port port, RMA2_Handle handle, size_t pages, uint16_t type)
+    : PhysicalBuffer(port, pages), _handle(handle), _type(type)
+{
+
+}
+
+uint64_t RingBuffer::get()
+{
+    while (readable_words == 0)
+    {
+        receive(true);
+    }
+    read_index %= capacity();
+    uint64_t read = _data[read_index++];
+    ++read_words;
+    --readable_words;
+
+    if (read_words > 10)
+    {
+        notify();
+    }
+    return read;
+}
+
+void RingBuffer::notify()
+{
+    if (read_words == 0)
+    {
+        return;
+    }
+    uint64_t payload = (_type << 16u) | (read_words << 32u);
+    rma2_post_notification(_port, _handle, 0, payload, RMA2_NO_NOTIFICATION, RMA2_CMD_DEFAULT);
+
+    read_words = 0;
+}
+
+RingBuffer::~RingBuffer()
+{
+    clear();
+    notify();
+
+    if (readable_words)
+    {
+        std::cerr << "Ignored Payload Notification with count=" << std::dec << readable_words << "\n";
+    }
+}
+
+size_t RingBuffer::size() const
+{
+    return readable_words;
+}
+
+void RingBuffer::clear()
+{
+    while (receive(false));
+
+    read_index += readable_words;
+    readable_words = 0;
+
+}
+
+bool RingBuffer::receive(bool throw_on_timeout)
+{
+    RMA2_Notification* notification;
+
+    for (unsigned int sleep = 1; sleep < 100000; sleep *= 10)
+    {
+        if (rma2_noti_probe(_port, &notification) == RMA2_SUCCESS)
+        {
+            uint64_t payload = rma2_noti_get_notiput_payload(notification);
+            rma2_noti_free(_port, notification);
+            readable_words += payload & 0xffffffff;
+            return true;
+        }
+        usleep(sleep);
+    }
+
+    if (throw_on_timeout)
+    {
+        throw HicannResponseTimedOut();
+    }
+    return false;
+}
+

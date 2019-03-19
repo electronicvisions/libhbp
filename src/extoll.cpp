@@ -47,6 +47,16 @@ Hicann Extoll::hicann(RMA2_Nodeid node, int8_t number)
     return Hicann{connect(node), uint8_t(number)};
 }
 
+RingBuffer& Extoll::hicann_config(RMA2_Nodeid node)
+{
+    return connect(node).hicann_config;
+}
+
+RingBuffer& Extoll::trace_pulse(RMA2_Nodeid node)
+{
+    return connect(node).trace_data;
+}
+
 
 std::unique_ptr<Extoll> Extoll::instance = nullptr;
 
