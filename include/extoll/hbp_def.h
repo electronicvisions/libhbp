@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 2019-02-19 20:01:46.805882
+ * 2019-03-22 18:08:08.864341
  */
 
 #pragma once
@@ -461,6 +461,804 @@ struct TestControlType
 static_assert(sizeof(TestControlType) == sizeof(uint64_t), "sizeof register file 'TestControlType' != sizeof uint64_t");
 static_assert(std::is_trivial<TestControlType>::value, "'TestControlType' is not trivial");
 
+struct TraceBufferStart
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1000;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TraceBufferStart) == sizeof(uint64_t), "sizeof register file 'TraceBufferStart' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferStart>::value, "'TraceBufferStart' is not trivial");
+
+struct TraceBufferSize
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 32;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1008;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TraceBufferSize) == sizeof(uint64_t), "sizeof register file 'TraceBufferSize' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferSize>::value, "'TraceBufferSize' is not trivial");
+
+struct TraceBufferFullThreshold
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 32;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1010;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TraceBufferFullThreshold) == sizeof(uint64_t), "sizeof register file 'TraceBufferFullThreshold' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferFullThreshold>::value, "'TraceBufferFullThreshold' is not trivial");
+
+struct TraceBufferCounter
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t start_address : 16;
+            uint64_t size : 16;
+            uint64_t threshold : 16;
+            uint64_t wraps : 16;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1018;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(TraceBufferCounter) == sizeof(uint64_t), "sizeof register file 'TraceBufferCounter' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferCounter>::value, "'TraceBufferCounter' is not trivial");
+
+struct TraceBufferCounterReset
+{
+    union
+    {
+        struct
+        {
+            
+            bool reset : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1020;
+    const static bool READABLE = false;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TraceBufferCounterReset) == sizeof(uint64_t), "sizeof register file 'TraceBufferCounterReset' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferCounterReset>::value, "'TraceBufferCounterReset' is not trivial");
+
+struct TraceBufferCurrentAddress
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1028;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(TraceBufferCurrentAddress) == sizeof(uint64_t), "sizeof register file 'TraceBufferCurrentAddress' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferCurrentAddress>::value, "'TraceBufferCurrentAddress' is not trivial");
+
+struct TraceBufferEndAddress
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1030;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(TraceBufferEndAddress) == sizeof(uint64_t), "sizeof register file 'TraceBufferEndAddress' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferEndAddress>::value, "'TraceBufferEndAddress' is not trivial");
+
+struct TraceBufferFreeSpace
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 32;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1038;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(TraceBufferFreeSpace) == sizeof(uint64_t), "sizeof register file 'TraceBufferFreeSpace' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferFreeSpace>::value, "'TraceBufferFreeSpace' is not trivial");
+
+struct TraceBufferInit
+{
+    union
+    {
+        struct
+        {
+            
+            bool start : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1040;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TraceBufferInit) == sizeof(uint64_t), "sizeof register file 'TraceBufferInit' != sizeof uint64_t");
+static_assert(std::is_trivial<TraceBufferInit>::value, "'TraceBufferInit' is not trivial");
+
+struct HicannBufferStart
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1080;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(HicannBufferStart) == sizeof(uint64_t), "sizeof register file 'HicannBufferStart' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferStart>::value, "'HicannBufferStart' is not trivial");
+
+struct HicannBufferSize
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 32;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1088;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(HicannBufferSize) == sizeof(uint64_t), "sizeof register file 'HicannBufferSize' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferSize>::value, "'HicannBufferSize' is not trivial");
+
+struct HicannBufferFullThreshold
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 32;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1090;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(HicannBufferFullThreshold) == sizeof(uint64_t), "sizeof register file 'HicannBufferFullThreshold' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferFullThreshold>::value, "'HicannBufferFullThreshold' is not trivial");
+
+struct HicannBufferCounter
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t start_address : 16;
+            uint64_t size : 16;
+            uint64_t threshold : 16;
+            uint64_t wraps : 16;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1098;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(HicannBufferCounter) == sizeof(uint64_t), "sizeof register file 'HicannBufferCounter' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferCounter>::value, "'HicannBufferCounter' is not trivial");
+
+struct HicannBufferCounterReset
+{
+    union
+    {
+        struct
+        {
+            
+            bool reset : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x10a0;
+    const static bool READABLE = false;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(HicannBufferCounterReset) == sizeof(uint64_t), "sizeof register file 'HicannBufferCounterReset' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferCounterReset>::value, "'HicannBufferCounterReset' is not trivial");
+
+struct HicannBufferCurrentAddress
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x10a8;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(HicannBufferCurrentAddress) == sizeof(uint64_t), "sizeof register file 'HicannBufferCurrentAddress' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferCurrentAddress>::value, "'HicannBufferCurrentAddress' is not trivial");
+
+struct HicannBufferEndAddress
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 64;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x10b0;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(HicannBufferEndAddress) == sizeof(uint64_t), "sizeof register file 'HicannBufferEndAddress' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferEndAddress>::value, "'HicannBufferEndAddress' is not trivial");
+
+struct HicannBufferFreeSpace
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t data : 32;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x10b8;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(HicannBufferFreeSpace) == sizeof(uint64_t), "sizeof register file 'HicannBufferFreeSpace' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferFreeSpace>::value, "'HicannBufferFreeSpace' is not trivial");
+
+struct HicannBufferInit
+{
+    union
+    {
+        struct
+        {
+            
+            bool start : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x10c0;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(HicannBufferInit) == sizeof(uint64_t), "sizeof register file 'HicannBufferInit' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannBufferInit>::value, "'HicannBufferInit' is not trivial");
+
+struct RraPutReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1100;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(RraPutReceived) == sizeof(uint64_t), "sizeof register file 'RraPutReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<RraPutReceived>::value, "'RraPutReceived' is not trivial");
+
+struct RraGetReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1108;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(RraGetReceived) == sizeof(uint64_t), "sizeof register file 'RraGetReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<RraGetReceived>::value, "'RraGetReceived' is not trivial");
+
+struct RmaPutReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1110;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(RmaPutReceived) == sizeof(uint64_t), "sizeof register file 'RmaPutReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<RmaPutReceived>::value, "'RmaPutReceived' is not trivial");
+
+struct RmaNotificationReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1118;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(RmaNotificationReceived) == sizeof(uint64_t), "sizeof register file 'RmaNotificationReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<RmaNotificationReceived>::value, "'RmaNotificationReceived' is not trivial");
+
+struct PlaybackReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1120;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(PlaybackReceived) == sizeof(uint64_t), "sizeof register file 'PlaybackReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<PlaybackReceived>::value, "'PlaybackReceived' is not trivial");
+
+struct FpgaConfigReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1128;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(FpgaConfigReceived) == sizeof(uint64_t), "sizeof register file 'FpgaConfigReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<FpgaConfigReceived>::value, "'FpgaConfigReceived' is not trivial");
+
+struct HicannConfigReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1130;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(HicannConfigReceived) == sizeof(uint64_t), "sizeof register file 'HicannConfigReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<HicannConfigReceived>::value, "'HicannConfigReceived' is not trivial");
+
+struct JtagDataReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1138;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(JtagDataReceived) == sizeof(uint64_t), "sizeof register file 'JtagDataReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<JtagDataReceived>::value, "'JtagDataReceived' is not trivial");
+
+struct NeighbourDataReceived
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1140;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(NeighbourDataReceived) == sizeof(uint64_t), "sizeof register file 'NeighbourDataReceived' != sizeof uint64_t");
+static_assert(std::is_trivial<NeighbourDataReceived>::value, "'NeighbourDataReceived' is not trivial");
+
+struct CounterReset
+{
+    union
+    {
+        struct
+        {
+            
+            bool reset : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1148;
+    const static bool READABLE = false;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(CounterReset) == sizeof(uint64_t), "sizeof register file 'CounterReset' != sizeof uint64_t");
+static_assert(std::is_trivial<CounterReset>::value, "'CounterReset' is not trivial");
+
+struct InvalidCommand
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1150;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidCommand) == sizeof(uint64_t), "sizeof register file 'InvalidCommand' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidCommand>::value, "'InvalidCommand' is not trivial");
+
+struct InvalidType
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1158;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidType) == sizeof(uint64_t), "sizeof register file 'InvalidType' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidType>::value, "'InvalidType' is not trivial");
+
+struct InvalidPayloadSize
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1160;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidPayloadSize) == sizeof(uint64_t), "sizeof register file 'InvalidPayloadSize' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidPayloadSize>::value, "'InvalidPayloadSize' is not trivial");
+
+struct InvalidFields
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1168;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidFields) == sizeof(uint64_t), "sizeof register file 'InvalidFields' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidFields>::value, "'InvalidFields' is not trivial");
+
+struct InvalidMode
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1170;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidMode) == sizeof(uint64_t), "sizeof register file 'InvalidMode' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidMode>::value, "'InvalidMode' is not trivial");
+
+struct InvalidRraAddress
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1178;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidRraAddress) == sizeof(uint64_t), "sizeof register file 'InvalidRraAddress' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidRraAddress>::value, "'InvalidRraAddress' is not trivial");
+
+struct InvalidHost
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1180;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(InvalidHost) == sizeof(uint64_t), "sizeof register file 'InvalidHost' != sizeof uint64_t");
+static_assert(std::is_trivial<InvalidHost>::value, "'InvalidHost' is not trivial");
+
+struct ConfigAddressReinit
+{
+    union
+    {
+        struct
+        {
+            
+            uint64_t count : 48;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0x1188;
+    const static bool READABLE = true;
+    const static bool WRITABLE = false;
+};
+
+static_assert(sizeof(ConfigAddressReinit) == sizeof(uint64_t), "sizeof register file 'ConfigAddressReinit' != sizeof uint64_t");
+static_assert(std::is_trivial<ConfigAddressReinit>::value, "'ConfigAddressReinit' is not trivial");
+
 struct HostEndpoint
 {
     union
@@ -478,60 +1276,13 @@ struct HostEndpoint
 
 
 
-    const static RMA2_NLA ADDRESS = 0x1090;
+    const static RMA2_NLA ADDRESS = 0x1190;
     const static bool READABLE = true;
     const static bool WRITABLE = true;
 };
 
 static_assert(sizeof(HostEndpoint) == sizeof(uint64_t), "sizeof register file 'HostEndpoint' != sizeof uint64_t");
 static_assert(std::is_trivial<HostEndpoint>::value, "'HostEndpoint' is not trivial");
-
-struct TraceRingbufferStart
-{
-    union
-    {
-        struct
-        {
-            
-            uint64_t address : 64;
-        };
-        uint64_t raw;
-    };
-
-
-
-    const static RMA2_NLA ADDRESS = 0x1098;
-    const static bool READABLE = true;
-    const static bool WRITABLE = true;
-};
-
-static_assert(sizeof(TraceRingbufferStart) == sizeof(uint64_t), "sizeof register file 'TraceRingbufferStart' != sizeof uint64_t");
-static_assert(std::is_trivial<TraceRingbufferStart>::value, "'TraceRingbufferStart' is not trivial");
-
-struct TraceRingbufferCapacity
-{
-    union
-    {
-        struct
-        {
-            
-            uint64_t capacity : 32;
-            uint64_t start_change_counter : 8;
-            uint64_t capacity_change_counter : 8;
-            bool init : 1;
-        };
-        uint64_t raw;
-    };
-
-
-
-    const static RMA2_NLA ADDRESS = 0x10a0;
-    const static bool READABLE = true;
-    const static bool WRITABLE = true;
-};
-
-static_assert(sizeof(TraceRingbufferCapacity) == sizeof(uint64_t), "sizeof register file 'TraceRingbufferCapacity' != sizeof uint64_t");
-static_assert(std::is_trivial<TraceRingbufferCapacity>::value, "'TraceRingbufferCapacity' is not trivial");
 
 struct ConfigResponse
 {
@@ -547,60 +1298,13 @@ struct ConfigResponse
 
 
 
-    const static RMA2_NLA ADDRESS = 0x10a8;
+    const static RMA2_NLA ADDRESS = 0x1198;
     const static bool READABLE = true;
     const static bool WRITABLE = true;
 };
 
 static_assert(sizeof(ConfigResponse) == sizeof(uint64_t), "sizeof register file 'ConfigResponse' != sizeof uint64_t");
 static_assert(std::is_trivial<ConfigResponse>::value, "'ConfigResponse' is not trivial");
-
-struct HicannRingbufferStart
-{
-    union
-    {
-        struct
-        {
-            
-            uint64_t address : 64;
-        };
-        uint64_t raw;
-    };
-
-
-
-    const static RMA2_NLA ADDRESS = 0x10b0;
-    const static bool READABLE = true;
-    const static bool WRITABLE = true;
-};
-
-static_assert(sizeof(HicannRingbufferStart) == sizeof(uint64_t), "sizeof register file 'HicannRingbufferStart' != sizeof uint64_t");
-static_assert(std::is_trivial<HicannRingbufferStart>::value, "'HicannRingbufferStart' is not trivial");
-
-struct HicannRingbufferCapacity
-{
-    union
-    {
-        struct
-        {
-            
-            uint64_t capacity : 32;
-            uint64_t start_change_counter : 8;
-            uint64_t capacity_change_counter : 8;
-            bool init : 1;
-        };
-        uint64_t raw;
-    };
-
-
-
-    const static RMA2_NLA ADDRESS = 0x10b8;
-    const static bool READABLE = true;
-    const static bool WRITABLE = true;
-};
-
-static_assert(sizeof(HicannRingbufferCapacity) == sizeof(uint64_t), "sizeof register file 'HicannRingbufferCapacity' != sizeof uint64_t");
-static_assert(std::is_trivial<HicannRingbufferCapacity>::value, "'HicannRingbufferCapacity' is not trivial");
 
 struct TraceNotificationBehaviour
 {
@@ -617,7 +1321,7 @@ struct TraceNotificationBehaviour
 
 
 
-    const static RMA2_NLA ADDRESS = 0x10c0;
+    const static RMA2_NLA ADDRESS = 0x11a0;
     const static bool READABLE = true;
     const static bool WRITABLE = true;
 };
@@ -640,7 +1344,7 @@ struct HicannNotificationBehaviour
 
 
 
-    const static RMA2_NLA ADDRESS = 0x10c8;
+    const static RMA2_NLA ADDRESS = 0x11a8;
     const static bool READABLE = true;
     const static bool WRITABLE = true;
 };

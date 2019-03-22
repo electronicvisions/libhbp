@@ -2,6 +2,26 @@ NAMESPACE = 'extoll', 'library', 'rf'
 TEST_INCLUDE = '<extoll/hbp_def.h>'
 
 
+# silence warnings
+try:
+    Address, ReadOnly, WriteOnly, ReadWrite
+except NameError:
+    def Address(a):
+        class A:
+            address = a
+        return A
+
+    class ReadOnly:
+        pass
+
+    class WriteOnly:
+        pass
+
+    class ReadWrite:
+        pass
+
+
+# Global Control
 class Reset(Address(0x0), ReadWrite):
     core: 1
     hicann: 1
@@ -9,6 +29,7 @@ class Reset(Address(0x0), ReadWrite):
     pulse_mem: 1
 
 
+# Jtag Registers
 class JtagCmd(Address(0x400), ReadWrite):
     type: 3
     length: 10
@@ -36,6 +57,7 @@ class JtagReceive(Address(0x500), ReadOnly):
     data: 64
 
 
+# Hicann Control Interface
 class HicannIfState(Address(0x800), ReadOnly):
     channel_status: 8
     crc_count: 8
@@ -93,6 +115,7 @@ class ArqTimings(Address(0x840), ReadWrite):
     bit: 1
 
 
+# Application Layer Test Interface
 class TestControlEnable(Address(0xc00), ReadWrite):
     enable: 1
 
@@ -117,49 +140,184 @@ class TestControlType(Address(0xc18), ReadWrite):
         HicannConfig = 0x2a1b
 
 
-class HostEndpoint(Address(0x1090), ReadWrite):
+# Trace Ringbuffer
+class TraceBufferStart(Address(0x1000), ReadWrite):
+    data: 64
+
+
+class TraceBufferSize(Address(0x1008), ReadWrite):
+    data: 32
+
+
+class TraceBufferFullThreshold(Address(0x1010), ReadWrite):
+    data: 32
+
+
+class TraceBufferCounter(Address(0x1018), ReadOnly):
+    start_address: 16
+    size: 16
+    threshold: 16
+    wraps: 16
+
+
+class TraceBufferCounterReset(Address(0x1020), WriteOnly):
+    reset: 1
+
+
+class TraceBufferCurrentAddress(Address(0x1028), ReadOnly):
+    data: 64
+
+
+class TraceBufferEndAddress(Address(0x1030), ReadOnly):
+    data: 64
+
+
+class TraceBufferFreeSpace(Address(0x1038), ReadOnly):
+    data: 32
+
+
+class TraceBufferInit(Address(0x1040), ReadWrite):
+    start: 1
+
+
+# Hicann Ringbuffer
+class HicannBufferStart(Address(0x1080), ReadWrite):
+    data: 64
+
+
+class HicannBufferSize(Address(0x1088), ReadWrite):
+    data: 32
+
+
+class HicannBufferFullThreshold(Address(0x1090), ReadWrite):
+    data: 32
+
+
+class HicannBufferCounter(Address(0x1098), ReadOnly):
+    start_address: 16
+    size: 16
+    threshold: 16
+    wraps: 16
+
+
+class HicannBufferCounterReset(Address(0x10a0), WriteOnly):
+    reset: 1
+
+
+class HicannBufferCurrentAddress(Address(0x10a8), ReadOnly):
+    data: 64
+
+
+class HicannBufferEndAddress(Address(0x10b0), ReadOnly):
+    data: 64
+
+
+class HicannBufferFreeSpace(Address(0x10b8), ReadOnly):
+    data: 32
+
+
+class HicannBufferInit(Address(0x10c0), ReadWrite):
+    start: 1
+
+
+# Performance Counter
+class RraPutReceived(Address(0x1100), ReadOnly):
+    count: 48
+
+
+class RraGetReceived(Address(0x1108), ReadOnly):
+    count: 48
+
+
+class RmaPutReceived(Address(0x1110), ReadOnly):
+    count: 48
+
+
+class RmaNotificationReceived(Address(0x1118), ReadOnly):
+    count: 48
+
+
+class PlaybackReceived(Address(0x1120), ReadOnly):
+    count: 48
+
+
+class FpgaConfigReceived(Address(0x1128), ReadOnly):
+    count: 48
+
+
+class HicannConfigReceived(Address(0x1130), ReadOnly):
+    count: 48
+
+
+class JtagDataReceived(Address(0x1138), ReadOnly):
+    count: 48
+
+
+class NeighbourDataReceived(Address(0x1140), ReadOnly):
+    count: 48
+
+
+# Counter Reset
+class CounterReset(Address(0x1148), WriteOnly):
+    reset: 1
+
+
+# Error Counters
+class InvalidCommand(Address(0x1150), ReadOnly):
+    count: 48
+
+
+class InvalidType(Address(0x1158), ReadOnly):
+    count: 48
+
+
+class InvalidPayloadSize(Address(0x1160), ReadOnly):
+    count: 48
+
+
+class InvalidFields(Address(0x1168), ReadOnly):
+    count: 48
+
+
+class InvalidMode(Address(0x1170), ReadOnly):
+    count: 48
+
+
+class InvalidRraAddress(Address(0x1178), ReadOnly):
+    count: 48
+
+
+class InvalidHost(Address(0x1180), ReadOnly):
+    count: 48
+
+
+# Partner Host Configuration
+class ConfigAddressReinit(Address(0x1188), ReadOnly):
+    count: 48
+
+
+class HostEndpoint(Address(0x1190), ReadWrite):
     node_id: 16
     protection_domain: 16
     vpid: 10
     mode: 6
 
 
-class TraceRingbufferStart(Address(0x1098), ReadWrite):
+class ConfigResponse(Address(0x1198), ReadWrite):
     address: 64
 
 
-class TraceRingbufferCapacity(Address(0x10a0), ReadWrite):
-    capacity: 32
-    start_change_counter: 8
-    capacity_change_counter: 8
-    init: 1
-
-
-class ConfigResponse(Address(0x10a8), ReadWrite):
-    address: 64
-
-
-class HicannRingbufferStart(Address(0x10b0), ReadWrite):
-    address: 64
-
-
-class HicannRingbufferCapacity(Address(0x10b8), ReadWrite):
-    capacity: 32
-    start_change_counter: 8
-    capacity_change_counter: 8
-    init: 1
-
-
-class TraceNotificationBehaviour(Address(0x10c0), ReadWrite):
+class TraceNotificationBehaviour(Address(0x11a0), ReadWrite):
     timeout: 32
     frequency: 32
 
 
-class HicannNotificationBehaviour(Address(0x10c8), ReadWrite):
+class HicannNotificationBehaviour(Address(0x11a8), ReadWrite):
     timeout: 32
     frequency: 32
 
 
+# Info Registers
 class Driver(Address(0x8000), ReadOnly):
     version: 64
 

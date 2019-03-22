@@ -145,6 +145,15 @@ def read_definition(file_name):
         exec(fin.read(), scope, local)
 
     definitions = list(cleanup_definitions(local))
+
+    no_duplicate_dict = {}
+    for d in definitions:
+        if d.address in no_duplicate_dict:
+            dup = no_duplicate_dict[d.address]
+            raise RuntimeError(f"{d.name} and {dup.name} have the same address: {d.address}")
+        else:
+            no_duplicate_dict[d.address] = d
+
     meta = read_meta(file_name, local)
     return definitions, meta
 

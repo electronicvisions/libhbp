@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 2019-02-19 19:46:55.628778
+ * 2019-03-22 18:08:08.864341
  */
 
 #include <catch.hpp>
@@ -1419,6 +1419,2262 @@ TEST_CASE("Definition 'TestControlType'", "[definitions]")
         REQUIRE((rf.raw & 0xffff) == 0xbeef);
     }
 }
+TEST_CASE("Definition 'TraceBufferStart'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferStart rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferStart rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferSize'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferSize rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x55555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferSize rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x0);
+        
+        rf.data = 0xffffffff;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xffffffff);
+        
+        rf.data = 0xaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xaaaaaaaa);
+        
+        rf.data = 0x55555555;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x55555555);
+        
+        rf.data = 0xbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferFullThreshold'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferFullThreshold rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x55555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferFullThreshold rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x0);
+        
+        rf.data = 0xffffffff;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xffffffff);
+        
+        rf.data = 0xaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xaaaaaaaa);
+        
+        rf.data = 0x55555555;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x55555555);
+        
+        rf.data = 0xbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferCounter'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferCounter rf {{{0, 0, 0, 0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.start_address == 0x0);
+        REQUIRE(rf.size == 0x0);
+        REQUIRE(rf.threshold == 0x0);
+        REQUIRE(rf.wraps == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.start_address == 0xffff);
+        REQUIRE(rf.size == 0xffff);
+        REQUIRE(rf.threshold == 0xffff);
+        REQUIRE(rf.wraps == 0xffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.start_address == 0xaaaa);
+        REQUIRE(rf.size == 0xaaaa);
+        REQUIRE(rf.threshold == 0xaaaa);
+        REQUIRE(rf.wraps == 0xaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.start_address == 0x5555);
+        REQUIRE(rf.size == 0x5555);
+        REQUIRE(rf.threshold == 0x5555);
+        REQUIRE(rf.wraps == 0x5555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.start_address == 0xbeef);
+        REQUIRE(rf.size == 0xbabe);
+        REQUIRE(rf.threshold == 0xdead);
+        REQUIRE(rf.wraps == 0xcafe);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferCounter rf {{{0, 0, 0, 0}}};
+
+        
+        
+        rf.start_address = 0x0;
+        rf.size = 0x0;
+        rf.threshold = 0x0;
+        rf.wraps = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.start_address = 0xffff;
+        rf.size = 0xffff;
+        rf.threshold = 0xffff;
+        rf.wraps = 0xffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.start_address = 0xaaaa;
+        rf.size = 0xaaaa;
+        rf.threshold = 0xaaaa;
+        rf.wraps = 0xaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.start_address = 0x5555;
+        rf.size = 0x5555;
+        rf.threshold = 0x5555;
+        rf.wraps = 0x5555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.start_address = 0xbeef;
+        rf.size = 0xbabe;
+        rf.threshold = 0xdead;
+        rf.wraps = 0xcafe;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferCounterReset'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferCounterReset rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.reset);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.reset);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.reset);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.reset);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.reset);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferCounterReset rf {{{false}}};
+
+        
+        
+        rf.reset = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.reset = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+    }
+}
+TEST_CASE("Definition 'TraceBufferCurrentAddress'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferCurrentAddress rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferCurrentAddress rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferEndAddress'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferEndAddress rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferEndAddress rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferFreeSpace'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferFreeSpace rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x55555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferFreeSpace rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x0);
+        
+        rf.data = 0xffffffff;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xffffffff);
+        
+        rf.data = 0xaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xaaaaaaaa);
+        
+        rf.data = 0x55555555;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x55555555);
+        
+        rf.data = 0xbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xbabebeef);
+    }
+}
+TEST_CASE("Definition 'TraceBufferInit'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TraceBufferInit rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.start);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TraceBufferInit rf {{{false}}};
+
+        
+        
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+    }
+}
+TEST_CASE("Definition 'HicannBufferStart'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferStart rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferStart rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferSize'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferSize rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x55555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferSize rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x0);
+        
+        rf.data = 0xffffffff;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xffffffff);
+        
+        rf.data = 0xaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xaaaaaaaa);
+        
+        rf.data = 0x55555555;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x55555555);
+        
+        rf.data = 0xbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferFullThreshold'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferFullThreshold rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x55555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferFullThreshold rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x0);
+        
+        rf.data = 0xffffffff;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xffffffff);
+        
+        rf.data = 0xaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xaaaaaaaa);
+        
+        rf.data = 0x55555555;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x55555555);
+        
+        rf.data = 0xbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferCounter'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferCounter rf {{{0, 0, 0, 0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.start_address == 0x0);
+        REQUIRE(rf.size == 0x0);
+        REQUIRE(rf.threshold == 0x0);
+        REQUIRE(rf.wraps == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.start_address == 0xffff);
+        REQUIRE(rf.size == 0xffff);
+        REQUIRE(rf.threshold == 0xffff);
+        REQUIRE(rf.wraps == 0xffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.start_address == 0xaaaa);
+        REQUIRE(rf.size == 0xaaaa);
+        REQUIRE(rf.threshold == 0xaaaa);
+        REQUIRE(rf.wraps == 0xaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.start_address == 0x5555);
+        REQUIRE(rf.size == 0x5555);
+        REQUIRE(rf.threshold == 0x5555);
+        REQUIRE(rf.wraps == 0x5555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.start_address == 0xbeef);
+        REQUIRE(rf.size == 0xbabe);
+        REQUIRE(rf.threshold == 0xdead);
+        REQUIRE(rf.wraps == 0xcafe);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferCounter rf {{{0, 0, 0, 0}}};
+
+        
+        
+        rf.start_address = 0x0;
+        rf.size = 0x0;
+        rf.threshold = 0x0;
+        rf.wraps = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.start_address = 0xffff;
+        rf.size = 0xffff;
+        rf.threshold = 0xffff;
+        rf.wraps = 0xffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.start_address = 0xaaaa;
+        rf.size = 0xaaaa;
+        rf.threshold = 0xaaaa;
+        rf.wraps = 0xaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.start_address = 0x5555;
+        rf.size = 0x5555;
+        rf.threshold = 0x5555;
+        rf.wraps = 0x5555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.start_address = 0xbeef;
+        rf.size = 0xbabe;
+        rf.threshold = 0xdead;
+        rf.wraps = 0xcafe;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferCounterReset'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferCounterReset rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.reset);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.reset);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.reset);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.reset);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.reset);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferCounterReset rf {{{false}}};
+
+        
+        
+        rf.reset = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.reset = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+    }
+}
+TEST_CASE("Definition 'HicannBufferCurrentAddress'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferCurrentAddress rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferCurrentAddress rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferEndAddress'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferEndAddress rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x5555555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xcafedeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferEndAddress rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
+        
+        rf.data = 0xffffffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
+        
+        rf.data = 0xaaaaaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
+        
+        rf.data = 0x5555555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
+        
+        rf.data = 0xcafedeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferFreeSpace'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferFreeSpace rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.data == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.data == 0xffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.data == 0xaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.data == 0x55555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.data == 0xbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferFreeSpace rf {{{0}}};
+
+        
+        
+        rf.data = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x0);
+        
+        rf.data = 0xffffffff;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xffffffff);
+        
+        rf.data = 0xaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xaaaaaaaa);
+        
+        rf.data = 0x55555555;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0x55555555);
+        
+        rf.data = 0xbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffff) == 0xbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannBufferInit'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannBufferInit rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.start);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannBufferInit rf {{{false}}};
+
+        
+        
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+    }
+}
+TEST_CASE("Definition 'RraPutReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        RraPutReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        RraPutReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'RraGetReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        RraGetReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        RraGetReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'RmaPutReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        RmaPutReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        RmaPutReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'RmaNotificationReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        RmaNotificationReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        RmaNotificationReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'PlaybackReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        PlaybackReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        PlaybackReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'FpgaConfigReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        FpgaConfigReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        FpgaConfigReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'HicannConfigReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannConfigReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannConfigReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'JtagDataReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        JtagDataReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        JtagDataReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'NeighbourDataReceived'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        NeighbourDataReceived rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        NeighbourDataReceived rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'CounterReset'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        CounterReset rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.reset);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.reset);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.reset);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.reset);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.reset);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        CounterReset rf {{{false}}};
+
+        
+        
+        rf.reset = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.reset = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.reset = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+    }
+}
+TEST_CASE("Definition 'InvalidCommand'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidCommand rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidCommand rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'InvalidType'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidType rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidType rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'InvalidPayloadSize'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidPayloadSize rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidPayloadSize rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'InvalidFields'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidFields rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidFields rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'InvalidMode'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidMode rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidMode rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'InvalidRraAddress'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidRraAddress rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidRraAddress rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'InvalidHost'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        InvalidHost rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        InvalidHost rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
+TEST_CASE("Definition 'ConfigAddressReinit'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        ConfigAddressReinit rf {{{0}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(rf.count == 0x0);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.count == 0xffffffffffff);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(rf.count == 0xaaaaaaaaaaaa);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.count == 0x555555555555);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.count == 0xdeadbabebeef);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        ConfigAddressReinit rf {{{0}}};
+
+        
+        
+        rf.count = 0x0;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x0);
+        
+        rf.count = 0xffffffffffff;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xffffffffffff);
+        
+        rf.count = 0xaaaaaaaaaaaa;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xaaaaaaaaaaaa);
+        
+        rf.count = 0x555555555555;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0x555555555555);
+        
+        rf.count = 0xdeadbabebeef;
+
+        REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
+    }
+}
 TEST_CASE("Definition 'HostEndpoint'", "[definitions]")
 {
     SECTION("write raw - read fields")
@@ -1510,158 +3766,6 @@ TEST_CASE("Definition 'HostEndpoint'", "[definitions]")
         REQUIRE((rf.raw & 0xffffffffffff) == 0xdeadbabebeef);
     }
 }
-TEST_CASE("Definition 'TraceRingbufferStart'", "[definitions]")
-{
-    SECTION("write raw - read fields")
-    {
-        TraceRingbufferStart rf {{{0}}};
-
-        
-        rf.raw = 0x0;
-
-        
-        REQUIRE(rf.address == 0x0);
-        
-        rf.raw = 0xffffffffffffffff;
-
-        
-        REQUIRE(rf.address == 0xffffffffffffffff);
-        
-        rf.raw = 0xaaaaaaaaaaaaaaaa;
-
-        
-        REQUIRE(rf.address == 0xaaaaaaaaaaaaaaaa);
-        
-        rf.raw = 0x5555555555555555;
-
-        
-        REQUIRE(rf.address == 0x5555555555555555);
-        
-        rf.raw = 0xcafedeadbabebeef;
-
-        
-        REQUIRE(rf.address == 0xcafedeadbabebeef);
-        
-    }
-
-    SECTION("write fields - read raw")
-    {
-        TraceRingbufferStart rf {{{0}}};
-
-        
-        
-        rf.address = 0x0;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
-        
-        rf.address = 0xffffffffffffffff;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
-        
-        rf.address = 0xaaaaaaaaaaaaaaaa;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
-        
-        rf.address = 0x5555555555555555;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
-        
-        rf.address = 0xcafedeadbabebeef;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
-    }
-}
-TEST_CASE("Definition 'TraceRingbufferCapacity'", "[definitions]")
-{
-    SECTION("write raw - read fields")
-    {
-        TraceRingbufferCapacity rf {{{0, 0, 0, false}}};
-
-        
-        rf.raw = 0x0;
-
-        
-        REQUIRE(rf.capacity == 0x0);
-        REQUIRE(rf.start_change_counter == 0x0);
-        REQUIRE(rf.capacity_change_counter == 0x0);
-        REQUIRE(!rf.init);
-        
-        rf.raw = 0xffffffffffffffff;
-
-        
-        REQUIRE(rf.capacity == 0xffffffff);
-        REQUIRE(rf.start_change_counter == 0xff);
-        REQUIRE(rf.capacity_change_counter == 0xff);
-        REQUIRE(rf.init);
-        
-        rf.raw = 0xaaaaaaaaaaaaaaaa;
-
-        
-        REQUIRE(rf.capacity == 0xaaaaaaaa);
-        REQUIRE(rf.start_change_counter == 0xaa);
-        REQUIRE(rf.capacity_change_counter == 0xaa);
-        REQUIRE(!rf.init);
-        
-        rf.raw = 0x5555555555555555;
-
-        
-        REQUIRE(rf.capacity == 0x55555555);
-        REQUIRE(rf.start_change_counter == 0x55);
-        REQUIRE(rf.capacity_change_counter == 0x55);
-        REQUIRE(rf.init);
-        
-        rf.raw = 0xcafedeadbabebeef;
-
-        
-        REQUIRE(rf.capacity == 0xbabebeef);
-        REQUIRE(rf.start_change_counter == 0xad);
-        REQUIRE(rf.capacity_change_counter == 0xde);
-        REQUIRE(!rf.init);
-        
-    }
-
-    SECTION("write fields - read raw")
-    {
-        TraceRingbufferCapacity rf {{{0, 0, 0, false}}};
-
-        
-        
-        rf.capacity = 0x0;
-        rf.start_change_counter = 0x0;
-        rf.capacity_change_counter = 0x0;
-        rf.init = false;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0x0);
-        
-        rf.capacity = 0xffffffff;
-        rf.start_change_counter = 0xff;
-        rf.capacity_change_counter = 0xff;
-        rf.init = true;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0x1ffffffffffff);
-        
-        rf.capacity = 0xaaaaaaaa;
-        rf.start_change_counter = 0xaa;
-        rf.capacity_change_counter = 0xaa;
-        rf.init = false;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0xaaaaaaaaaaaa);
-        
-        rf.capacity = 0x55555555;
-        rf.start_change_counter = 0x55;
-        rf.capacity_change_counter = 0x55;
-        rf.init = true;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0x1555555555555);
-        
-        rf.capacity = 0xbabebeef;
-        rf.start_change_counter = 0xad;
-        rf.capacity_change_counter = 0xde;
-        rf.init = false;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0xdeadbabebeef);
-    }
-}
 TEST_CASE("Definition 'ConfigResponse'", "[definitions]")
 {
     SECTION("write raw - read fields")
@@ -1721,158 +3825,6 @@ TEST_CASE("Definition 'ConfigResponse'", "[definitions]")
         rf.address = 0xcafedeadbabebeef;
 
         REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
-    }
-}
-TEST_CASE("Definition 'HicannRingbufferStart'", "[definitions]")
-{
-    SECTION("write raw - read fields")
-    {
-        HicannRingbufferStart rf {{{0}}};
-
-        
-        rf.raw = 0x0;
-
-        
-        REQUIRE(rf.address == 0x0);
-        
-        rf.raw = 0xffffffffffffffff;
-
-        
-        REQUIRE(rf.address == 0xffffffffffffffff);
-        
-        rf.raw = 0xaaaaaaaaaaaaaaaa;
-
-        
-        REQUIRE(rf.address == 0xaaaaaaaaaaaaaaaa);
-        
-        rf.raw = 0x5555555555555555;
-
-        
-        REQUIRE(rf.address == 0x5555555555555555);
-        
-        rf.raw = 0xcafedeadbabebeef;
-
-        
-        REQUIRE(rf.address == 0xcafedeadbabebeef);
-        
-    }
-
-    SECTION("write fields - read raw")
-    {
-        HicannRingbufferStart rf {{{0}}};
-
-        
-        
-        rf.address = 0x0;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x0);
-        
-        rf.address = 0xffffffffffffffff;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xffffffffffffffff);
-        
-        rf.address = 0xaaaaaaaaaaaaaaaa;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xaaaaaaaaaaaaaaaa);
-        
-        rf.address = 0x5555555555555555;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0x5555555555555555);
-        
-        rf.address = 0xcafedeadbabebeef;
-
-        REQUIRE((rf.raw & 0xffffffffffffffff) == 0xcafedeadbabebeef);
-    }
-}
-TEST_CASE("Definition 'HicannRingbufferCapacity'", "[definitions]")
-{
-    SECTION("write raw - read fields")
-    {
-        HicannRingbufferCapacity rf {{{0, 0, 0, false}}};
-
-        
-        rf.raw = 0x0;
-
-        
-        REQUIRE(rf.capacity == 0x0);
-        REQUIRE(rf.start_change_counter == 0x0);
-        REQUIRE(rf.capacity_change_counter == 0x0);
-        REQUIRE(!rf.init);
-        
-        rf.raw = 0xffffffffffffffff;
-
-        
-        REQUIRE(rf.capacity == 0xffffffff);
-        REQUIRE(rf.start_change_counter == 0xff);
-        REQUIRE(rf.capacity_change_counter == 0xff);
-        REQUIRE(rf.init);
-        
-        rf.raw = 0xaaaaaaaaaaaaaaaa;
-
-        
-        REQUIRE(rf.capacity == 0xaaaaaaaa);
-        REQUIRE(rf.start_change_counter == 0xaa);
-        REQUIRE(rf.capacity_change_counter == 0xaa);
-        REQUIRE(!rf.init);
-        
-        rf.raw = 0x5555555555555555;
-
-        
-        REQUIRE(rf.capacity == 0x55555555);
-        REQUIRE(rf.start_change_counter == 0x55);
-        REQUIRE(rf.capacity_change_counter == 0x55);
-        REQUIRE(rf.init);
-        
-        rf.raw = 0xcafedeadbabebeef;
-
-        
-        REQUIRE(rf.capacity == 0xbabebeef);
-        REQUIRE(rf.start_change_counter == 0xad);
-        REQUIRE(rf.capacity_change_counter == 0xde);
-        REQUIRE(!rf.init);
-        
-    }
-
-    SECTION("write fields - read raw")
-    {
-        HicannRingbufferCapacity rf {{{0, 0, 0, false}}};
-
-        
-        
-        rf.capacity = 0x0;
-        rf.start_change_counter = 0x0;
-        rf.capacity_change_counter = 0x0;
-        rf.init = false;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0x0);
-        
-        rf.capacity = 0xffffffff;
-        rf.start_change_counter = 0xff;
-        rf.capacity_change_counter = 0xff;
-        rf.init = true;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0x1ffffffffffff);
-        
-        rf.capacity = 0xaaaaaaaa;
-        rf.start_change_counter = 0xaa;
-        rf.capacity_change_counter = 0xaa;
-        rf.init = false;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0xaaaaaaaaaaaa);
-        
-        rf.capacity = 0x55555555;
-        rf.start_change_counter = 0x55;
-        rf.capacity_change_counter = 0x55;
-        rf.init = true;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0x1555555555555);
-        
-        rf.capacity = 0xbabebeef;
-        rf.start_change_counter = 0xad;
-        rf.capacity_change_counter = 0xde;
-        rf.init = false;
-
-        REQUIRE((rf.raw & 0x1ffffffffffff) == 0xdeadbabebeef);
     }
 }
 TEST_CASE("Definition 'TraceNotificationBehaviour'", "[definitions]")

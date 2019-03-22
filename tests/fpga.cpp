@@ -33,7 +33,7 @@ struct TestModeGuard
 
     void type(TestControlType::Type value)
     {
-        rf.write<TestControlType>({value & 0xffffu});
+        rf.write<TestControlType>({{{value & 0xffffu}}});
     }
 
     void run(uint64_t dummy_value, uint8_t count, uint8_t pause, bool count_up)
@@ -91,7 +91,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
     auto& hicann_config = EX.hicann_config(node);
     const size_t packets = 255;
     fpga.configure_partner_host();
-    uint64_t undefined_host = rf.read(0x1080);
+    uint64_t undefined_host = rf.read(InvalidHost::ADDRESS);
     size_t overshot = 0;
     {
         TestModeGuard tm{rf};
@@ -124,7 +124,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
         }
     }
     while (rf.probe());
-    undefined_host = rf.read(0x1080) - undefined_host;
+    undefined_host = rf.read(InvalidHost::ADDRESS) - undefined_host;
     REQUIRE(undefined_host == 0);
     REQUIRE(overshot == 0);
 }
@@ -140,9 +140,9 @@ TEST_CASE("Receives Hicann Config Jtag", "[.][al]")
     auto hicann = EX.hicann(node, 0);
 
     jtag.write<ArqControl>(2u | (2u << 16u), 0);
-    auto received = rf.read(0x1030);
+    auto received = rf.read(HicannConfigReceived::ADDRESS);
     hicann.send(0xcafe);
 
     CHECK(hicann_config.get() == 0xcafe);
-    CHECK(rf.read(0x1030) == (received + 1));
+    CHECK(rf.read(HicannConfigReceived::ADDRESS) == (received + 1));
 }
