@@ -24,97 +24,89 @@ void Fpga::reset_set_only(Reset resets)
     RegisterFile::write(rf::Reset::ADDRESS, static_cast<uint64_t>(resets));
 }
 
-
-template <typename T>
-static void cmp(RegisterFile* reg, T& rf)
+PartnerHostConfiguration Fpga::default_partner_host_parameters()
 {
-    uint64_t r = reg->read(T::ADDRESS);
+    const auto& rma = _connection.rma;
+    const auto& trace = _connection.trace_data;
+    const auto& hicann = _connection.hicann_config;
 
-    if (r != rf.raw)
+    return {
+        rma2_get_nodeid(rma.port),
+        0,
+        rma.vpid,
+        1 << 2,
+
+        _connection.fpga_config_address(),
+
+        {
+            trace.address(),
+            trace.byte_size(),
+            0x7c0,
+            false,
+
+            200,
+            trace.byte_size() / 512 - 8
+        },
+
+        {
+            hicann.address(),
+            hicann.byte_size(),
+            0x7c0,
+            false,
+
+            200,
+            hicann.byte_size() / 512 - 8
+        },
+    };
+}
+
+
+void Fpga::configure_partner_host(const PartnerHostConfiguration& config)
+{
+    write_noblock<HostEndpoint>({{{
+        config.local_node,
+        config.protection_domain_id,
+        config.vpid & 0x3ffu,
+        config.mode & 0x3fu}}});
+    write_noblock<ConfigResponse>({{{config.config_put_address}}});
+
+    write_noblock<TraceBufferStart>({{{config.trace.start_address}}});
+    write_noblock<TraceBufferSize>({{{config.trace.capacity}}});
+    write_noblock<TraceBufferFullThreshold>({{{config.trace.threshold}}});
+
+    write_noblock<HicannBufferStart>({{{config.hicann.start_address}}});
+    write_noblock<HicannBufferSize>({{{config.hicann.capacity}}});
+    write_noblock<HicannBufferFullThreshold>({{{config.hicann.threshold}}});
+
+    write_noblock<TraceNotificationBehaviour>({{{config.trace.timeout, config.trace.frequency}}});
+    write_noblock<HicannNotificationBehaviour>({{{config.hicann.timeout, config.hicann.frequency}}});
+
+    int notifications = 12;
+    if (config.trace.reset_counter)
     {
-        auto d = rf.raw;
-        std::cout << std::hex << T::ADDRESS << " FAIL\n";
-        std::cout << "IS  : " << std::bitset<64>(d) << "\n";
-        std::cout << "MUST: " << std::bitset<64>(r) << "\n";
-        std::cout << "DIFF: " << std::bitset<64>(d ^ r) << "\n\n";
+        write_noblock<TraceBufferCounterReset>({{{true}}});
+        ++notifications;
     }
+    if (config.hicann.reset_counter)
+    {
+        write_noblock<HicannBufferCounterReset>({{{true}}});
+        ++notifications;
+    }
+
+    write_noblock<TraceBufferInit>({{{true}}});
+    write_noblock<HicannBufferInit>({{{true}}});
+    wait_for_n_notifications(notifications);
+
+    while (RegisterFile::read<TraceBufferInit>().start) {{{ usleep(1000); }}}
+    while (RegisterFile::read<HicannBufferInit>().start) {{{ usleep(1000); }}}
+
+    _connection.hicann_config.reset();
+    _connection.trace_data.reset();
 }
 
 void Fpga::configure_partner_host()
 {
-    const uint32_t default_timeout = 200;
-    const uint32_t default_frequency =
-            (_connection.hicann_config.byte_size() / 512 - 8);
-
-    const Endpoint::Connection& rma = _connection.rma;
-
-    auto trace_counter = read<TraceBufferCounter>();
-    auto hicann_counter = read<HicannBufferCounter>();
-
-    RMA2_Nodeid local_node = rma2_get_nodeid(rma.port);
-    write_noblock<HostEndpoint>({{{local_node, 0, rma.vpid & 0x3ffu, 1 << 2}}});
-    write_noblock<ConfigResponse>({{{_connection.fpga_config_address()}}});
-
-    write_noblock<TraceBufferStart>({{{_connection.trace_data.address()}}});
-    write_noblock<TraceBufferSize>({{{_connection.trace_data.byte_size()}}});
-
-    write_noblock<HicannBufferStart>({{{_connection.hicann_config.address()}}});
-    write_noblock<HicannBufferSize>({{{_connection.hicann_config.byte_size()}}});
-
-    write_noblock<TraceNotificationBehaviour>({{{default_timeout, default_frequency}}});
-    write_noblock<HicannNotificationBehaviour>({{{default_timeout, default_frequency}}});
-
-    write_noblock<TraceBufferInit>({{{true}}});
-    write_noblock<HicannBufferInit>({{{true}}});
-    wait_for_n_notifications(10);
-
-    // poll Ringbuffer Address changes
-    while (RegisterFile::read<TraceBufferInit>().start) {{{ usleep(1000); }}}
-    while (RegisterFile::read<HicannBufferInit>().start) {{{ usleep(1000); }}}
-
-    HostEndpoint he{{{local_node, 0, rma.vpid & 0x3ffu, 1 << 2}}};
-    cmp(this, he);
-
-    TraceBufferStart trs{{{_connection.trace_data.address()}}};
-    cmp(this, trs);
-
-    auto r = read(TraceBufferSize::ADDRESS) & 0xffffffff;
-    assert(r == _connection.trace_data.byte_size());
-
-    ConfigResponse cr{{{_connection.fpga_config_address()}}};
-    cmp(this, cr);
-
-    HicannBufferStart hrs{{{_connection.hicann_config.address()}}};
-    cmp(this, hrs);
-
-    r = read(HicannBufferSize::ADDRESS) & 0xffffffff;
-    assert(r == _connection.hicann_config.byte_size());
-
-    TraceNotificationBehaviour tnb{{{default_timeout, default_frequency}}};
-    cmp(this, tnb);
-
-    HicannNotificationBehaviour hnb{{{default_timeout, default_frequency}}};
-    cmp(this, hnb);
-
-    auto end_address = _connection.trace_data.address(_connection.trace_data.byte_size());
-    assert(read(TraceBufferEndAddress::ADDRESS) == end_address);
-
-    end_address = _connection.hicann_config.address(_connection.hicann_config.byte_size());
-    assert(read(HicannBufferEndAddress::ADDRESS) == end_address);
-
-    assert(read(TraceBufferCurrentAddress::ADDRESS) == _connection.trace_data.address());
-    assert(read(HicannBufferCurrentAddress::ADDRESS) == _connection.hicann_config.address());
-    assert(read(TraceBufferFreeSpace::ADDRESS)*8 == _connection.trace_data.byte_size());
-    assert(read(HicannBufferFreeSpace::ADDRESS)*8 == _connection.hicann_config.byte_size());
-
-    auto post_trace_counter = read<TraceBufferCounter>();
-    auto post_hicann_counter = read<HicannBufferCounter>();
-    assert(post_trace_counter.wraps == 0);
-    assert(post_hicann_counter.wraps == 0);
-    assert((trace_counter.size + 1) == post_trace_counter.size);
-    assert((hicann_counter.size + 1) == post_hicann_counter.size);
-    assert((trace_counter.start_address + 1) == post_trace_counter.start_address);
-    assert((hicann_counter.start_address + 1) == post_hicann_counter.start_address);
+    configure_partner_host(default_partner_host_parameters());
 }
 
 void Fpga::send(Fpga::Config config)

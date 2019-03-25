@@ -6,6 +6,31 @@
 namespace extoll {
 namespace library {
 
+
+struct PartnerHostConfiguration
+{
+    RMA2_Nodeid local_node;
+    uint16_t protection_domain_id;
+    RMA2_VPID vpid;
+    uint8_t mode;
+
+    uint64_t config_put_address;
+
+    struct Ringbuffer
+    {
+        uint64_t start_address;
+        uint32_t capacity;
+        uint32_t threshold;
+        bool reset_counter;
+
+        uint32_t timeout;
+        uint32_t frequency;
+    };
+
+    Ringbuffer trace;
+    Ringbuffer hicann;
+};
+
 class Fpga : protected RegisterFile
 {
     const static RMA2_NLA CONFIG_ADDRESS = 0x0c1bull << 48ull;
@@ -43,7 +68,10 @@ public:
 
     void reset(Reset = All);
     void reset_set_only(Reset = All);
+
+    PartnerHostConfiguration default_partner_host_parameters();
     void configure_partner_host();
+    void configure_partner_host(const PartnerHostConfiguration&);
 
     void send(Config);
     uint64_t config_response() const;

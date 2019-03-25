@@ -146,3 +146,10 @@ bool RingBuffer::receive(bool throw_on_timeout)
     return false;
 }
 
+void RingBuffer::reset()
+{
+    read_index = 0;
+    readable_words = 0;
+    read_words = 0;
+}
+

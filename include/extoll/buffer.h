@@ -54,6 +54,7 @@ public:
     uint64_t get();
     void notify();
     void clear();
+    void reset();
 
     size_t size() const;
 };
