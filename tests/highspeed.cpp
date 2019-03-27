@@ -80,7 +80,7 @@ TEST_CASE("Highspeed transmission via JTAG from HICANN to FPGA", "[hs]")
 
 			usleep(1000);
 
-			uint64_t received = rf.read<HicannIfRxConfig>().data;
+			uint64_t received = rf.read<HicannIfRxConfig>().data();
 			CHECK(sent == received);
 		}
 	}

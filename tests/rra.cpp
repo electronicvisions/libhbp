@@ -44,8 +44,8 @@ TEST_CASE("Read static registers", "[rf][static]")
 		CAPTURE(node);
 
 		auto r = EX.register_file(node);
-		CHECK(r.read<Driver>().version == 0xcafebabe);
-		CHECK(r.read<Info>().node_id == node);
+		CHECK(r.read<Driver>().version() == 0xcafebabe);
+		CHECK(r.read<Info>().node_id() == node);
 	}
 
 	SECTION("FPGA with HICANN")
@@ -54,8 +54,8 @@ TEST_CASE("Read static registers", "[rf][static]")
 		CAPTURE(node);
 
 		auto r = EX.register_file(node);
-		CHECK(r.read<Driver>().version == 0xcafebabe);
-		CHECK(r.read<Info>().node_id == node);
+		CHECK(r.read<Driver>().version() == 0xcafebabe);
+		CHECK(r.read<Info>().node_id() == node);
 	}
 }
 
@@ -69,12 +69,12 @@ TEST_CASE("Write and read back", "[rf][rw]")
 		auto r = EX.register_file(node);
 
 		r.write<JtagSend>({0xdeadbeef});
-		CHECK(r.read<JtagSend>().raw == 0xdeadbeef);
+		CHECK(r.read<JtagSend>().data() == 0xdeadbeef);
 
 		for (auto bit : all_bits())
 		{
 			r.write<JtagSend>({bit});
-			CHECK(r.read<JtagSend>().raw == bit);
+			CHECK(r.read<JtagSend>().data() == bit);
 		}
 	}
 
@@ -85,13 +85,13 @@ TEST_CASE("Write and read back", "[rf][rw]")
 		auto r = EX.register_file(node);
 
 		r.write<JtagSend>({0xdeadbeef});
-		CHECK(r.read<JtagSend>().raw == 0xdeadbeef);
+		CHECK(r.read<JtagSend>().data() == 0xdeadbeef);
 
 		for (auto bit : all_bits())
 		{
 			r.write<JtagSend>({bit});
 
-			CHECK(r.read<JtagSend>().raw == bit);
+			CHECK(r.read<JtagSend>().data() == bit);
 		}
 	}
 }

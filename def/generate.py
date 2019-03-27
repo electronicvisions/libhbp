@@ -1,23 +1,42 @@
-from argparse import ArgumentParser
 from collections import namedtuple
 from logging import basicConfig, warning, error
-from sys import stdout
-from os.path import getmtime, abspath, dirname
-from datetime import datetime
+from os.path import getmtime, abspath, dirname, join
+from datetime import datetime as dt
+from sys import argv
 
 from jinja2 import Environment, FileSystemLoader
 
 
 basicConfig()
 
-Enum = namedtuple('Enum', 'name fields')
-Def = namedtuple('Definition', 'name read write address fields enums width')
+Enum = namedtuple('Enum', 'name fields underlying_type')
 
 
-class Field(namedtuple('Field', 'name width offset')):
+class Def(namedtuple('Definition', 'name read write address fields enums width')):
+    @property
+    def needs_constructor(self):
+        if len(self.fields) > 1:
+            return True
+        field = self.fields[0]
+        return field.width <= 32
+
+
+class Field(namedtuple('Field', 'name width offset enum')):
     @property
     def type(self):
-        return 'bool' if self.width == 1 else 'uint64_t'
+        if self.enum:
+            return self.enum.name
+
+        if self.width == 1:
+            return 'bool'
+
+        for width in [32, 64]:
+            if self.width <= width:
+                return f'uint{width}_t'
+
+    @property
+    def mask(self):
+        return hex(mask(self))
 
 
 def mask(field_or_def):
@@ -75,16 +94,16 @@ def read_meta(file_name, local):
         namespace = ()
 
     try:
-        test_include = local['TEST_INCLUDE']
+        test_includes = local['TEST_INCLUDE']
     except KeyError:
         warning("no test include given, compiling the test will probably fail")
-        test_include = ''
+        test_includes = ''
 
-    if not isinstance(test_include, str):
+    if not isinstance(test_includes, str):
         error("test include must be a str")
         exit()
 
-    return namespace, datetime.fromtimestamp(getmtime(file_name)), test_include
+    return namespace, dt.fromtimestamp(getmtime(file_name)), test_includes
 
 
 def is_dunder(string):
@@ -94,10 +113,12 @@ def is_dunder(string):
 def find_enum(cls):
     for key, value in cls.__dict__.items():
         if not is_dunder(key):
+            fields = value.__dict__.copy()
+            underlying_type = fields.pop('UNDERLYING_TYPE', None)
             yield Enum(key, {
-                name: value for name, value in value.__dict__.items()
+                name: value for name, value in fields.items()
                 if not is_dunder(name) and isinstance(value, int)
-            })
+            }, underlying_type)
 
 
 def cleanup_definitions(local):
@@ -108,7 +129,7 @@ def cleanup_definitions(local):
         if not hasattr(value, 'ADDRESS'):
             error(f"{key} has no 'Address'")
             continue
-        address = value.ADDRESS
+        address = getattr(value, 'ADDRESS')
 
         if not hasattr(value, 'READ') and not hasattr(value, 'WRITE'):
             error(f"{key} is neither readable nor writeable")
@@ -133,7 +154,15 @@ def cleanup_definitions(local):
         fields_tuples = []
         offset = 0
         for name, width in fields.items():
-            fields_tuples.append(Field(name, width, offset))
+            cap = name.capitalize()
+
+            matching_enum = None
+            for enum in enums:
+                if enum.name == cap:
+                    matching_enum = enum
+                    break
+
+            fields_tuples.append(Field(name, width, offset, matching_enum))
             offset += width
         yield Def(key, bool(read), bool(write), int(address), fields_tuples, enums, offset)
 
@@ -158,19 +187,12 @@ def read_definition(file_name):
     return definitions, meta
 
 
-parser = ArgumentParser("generate header files for register file definitions.")
-parser.add_argument('file_name', metavar='DEFINITIONS',
-                    help="the file that contains the register file definitions")
-parser.add_argument('-o', '--out',
-                    default=stdout.fileno(),
-                    help="the file to write into (default is stdout)")
-parser.add_argument('-t', '--test', default=False, action='store_true',
-                    help="generate tests instead of definitions")
+def main():
+    if len(argv) != 2:
+        print("usage: {} DEFINITION_FILE".format(argv[0]))
+        exit(1)
 
-if __name__ == '__main__':
-    argv = parser.parse_args()
-
-    defs, meta = read_definition(argv.file_name)
+    defs, meta = read_definition(argv[1])
     path = dirname(abspath(__file__))
     env = Environment(loader=FileSystemLoader(path))
     env.filters['hex'] = hex
@@ -178,23 +200,25 @@ if __name__ == '__main__':
     env.filters['cut'] = cut
     env.filters['mask'] = mask
 
-    with open(argv.out, 'w', closefd=argv.out != stdout.fileno()) as fout:
-        def write(*args, **kwargs):
-            print(*args, file=fout, **kwargs)
+    ns, datetime, test_include = meta
+    test_values = [
+        0,
+        0xffffffffffffffff,
+        0xaaaaaaaaaaaaaaaa,
+        0x5555555555555555,
+        0xcafedeadbabebeef
+    ]
+
+    target = join(dirname(path), 'include', 'extoll', 'hbp_def.h')
+    with open(target, 'w') as fout:
+        template = env.get_template('definition.h')
+        fout.write(template.render(**locals()))
+
+    target = join(dirname(path), 'tests', 'hbp_def.cpp')
+    with open(target, 'w') as fout:
+        template = env.get_template('test.cpp')
+        fout.write(template.render(**locals()))
 
 
-        template = env.get_template('test.cpp' if argv.test else 'definition.h')
-        rendered = template.render(
-            defs=defs,
-            ns=meta[0],
-            datetime=meta[1],
-            test_include=meta[2],
-            test_values=[
-                0,
-                0xffffffffffffffff,
-                0xaaaaaaaaaaaaaaaa,
-                0x5555555555555555,
-                0xcafedeadbabebeef
-            ]
-        )
-        fout.write(rendered)
+if __name__ == '__main__':
+    main()

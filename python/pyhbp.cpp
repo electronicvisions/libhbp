@@ -21,6 +21,7 @@ RegisterFile register_file(RMA2_Nodeid node)
 }
 
 
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 PYBIND11_MODULE(pyhbp, m)
@@ -36,5 +37,9 @@ PYBIND11_MODULE(pyhbp, m)
            .def("read", static_cast<rf_read>(&RegisterFile::read))
            .def("write", static_cast<rf_write>(&RegisterFile::write))
            ;
+
+    auto address = py::enum_<Address>(m, "Address");
+    address.value("Driver", 1);
+    address.export_values();
 }
 #pragma GCC diagnostic pop

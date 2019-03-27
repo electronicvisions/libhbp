@@ -63,42 +63,42 @@ PartnerHostConfiguration Fpga::default_partner_host_parameters()
 
 void Fpga::configure_partner_host(const PartnerHostConfiguration& config)
 {
-    write_noblock<HostEndpoint>({{{
+    write_noblock<HostEndpoint>({
         config.local_node,
         config.protection_domain_id,
         config.vpid & 0x3ffu,
-        config.mode & 0x3fu}}});
-    write_noblock<ConfigResponse>({{{config.config_put_address}}});
+        config.mode & 0x3fu});
+    write_noblock<ConfigResponse>({config.config_put_address});
 
-    write_noblock<TraceBufferStart>({{{config.trace.start_address}}});
-    write_noblock<TraceBufferSize>({{{config.trace.capacity}}});
-    write_noblock<TraceBufferFullThreshold>({{{config.trace.threshold}}});
+    write_noblock<TraceBufferStart>({config.trace.start_address});
+    write_noblock<TraceBufferSize>({config.trace.capacity});
+    write_noblock<TraceBufferFullThreshold>({config.trace.threshold});
 
-    write_noblock<HicannBufferStart>({{{config.hicann.start_address}}});
-    write_noblock<HicannBufferSize>({{{config.hicann.capacity}}});
-    write_noblock<HicannBufferFullThreshold>({{{config.hicann.threshold}}});
+    write_noblock<HicannBufferStart>({config.hicann.start_address});
+    write_noblock<HicannBufferSize>({config.hicann.capacity});
+    write_noblock<HicannBufferFullThreshold>({config.hicann.threshold});
 
-    write_noblock<TraceNotificationBehaviour>({{{config.trace.timeout, config.trace.frequency}}});
-    write_noblock<HicannNotificationBehaviour>({{{config.hicann.timeout, config.hicann.frequency}}});
+    write_noblock<TraceNotificationBehaviour>({config.trace.timeout, config.trace.frequency});
+    write_noblock<HicannNotificationBehaviour>({config.hicann.timeout, config.hicann.frequency});
 
     int notifications = 12;
     if (config.trace.reset_counter)
     {
-        write_noblock<TraceBufferCounterReset>({{{true}}});
+        write_noblock<TraceBufferCounterReset>({true});
         ++notifications;
     }
     if (config.hicann.reset_counter)
     {
-        write_noblock<HicannBufferCounterReset>({{{true}}});
+        write_noblock<HicannBufferCounterReset>({true});
         ++notifications;
     }
 
-    write_noblock<TraceBufferInit>({{{true}}});
-    write_noblock<HicannBufferInit>({{{true}}});
+    write_noblock<TraceBufferInit>({true});
+    write_noblock<HicannBufferInit>({true});
     wait_for_n_notifications(notifications);
 
-    while (RegisterFile::read<TraceBufferInit>().start) {{{ usleep(1000); }}}
-    while (RegisterFile::read<HicannBufferInit>().start) {{{ usleep(1000); }}}
+    while (RegisterFile::read<TraceBufferInit>().start()) { usleep(1000); }
+    while (RegisterFile::read<HicannBufferInit>().start()) { usleep(1000); }
 
     _connection.hicann_config.reset();
     _connection.trace_data.reset();

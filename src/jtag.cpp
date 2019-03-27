@@ -12,7 +12,7 @@ using Cmd = JtagCmd::Type;
 
 void JTag::wait_until_finished() const
 {
-    while (RegisterFile::read<JtagCmd>().execute);
+    while (RegisterFile::read<JtagCmd>().execute());
 }
 
 void JTag::reset()

@@ -22,7 +22,7 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
     auto fpga = Extoll::Instance().fpga(node);
     fpga.reset(Fpga::Reset::All);
 
-    std::cout << "Driver: 0x" << std::hex << rf.read<Driver>().version << "\n";
+    std::cout << "Driver: 0x" << std::hex << rf.read<Driver>().version() << "\n";
 
     rf.write<JtagSend>({0xffffffffffff});
     rf.write<JtagCmd>({JtagCmd::IR, 6*8, false, true});

@@ -138,6 +138,7 @@ class TestControlType(Address(0xc20), ReadWrite):
     type: 16
 
     class Type:
+        UNDERLYING_TYPE = 'uint16_t'
         TracePulse = 0x0ca5
         FpgaConfig = 0x0c1b
         HicannConfig = 0x2a1b

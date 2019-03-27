@@ -28,12 +28,12 @@ struct TestModeGuard
 
     bool enabled()
     {
-        return rf.read<TestControlEnable>().enable;
+        return rf.read<TestControlEnable>().enable();
     }
 
     void type(TestControlType::Type value)
     {
-        rf.write<TestControlType>({{{value & 0xffffu}}});
+        rf.write<TestControlType>({value});
     }
 
     void run(uint64_t dummy_value, uint8_t count, uint8_t pause, bool count_up)
@@ -45,7 +45,7 @@ struct TestModeGuard
 
     void wait()
     {
-        while(rf.read<TestControlStart>().start)
+        while(rf.read<TestControlStart>().start())
         {
             usleep(1000);
         }
@@ -84,32 +84,32 @@ TEST_CASE("Partner Host configuration post condiftions hold", "[fpga][partner-ho
 
     auto& trace = EX.trace_pulse(node);
     auto trace_end = trace.address(trace.byte_size());
-    CHECK(rf.read<TraceBufferStart>().data == trace.address());
-    CHECK(rf.read<TraceBufferCurrentAddress>().data == trace.address());
-    CHECK(rf.read<TraceBufferSize>().data == trace.byte_size());
-    CHECK(rf.read<TraceBufferFreeSpace>().data == trace.capacity());
-    CHECK(rf.read<TraceBufferEndAddress>().data == trace_end);
+    CHECK(rf.read<TraceBufferStart>().data() == trace.address());
+    CHECK(rf.read<TraceBufferCurrentAddress>().data() == trace.address());
+    CHECK(rf.read<TraceBufferSize>().data() == trace.byte_size());
+    CHECK(rf.read<TraceBufferFreeSpace>().data() == trace.capacity());
+    CHECK(rf.read<TraceBufferEndAddress>().data() == trace_end);
 
     auto& hicann = EX.hicann_config(node);
     auto hicann_end = hicann.address(hicann.byte_size());
-    CHECK(rf.read<HicannBufferStart>().data == hicann.address());
-    CHECK(rf.read<HicannBufferCurrentAddress>().data == hicann.address());
-    CHECK(rf.read<HicannBufferSize>().data == hicann.byte_size());
-    CHECK(rf.read<HicannBufferFreeSpace>().data == hicann.capacity());
-    CHECK(rf.read<HicannBufferEndAddress>().data == hicann_end);
+    CHECK(rf.read<HicannBufferStart>().data() == hicann.address());
+    CHECK(rf.read<HicannBufferCurrentAddress>().data() == hicann.address());
+    CHECK(rf.read<HicannBufferSize>().data()== hicann.byte_size());
+    CHECK(rf.read<HicannBufferFreeSpace>().data()== hicann.capacity());
+    CHECK(rf.read<HicannBufferEndAddress>().data()== hicann_end);
 
     auto post_trace_counter = rf.read<TraceBufferCounter>();
     auto post_hicann_counter = rf.read<HicannBufferCounter>();
 
-    CHECK(post_trace_counter.start_address - trace_counter.start_address == 1);
-    CHECK(post_trace_counter.size - trace_counter.size == 1);
-    CHECK(post_trace_counter.threshold - trace_counter.threshold == 1);
-    CHECK(post_trace_counter.wraps == 0);
+    CHECK(post_trace_counter.start_address() - trace_counter.start_address() == 1);
+    CHECK(post_trace_counter.size() - trace_counter.size() == 1);
+    CHECK(post_trace_counter.threshold() - trace_counter.threshold() == 1);
+    CHECK(post_trace_counter.wraps() == 0);
 
-    CHECK(post_hicann_counter.start_address - hicann_counter.start_address == 1);
-    CHECK(post_hicann_counter.size - hicann_counter.size == 1);
-    CHECK(post_hicann_counter.threshold - hicann_counter.threshold == 1);
-    CHECK(post_hicann_counter.wraps == 0);
+    CHECK(post_hicann_counter.start_address() - hicann_counter.start_address() == 1);
+    CHECK(post_hicann_counter.size() - hicann_counter.size() == 1);
+    CHECK(post_hicann_counter.threshold() - hicann_counter.threshold() == 1);
+    CHECK(post_hicann_counter.wraps() == 0);
 }
 
 
@@ -134,7 +134,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
     auto rf = EX.register_file(node);
     auto fpga = EX.fpga(node);
     auto& hicann_config = EX.hicann_config(node);
-    size_t packets = 30;
+    uint8_t packets = 30;
     fpga.configure_partner_host();
     uint64_t undefined_host = rf.read(InvalidHost::ADDRESS);
     size_t overshot = 0;
@@ -149,7 +149,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
             REQUIRE(hicann_config.size() == 0);
             uint64_t dummy_value = 0xfff00ffffff00fff;
             --packets;
-            tm.run(dummy_value, packets & 0xff, 100, true);
+            tm.run(dummy_value, packets, 100, true);
             sent_packets += packets;
             for (size_t packet = 0; packet < packets; ++packet)
             {
@@ -170,11 +170,11 @@ TEST_CASE("Receives Hicann Config", "[al]")
             }
             hicann_config.notify();
 
-            auto start = rf.read<HicannBufferStart>().data;
-            auto current = rf.read<HicannBufferCurrentAddress>().data;
+            auto start = rf.read<HicannBufferStart>().data();
+            auto current = rf.read<HicannBufferCurrentAddress>().data();
             auto hardware_sent = (current - start) / 8;
             CHECK(hardware_sent == sent_packets);
-            CHECK(rf.read<HicannBufferCounter>().wraps == 0);
+            CHECK(rf.read<HicannBufferCounter>().wraps() == 0);
         }
     }
     while (rf.probe());

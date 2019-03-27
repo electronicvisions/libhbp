@@ -34,8 +34,8 @@ public:
 
     static Extoll& Instance();
 
-    const static uint16_t HICANN_CONFIG = rf::TestControlType::HicannConfig;
-    const static uint16_t TRACE_PULSE = rf::TestControlType::TracePulse;
+    const static uint16_t HICANN_CONFIG = uint16_t(rf::TestControlType::HicannConfig);
+    const static uint16_t TRACE_PULSE = uint16_t(rf::TestControlType::TracePulse);
 private:
 
 

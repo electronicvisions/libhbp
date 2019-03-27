@@ -8,7 +8,7 @@ TEST_CASE("Basic static interface test", "[rf][static]")
 	auto node = GENERATE(hicann_nodes());
 
 	auto rf = Extoll::Instance().register_file(node);
-	REQUIRE(rf.read<Driver>().version == 0xcafebabe);
+	REQUIRE(rf.read<Driver>().version() == 0xcafebabe);
 }
 
 TEST_CASE("Static interface is persistent", "[rf][static]")
@@ -34,7 +34,7 @@ TEST_CASE("Basic oop interface test", "[rf][oop]")
 	Extoll e;
 
 	auto rf = e.register_file(node);
-	REQUIRE(rf.read<Driver>().version == 0xcafebabe);
+	REQUIRE(rf.read<Driver>().version() == 0xcafebabe);
 }
 
 TEST_CASE("OOP interface is persistent", "[rf][oop]")
