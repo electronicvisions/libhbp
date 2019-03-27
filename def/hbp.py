@@ -124,14 +124,17 @@ class TestControlConfig(Address(0xc08), ReadWrite):
     quad_words: 8
     pause_time: 8
     count_up: 1
+
+
+class TestControlStart(Address(0xc10), ReadWrite):
     start: 1
 
 
-class TestControlData(Address(0xc10), ReadWrite):
+class TestControlData(Address(0xc18), ReadWrite):
     data: 64
 
 
-class TestControlType(Address(0xc18), ReadWrite):
+class TestControlType(Address(0xc20), ReadWrite):
     type: 16
 
     class Type:

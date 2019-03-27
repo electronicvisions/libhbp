@@ -39,13 +39,13 @@ struct TestModeGuard
     void run(uint64_t dummy_value, uint8_t count, uint8_t pause, bool count_up)
     {
         rf.write<TestControlData>({dummy_value});
-        rf.write<TestControlConfig>({count, pause, count_up, false});
-        rf.write<TestControlConfig>({count, pause, count_up, true});
+        rf.write<TestControlConfig>({count, pause, count_up});
+        rf.write<TestControlStart>({true});
     }
 
     void wait()
     {
-        while(rf.read<TestControlConfig>().start)
+        while(rf.read<TestControlStart>().start)
         {
             usleep(1000);
         }
@@ -101,15 +101,15 @@ TEST_CASE("Partner Host configuration post condiftions hold", "[fpga][partner-ho
     auto post_trace_counter = rf.read<TraceBufferCounter>();
     auto post_hicann_counter = rf.read<HicannBufferCounter>();
 
-    CHECK((post_trace_counter.start_address - trace_counter.start_address) == 1);
+    CHECK(post_trace_counter.start_address - trace_counter.start_address == 1);
     CHECK(post_trace_counter.size - trace_counter.size == 1);
     CHECK(post_trace_counter.threshold - trace_counter.threshold == 1);
-    CHECK(post_trace_counter.wraps == trace_counter.wraps);
+    CHECK(post_trace_counter.wraps == 0);
 
     CHECK(post_hicann_counter.start_address - hicann_counter.start_address == 1);
     CHECK(post_hicann_counter.size - hicann_counter.size == 1);
     CHECK(post_hicann_counter.threshold - hicann_counter.threshold == 1);
-    CHECK(post_hicann_counter.wraps == hicann_counter.wraps);
+    CHECK(post_hicann_counter.wraps == 0);
 }
 
 

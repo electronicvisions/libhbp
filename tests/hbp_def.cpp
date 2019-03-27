@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 2019-03-22 18:08:08.864341
+ * 2019-03-25 16:08:12.717831
  */
 
 #include <catch.hpp>
@@ -1210,7 +1210,7 @@ TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
 {
     SECTION("write raw - read fields")
     {
-        TestControlConfig rf {{{0, 0, false, false}}};
+        TestControlConfig rf {{{0, 0, false}}};
 
         
         rf.raw = 0x0;
@@ -1219,7 +1219,6 @@ TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
         REQUIRE(rf.quad_words == 0x0);
         REQUIRE(rf.pause_time == 0x0);
         REQUIRE(!rf.count_up);
-        REQUIRE(!rf.start);
         
         rf.raw = 0xffffffffffffffff;
 
@@ -1227,7 +1226,6 @@ TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
         REQUIRE(rf.quad_words == 0xff);
         REQUIRE(rf.pause_time == 0xff);
         REQUIRE(rf.count_up);
-        REQUIRE(rf.start);
         
         rf.raw = 0xaaaaaaaaaaaaaaaa;
 
@@ -1235,7 +1233,6 @@ TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
         REQUIRE(rf.quad_words == 0xaa);
         REQUIRE(rf.pause_time == 0xaa);
         REQUIRE(!rf.count_up);
-        REQUIRE(rf.start);
         
         rf.raw = 0x5555555555555555;
 
@@ -1243,7 +1240,6 @@ TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
         REQUIRE(rf.quad_words == 0x55);
         REQUIRE(rf.pause_time == 0x55);
         REQUIRE(rf.count_up);
-        REQUIRE(!rf.start);
         
         rf.raw = 0xcafedeadbabebeef;
 
@@ -1251,50 +1247,105 @@ TEST_CASE("Definition 'TestControlConfig'", "[definitions]")
         REQUIRE(rf.quad_words == 0xef);
         REQUIRE(rf.pause_time == 0xbe);
         REQUIRE(!rf.count_up);
-        REQUIRE(rf.start);
         
     }
 
     SECTION("write fields - read raw")
     {
-        TestControlConfig rf {{{0, 0, false, false}}};
+        TestControlConfig rf {{{0, 0, false}}};
 
         
         
         rf.quad_words = 0x0;
         rf.pause_time = 0x0;
         rf.count_up = false;
-        rf.start = false;
 
-        REQUIRE((rf.raw & 0x3ffff) == 0x0);
+        REQUIRE((rf.raw & 0x1ffff) == 0x0);
         
         rf.quad_words = 0xff;
         rf.pause_time = 0xff;
         rf.count_up = true;
-        rf.start = true;
 
-        REQUIRE((rf.raw & 0x3ffff) == 0x3ffff);
+        REQUIRE((rf.raw & 0x1ffff) == 0x1ffff);
         
         rf.quad_words = 0xaa;
         rf.pause_time = 0xaa;
         rf.count_up = false;
-        rf.start = true;
 
-        REQUIRE((rf.raw & 0x3ffff) == 0x2aaaa);
+        REQUIRE((rf.raw & 0x1ffff) == 0xaaaa);
         
         rf.quad_words = 0x55;
         rf.pause_time = 0x55;
         rf.count_up = true;
-        rf.start = false;
 
-        REQUIRE((rf.raw & 0x3ffff) == 0x15555);
+        REQUIRE((rf.raw & 0x1ffff) == 0x15555);
         
         rf.quad_words = 0xef;
         rf.pause_time = 0xbe;
         rf.count_up = false;
+
+        REQUIRE((rf.raw & 0x1ffff) == 0xbeef);
+    }
+}
+TEST_CASE("Definition 'TestControlStart'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        TestControlStart rf {{{false}}};
+
+        
+        rf.raw = 0x0;
+
+        
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0xffffffffffffffff;
+
+        
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaa;
+
+        
+        REQUIRE(!rf.start);
+        
+        rf.raw = 0x5555555555555555;
+
+        
+        REQUIRE(rf.start);
+        
+        rf.raw = 0xcafedeadbabebeef;
+
+        
+        REQUIRE(rf.start);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        TestControlStart rf {{{false}}};
+
+        
+        
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
         rf.start = true;
 
-        REQUIRE((rf.raw & 0x3ffff) == 0x2beef);
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.start = false;
+
+        REQUIRE((rf.raw & 0x1) == false);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
+        
+        rf.start = true;
+
+        REQUIRE((rf.raw & 0x1) == true);
     }
 }
 TEST_CASE("Definition 'TestControlData'", "[definitions]")

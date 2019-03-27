@@ -1,6 +1,6 @@
 /**
  * This is a generated file - do not change it
- * 2019-03-22 18:08:08.864341
+ * 2019-03-25 16:08:12.717831
  */
 
 #pragma once
@@ -395,7 +395,6 @@ struct TestControlConfig
             uint64_t quad_words : 8;
             uint64_t pause_time : 8;
             bool count_up : 1;
-            bool start : 1;
         };
         uint64_t raw;
     };
@@ -409,6 +408,28 @@ struct TestControlConfig
 
 static_assert(sizeof(TestControlConfig) == sizeof(uint64_t), "sizeof register file 'TestControlConfig' != sizeof uint64_t");
 static_assert(std::is_trivial<TestControlConfig>::value, "'TestControlConfig' is not trivial");
+
+struct TestControlStart
+{
+    union
+    {
+        struct
+        {
+            
+            bool start : 1;
+        };
+        uint64_t raw;
+    };
+
+
+
+    const static RMA2_NLA ADDRESS = 0xc10;
+    const static bool READABLE = true;
+    const static bool WRITABLE = true;
+};
+
+static_assert(sizeof(TestControlStart) == sizeof(uint64_t), "sizeof register file 'TestControlStart' != sizeof uint64_t");
+static_assert(std::is_trivial<TestControlStart>::value, "'TestControlStart' is not trivial");
 
 struct TestControlData
 {
@@ -424,7 +445,7 @@ struct TestControlData
 
 
 
-    const static RMA2_NLA ADDRESS = 0xc10;
+    const static RMA2_NLA ADDRESS = 0xc18;
     const static bool READABLE = true;
     const static bool WRITABLE = true;
 };
@@ -453,7 +474,7 @@ struct TestControlType
         HicannConfig = 10779,
     };
 
-    const static RMA2_NLA ADDRESS = 0xc18;
+    const static RMA2_NLA ADDRESS = 0xc20;
     const static bool READABLE = true;
     const static bool WRITABLE = true;
 };
