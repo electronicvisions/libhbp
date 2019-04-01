@@ -7,6 +7,7 @@
 #include <sys/mman.h>
 
 #include <extoll/rma.h>
+#include <assert.h>
 
 void check(RMA2_ERROR status, const char* code)
 {
@@ -78,26 +79,26 @@ void virtual_memory(Connection c)
     {
         buffer[i] = 0xdead;
     }
+    auto aligned = (reinterpret_cast<std::uintptr_t>(buffer + 512) & 0xfffffffffffff000ull);
+    auto aligned_ptr = reinterpret_cast<uint64_t*>(aligned);
+    assert(aligned_ptr >= buffer && aligned_ptr < (buffer + 1024));
 
+    std::cout << "Aligned: " << std::hex << aligned_ptr << "\n";
     RMA2_Region* region;
-    CHECK(rma2_register(c.port, buffer, 4096, &region));
+    CHECK(rma2_register(c.port, aligned_ptr, 4096, &region));
     RMA2_NLA nla;
     CHECK(rma2_get_nla(region, 0, &nla));
-    auto offset = 0x1000u - (nla & 0xfffu);
-    CHECK(rma2_get_nla(region, offset, &nla));
-    auto offset32 = uint32_t(offset);
 
     std::cout << "Address: " << std::hex << nla << "\n";
-    //CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
-    CHECK(rma2_post_get_qw(c.port, c.handle, region, offset32, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
+    CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
+    //CHECK(rma2_post_get_qw(c.port, c.handle, region, 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
 
     block(c.port);
 
     std::cout << "Buffer: 0x" << std::hex << buffer[0] << "\n";
-    std::cout << "Buffer: 0x" << std::hex << buffer[offset / 8] << "\n";
-    for (int i = 0; i < 1024; ++i)
+    for (int i = 0; i < (1 << 20L); ++i)
     {
-        if (buffer[i] != 0xdead)
+        if (buffer[-i] == 0xcafebabe)
         {
             std::cout << i << ": " << buffer[i] << "\n";
         }
@@ -144,12 +145,12 @@ int main()
     std::cout << "\nVirtual Memory:\n";
     std::cout << "===============\n";
 
-    //virtual_memory(connection);
+    virtual_memory(connection);
 
     std::cout << "\nPhysical Memory:\n";
     std::cout << "================\n";
 
-    //physical_memory(connection);
+    physical_memory(connection);
 
     teardown(connection);
 }
