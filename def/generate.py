@@ -17,6 +17,8 @@ class Def(namedtuple('Definition', 'name read write address fields enums width')
     def needs_constructor(self):
         if len(self.fields) > 1:
             return True
+        if not self.fields:
+            return False
         field = self.fields[0]
         return field.width <= 32
 
@@ -55,21 +57,33 @@ def cut(field_or_def, value):
 def prepare_scope():
     class ReadOnly:
         READ = True
+        TRIGGER = False
 
     class WriteOnly:
         WRITE = True
+        TRIGGER = False
 
     class ReadWrite(ReadOnly, WriteOnly):
         pass
 
+    class Trigger:
+        READ = False
+        WRITE = False
+        TRIGGER = True
+
     def addr(address):
         class Address:
             ADDRESS = address
-
         return Address
 
-    globals_ = 'ReadOnly WriteOnly ReadWrite Address'.split()
-    scope = dict(ReadOnly=ReadOnly, WriteOnly=WriteOnly, ReadWrite=ReadWrite, Address=addr)
+    def width(w):
+        class Width:
+            WIDTH = w
+        return Width
+
+    globals_ = 'ReadOnly WriteOnly ReadWrite Address Trigger'.split()
+    scope = dict(ReadOnly=ReadOnly, WriteOnly=WriteOnly, ReadWrite=ReadWrite, Trigger=Trigger,
+                 Address=addr, Width=width)
     local = {}
 
     return scope, local, globals_
@@ -137,10 +151,7 @@ def cleanup_definitions(local):
         read = getattr(value, 'READ', False)
         write = getattr(value, 'WRITE', False)
 
-        if not getattr(value, '__annotations__', None):
-            error(f"{key} has not field definitions")
-            continue
-        fields = value.__annotations__
+        fields = getattr(value, '__annotations__', {})
 
         if not all(isinstance(width, int) for width in fields.values()):
             error(f"{key}: field widths must be integers")
@@ -164,13 +175,15 @@ def cleanup_definitions(local):
 
             fields_tuples.append(Field(name, width, offset, matching_enum))
             offset += width
+        if offset == 0:
+            offset = getattr(value, 'WIDTH')
         yield Def(key, bool(read), bool(write), int(address), fields_tuples, enums, offset)
 
 
 def read_definition(file_name):
     scope, local, globals_ = prepare_scope()
 
-    with open('hbp.py') as fin:
+    with open(file_name) as fin:
         exec(fin.read(), scope, local)
 
     definitions = list(cleanup_definitions(local))
@@ -209,14 +222,15 @@ def main():
         0xcafedeadbabebeef
     ]
 
-    target = join(dirname(path), 'include', 'extoll', 'hbp_def.h')
+    base = argv[1][:-3]
+    target = join(dirname(path), 'include', 'extoll', f'{base}_definitions.h')
     with open(target, 'w') as fout:
-        template = env.get_template('definition.h')
+        template = env.get_template(f'{base}_definitions.h')
         fout.write(template.render(**locals()))
 
-    target = join(dirname(path), 'tests', 'hbp_def.cpp')
+    target = join(dirname(path), 'tests', f'{base}_definitions.cpp')
     with open(target, 'w') as fout:
-        template = env.get_template('test.cpp')
+        template = env.get_template(f'{base}_definitions.cpp')
         fout.write(template.render(**locals()))
 
 

@@ -41,9 +41,9 @@ set(HEADERS
     include/extoll/jtag.h
     include/extoll/exception.h
     include/extoll/fpga.h
-    include/extoll/hbp_def.h
+    include/extoll/rf_definitions.h
     include/extoll/hicann.h
-    include/extoll/jtag_registers.h
+    include/extoll/jtag_definitions.h
     include/extoll/utility/rng.h)
 
 set(SOURCES
@@ -63,7 +63,7 @@ set(TESTS
     tests/rra.cpp
     tests/jtag.cpp
     tests/if.cpp
-    tests/hbp_def.cpp
+    tests/rf_definitions.cpp
     tests/highspeed.cpp
     tests/fpga.cpp
     tests/helper/application_protocol.h

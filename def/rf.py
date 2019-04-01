@@ -1,5 +1,5 @@
 NAMESPACE = 'extoll', 'library', 'rf'
-TEST_INCLUDE = '<extoll/hbp_def.h>'
+TEST_INCLUDE = '<extoll/rf_definitions.h>'
 
 
 # silence warnings

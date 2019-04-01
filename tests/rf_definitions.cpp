@@ -1,11 +1,11 @@
-/**
+/*
  * This is a generated file - do not change it
- * 2019-03-27 20:31:51.984518
+ * 2019-04-01 15:45:35.678389
  */
 
 #include <catch.hpp>
 
-#include <extoll/hbp_def.h>
+#include <extoll/rf_definitions.h>
 
 using namespace extoll::library::rf;
 

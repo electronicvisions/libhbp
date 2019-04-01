@@ -1,6 +1,6 @@
 #include <extoll/jtag.h>
 
-#include <extoll/hbp_def.h>
+#include <extoll/rf_definitions.h>
 #include <extoll/exception.h>
 
 using namespace extoll::library;
