@@ -16,11 +16,10 @@ namespace jtag {
 
 
 
-//! Read-only register file ID at address 0x0
+//! Read-only Jtag register ID at address 0x0.
 struct ID
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -44,11 +43,10 @@ struct ID
 };
 
 
-//! Read-only register file Systime at address 0xb
+//! Read-only Jtag register Systime at address 0xb.
 struct Systime
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -72,11 +70,10 @@ struct Systime
 };
 
 
-//! Read-only register file RxData at address 0x12
+//! Read-only Jtag register RxData at address 0x12.
 struct RxData
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -100,11 +97,10 @@ struct RxData
 };
 
 
-//! Read-only register file Status at address 0x1a
+//! Read-only Jtag register Status at address 0x1a.
 struct Status
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -128,11 +124,10 @@ struct Status
 };
 
 
-//! Read-only register file CrcCount at address 0x27
+//! Read-only Jtag register CrcCount at address 0x27.
 struct CrcCount
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -156,11 +151,10 @@ struct CrcCount
 };
 
 
-//! Read-only register file ArqTxPckNum at address 0x31
+//! Read-only Jtag register ArqTxPckNum at address 0x31.
 struct ArqTxPckNum
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -184,11 +178,10 @@ struct ArqTxPckNum
 };
 
 
-//! Read-only register file ArqRxPckNum at address 0x32
+//! Read-only Jtag register ArqRxPckNum at address 0x32.
 struct ArqRxPckNum
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -212,11 +205,10 @@ struct ArqRxPckNum
 };
 
 
-//! Read-only register file ArqRxDropNum at address 0x33
+//! Read-only Jtag register ArqRxDropNum at address 0x33.
 struct ArqRxDropNum
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -240,11 +232,10 @@ struct ArqRxDropNum
 };
 
 
-//! Read-only register file ArqTxTimeoutNum at address 0x36
+//! Read-only Jtag register ArqTxTimeoutNum at address 0x36.
 struct ArqTxTimeoutNum
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -268,11 +259,10 @@ struct ArqTxTimeoutNum
 };
 
 
-//! Read-only register file ArqRxTimeoutNum at address 0x37
+//! Read-only Jtag register ArqRxTimeoutNum at address 0x37.
 struct ArqRxTimeoutNum
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -296,11 +286,10 @@ struct ArqRxTimeoutNum
 };
 
 
-//! Write-only register file LvdsPadsEnable at address 0x2
+//! Write-only Jtag register LvdsPadsEnable at address 0x2.
 struct LvdsPadsEnable
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -324,11 +313,10 @@ struct LvdsPadsEnable
 };
 
 
-//! Write-only register file LinkControl at address 0x3
+//! Write-only Jtag register LinkControl at address 0x3.
 struct LinkControl
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -352,11 +340,10 @@ struct LinkControl
 };
 
 
-//! Write-only register file Layer1Mode at address 0x4
+//! Write-only Jtag register Layer1Mode at address 0x4.
 struct Layer1Mode
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -380,11 +367,10 @@ struct Layer1Mode
 };
 
 
-//! Write-only register file SystemEnable at address 0x5
+//! Write-only Jtag register SystemEnable at address 0x5.
 struct SystemEnable
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -408,11 +394,10 @@ struct SystemEnable
 };
 
 
-//! Write-only register file BiasControl at address 0x6
+//! Write-only Jtag register BiasControl at address 0x6.
 struct BiasControl
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -436,11 +421,10 @@ struct BiasControl
 };
 
 
-//! Write-only register file StopTimeCount at address 0xa
+//! Write-only Jtag register StopTimeCount at address 0xa.
 struct StopTimeCount
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -464,11 +448,10 @@ struct StopTimeCount
 };
 
 
-//! Write-only register file Set2Xpls at address 0xd
+//! Write-only Jtag register Set2Xpls at address 0xd.
 struct Set2Xpls
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -492,11 +475,10 @@ struct Set2Xpls
 };
 
 
-//! Write-only register file Pll2gControl at address 0x10
+//! Write-only Jtag register Pll2gControl at address 0x10.
 struct Pll2gControl
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -520,11 +502,10 @@ struct Pll2gControl
 };
 
 
-//! Write-only register file TxData at address 0x11
+//! Write-only Jtag register TxData at address 0x11.
 struct TxData
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -548,11 +529,10 @@ struct TxData
 };
 
 
-//! Write-only register file TestControl at address 0x17
+//! Write-only Jtag register TestControl at address 0x17.
 struct TestControl
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -576,11 +556,10 @@ struct TestControl
 };
 
 
-//! Write-only register file PllFarControl at address 0x29
+//! Write-only Jtag register PllFarControl at address 0x29.
 struct PllFarControl
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -604,11 +583,10 @@ struct PllFarControl
 };
 
 
-//! Write-only register file ArqControl at address 0x30
+//! Write-only Jtag register ArqControl at address 0x30.
 struct ArqControl
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -632,11 +610,10 @@ struct ArqControl
 };
 
 
-//! Write-only register file ArqTxTimeoutValue at address 0x34
+//! Write-only Jtag register ArqTxTimeoutValue at address 0x34.
 struct ArqTxTimeoutValue
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -660,11 +637,10 @@ struct ArqTxTimeoutValue
 };
 
 
-//! Write-only register file ArqRxTimeoutValue at address 0x35
+//! Write-only Jtag register ArqRxTimeoutValue at address 0x35.
 struct ArqRxTimeoutValue
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -688,11 +664,10 @@ struct ArqRxTimeoutValue
 };
 
 
-//! Read-write register file IBias at address 0x7
+//! Read-write Jtag register IBias at address 0x7.
 struct IBias
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -716,11 +691,10 @@ struct IBias
 };
 
 
-//! Read-write register file DelayRxData at address 0x21
+//! Read-write Jtag register DelayRxData at address 0x21.
 struct DelayRxData
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -744,11 +718,10 @@ struct DelayRxData
 };
 
 
-//! Read-write register file DelayRxClock at address 0x22
+//! Read-write Jtag register DelayRxClock at address 0x22.
 struct DelayRxClock
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -772,11 +745,10 @@ struct DelayRxClock
 };
 
 
-//! Write-only register file StartLink at address 0x8
+//! Write-only Jtag register StartLink at address 0x8.
 struct StartLink
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -800,11 +772,10 @@ struct StartLink
 };
 
 
-//! Write-only register file StopLink at address 0x9
+//! Write-only Jtag register StopLink at address 0x9.
 struct StopLink
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -828,11 +799,10 @@ struct StopLink
 };
 
 
-//! Write-only register file StartConfigPackage at address 0x18
+//! Write-only Jtag register StartConfigPackage at address 0x18.
 struct StartConfigPackage
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -856,11 +826,10 @@ struct StartConfigPackage
 };
 
 
-//! Write-only register file StartPulsePackage at address 0x19
+//! Write-only Jtag register StartPulsePackage at address 0x19.
 struct StartPulsePackage
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -884,11 +853,10 @@ struct StartPulsePackage
 };
 
 
-//! Write-only register file SetReset at address 0x1b
+//! Write-only Jtag register SetReset at address 0x1b.
 struct SetReset
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -912,11 +880,10 @@ struct SetReset
 };
 
 
-//! Write-only register file ReleaseReset at address 0x1c
+//! Write-only Jtag register ReleaseReset at address 0x1c.
 struct ReleaseReset
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 
@@ -940,11 +907,10 @@ struct ReleaseReset
 };
 
 
-//! Write-only register file ResetCrcCount at address 0x28
+//! Write-only Jtag register ResetCrcCount at address 0x28.
 struct ResetCrcCount
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 

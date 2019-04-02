@@ -1,3 +1,7 @@
+{#-
+Note: this is actually not a generated file.
+It is used to generate a file which is why it includes that message
+-#}
 /*
  * This is a generated file - do not change it
  * {{ datetime }}
@@ -21,11 +25,10 @@ Read-write
 Read-only
 {%- else -%}
 Write-only
-{%- endif %} register file {{ def.name }} at address {{ def.address|hex }}
+{%- endif %} Jtag register {{ def.name }} at address {{ def.address|hex }}.
 struct {{ def.name }}
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly.
     uint64_t raw = 0;
 

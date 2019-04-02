@@ -1,3 +1,7 @@
+{#-
+Note: this is actually not a generated file.
+It is used to generate a file which is why it includes that message
+-#}
 /*
  * This is a generated file - do not change it
  * {{ datetime }}
@@ -15,8 +19,7 @@ namespace {{ id }} {
 
 
 {% for def in defs %}
-//! \brief {% if def.read and def.write -%}
-//!
+//! {% if def.read and def.write -%}
 Read-write
 {%- elif def.read -%}
 Read-only
@@ -24,15 +27,13 @@ Read-only
 Write-only
 {%- else -%};
 Trigger
-{%- endif %} Jtag register {{ def.name }} at address {{ def.address|hex }};
-//! Fields:
-{%- for f in def.fields %}
-//! {{f.name}} : {{f.width}}
+{%- endif %} register file {{ def.name }} at address {{ def.address|hex }}.
+{%- for doc in def.doc %}
+//! {{doc }}
 {%- endfor %}
 struct {{ def.name }}
 {
-    //! \brief The raw bits used to send and receive data to and from the hardware
-    //!
+    //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly. The concrete bit-fields are always
     //! synchronized with this value.
     uint64_t raw = 0;

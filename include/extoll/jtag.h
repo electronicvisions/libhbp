@@ -10,8 +10,7 @@
 namespace extoll {
 namespace library {
 
-//! \brief This class provides Jtag access on-top of the register file interface
-//!
+//! This class provides Jtag access on-top of the register file interface.
 //! This class should be instantiated through the factory functions in Extoll.
 //! A Jtag connection can only be established when there is at least one Hicann
 //! connected to the Fpga.
@@ -19,8 +18,7 @@ class JTag : protected RegisterFile
 {
 
 public:
-    //! \brief Create a Jtag interface from a given Endpoint
-    //!
+    //! Create a Jtag interface from a given Endpoint.
     //! This constructor should not be used directly. Use the factory functions
     //! in Extoll instead.
     //! \throws NodeHasNoHicann when the Fpga is not connected to any Hicann
@@ -34,17 +32,14 @@ public:
 
     //! Resets the TAP controller on the hardware site
     void reset();
-    //! \brief Sets all Hicanns into bypass mode
-    //!
+    //! Sets all Hicanns into bypass mode.
     //! This is a low-level interface, handle with care!
     void set_bypass();
 
-    //! \brief Selects the specified command register on all Hicanns
-    //!
+    //! Selects the specified command register on all Hicanns.
     //! This is a low-level interface, handle with care!
     void set_command(uint64_t command);
-    //! \brief Selects the specified command on the specified Hicann and sets all others into bypass mode
-    //!
+    //! Selects the specified command on the specified Hicann and sets all others into bypass mode.
     //! This is a low-level interface, handle with care!
     void set_command(uint64_t command, uint8_t hicann);
 
@@ -102,8 +97,7 @@ public:
     template <typename JR>
     void trigger(uint8_t hicann);
 
-    //! \brief The number of Hicanns connected to the Fpga
-    //!
+    //! The number of Hicanns connected to the Fpga.
     //! This number will always be larger than one and smaller than nine.
     size_t active_hicanns() const;
 private:

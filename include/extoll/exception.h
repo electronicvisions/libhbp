@@ -9,8 +9,7 @@
 namespace extoll {
 namespace library {
 
-//! \brief The base class for all exceptions in this library
-//!
+//! The base class for all exceptions in this library.
 //! Only its child classes will be instantiated.
 struct RmaError : std::runtime_error
 {
@@ -23,8 +22,7 @@ struct ConnectionFailed : RmaError
     using RmaError::RmaError;
 };
 
-//! \brief This exception indicates that a user-space buffer could not be registered with the extoll driver
-//!
+//! This exception indicates that a user-space buffer could not be registered with the extoll driver.
 //! This can occur if two many regions are already registered with the driver
 struct FailedToRegisterRegion : RmaError
 {

@@ -12,7 +12,7 @@ basicConfig()
 Enum = namedtuple('Enum', 'name fields underlying_type')
 
 
-class Def(namedtuple('Definition', 'name read write address fields enums width')):
+class Def(namedtuple('Definition', 'name read write address fields enums width doc')):
     @property
     def needs_constructor(self):
         if len(self.fields) > 1:
@@ -161,6 +161,7 @@ def cleanup_definitions(local):
             continue
 
         enums = list(find_enum(value))
+        doc = [line.strip() for line in (value.__doc__ or '').strip().splitlines()]
 
         fields_tuples = []
         offset = 0
@@ -177,7 +178,7 @@ def cleanup_definitions(local):
             offset += width
         if offset == 0:
             offset = getattr(value, 'WIDTH')
-        yield Def(key, bool(read), bool(write), int(address), fields_tuples, enums, offset)
+        yield Def(key, bool(read), bool(write), int(address), fields_tuples, enums, offset, doc)
 
 
 def read_definition(file_name):

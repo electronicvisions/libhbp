@@ -17,8 +17,7 @@
 namespace extoll {
 namespace library {
 
-//! \brief The connection pool that cashes all connections and provides access to all common functionality
-//!
+//! The connection pool that cashes all connections and provides access to all common functionality.
 //! This class keeps a map of all open connections indexed by the remote node id.
 //! Like this connections can be re-used across all hardware interfaces.
 //! Furthermore, the class provides factory functions for the most common functionality:
@@ -37,53 +36,45 @@ private:
 
     static std::unique_ptr<Extoll> instance;
 public:
-    //! \brief Creates a new register file access object (RegisterFile)
-    //!
+    //! Creates a new register file access object (RegisterFile).
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     RegisterFile register_file(RMA2_Nodeid node);
-    //! \brief Creates a new jtag access object (JTag)
-    //!
+    //! Creates a new jtag access object (JTag).
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     //! \throws NodeHasNoHicann if the Fpga is not connected to any Hicann
     JTag jtag(RMA2_Nodeid node);
-    //! \brief Creates a new Fpga access object (Fpga)
-    //!
+    //! Creates a new Fpga access object (Fpga).
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     Fpga fpga(RMA2_Nodeid node);
-    //! \brief Creates a new Hicann access object (Hicann)
-    //!
+    //! Creates a new Hicann access object (Hicann).
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     Hicann hicann(RMA2_Nodeid node, int8_t number);
-    //! \brief A reference to the Hicann config ringbuffer
-    //!
+    //! A reference to the Hicann config ringbuffer.
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     RingBuffer& hicann_config(RMA2_Nodeid node);
-    //! \brief A reference to the Trace-Pulse data ringbuffer
-    //!
+    //! A reference to the Trace-Pulse data ringbuffer.
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     RingBuffer& trace_pulse(RMA2_Nodeid node);
-    //! \brief Connect to a remote Extoll node based on its node id
-    //!
+    //! Connect to a remote Extoll node based on its node id.
     //! The connection may be cashed.
     //! Using the object after the parent Extoll object was deleted is undefined behavior
     //! \throws ConnectionFailed if there is an error inside `librma2`
     //! \throws NodeIsNoFpga if the remote node is not an HBP communication Fpga
     Endpoint& connect(RMA2_Nodeid node);
 
-    //! \brief A reference to the globals Extoll object
-    //!
+    //! A reference to the globals Extoll object.
     //! This global object should be preferred over creating many local
     //! Extoll objects since connections are not reused across different instances
     //! of this class and the tear-down is very expensive (time-wise).

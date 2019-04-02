@@ -25,7 +25,7 @@ protected:
 public:
     //! Creates a buffer from an Rma port and the number of pages (4kB)
     explicit PhysicalBuffer(RMA2_Port port, size_t pages);
-    //! Unregisteres the region and frees the memory
+    //! Unregisters the region and frees the memory
     ~PhysicalBuffer();
 
     //! This class is not copyable
@@ -55,8 +55,7 @@ public:
     }
 };
 
-//! \brief A specialized memory region that acts like a ringbuffer
-//!
+//! A specialized memory region that acts like a ringbuffer.
 //! This class is synchronized with the ringbuffer on the remote Fpga.
 class RingBuffer : public PhysicalBuffer
 {
@@ -75,8 +74,7 @@ public:
 
     //! Blocks and reads one quad word from the buffer
     uint64_t get();
-    //! \brief Notifies the hardware about how many bytes were read
-    //!
+    //! Notifies the hardware about how many bytes were read.
     //! This method is also called internally after a certain amount of read quad words
     void notify();
     //! Simulates reading all quad words in the buffer and discards the packets

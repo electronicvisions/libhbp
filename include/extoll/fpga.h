@@ -7,8 +7,7 @@ namespace extoll {
 namespace library {
 
 
-//! \brief All configuration values for the partner host configuration
-//!
+//! All configuration values for the partner host configuration.
 //! A default set of configuration values can be obtained from
 //! Fpga::default_partner_host_parameters
 //! Changing these values can lead to misconfiguration of the remote Fpga
@@ -50,8 +49,7 @@ struct PartnerHostConfiguration
     Ringbuffer hicann;
 };
 
-//! \brief This class provides a low-level interface for sending Fpga config packets
-//!
+//! This class provides a low-level interface for sending Fpga config packets.
 //! This class should be instantiated through the factory functions in Extoll
 class Fpga : protected RegisterFile
 {
@@ -109,8 +107,7 @@ public:
     //! Only sets the reset flags.
     void reset_set_only(Reset = All);
 
-    //! \brief Create the default partner host configuration parameters
-    //!
+    //! Create the default partner host configuration parameters.
     //! These parameters can be used with configure_partner_host
     PartnerHostConfiguration default_partner_host_parameters();
     //! Configure the partner host on the Fpga with default values

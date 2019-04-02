@@ -12,14 +12,12 @@ namespace extoll {
 namespace library {
 
 
-//! \brief The remote register file access interface
-//!
+//! The remote register file access interface.
 //! This class should be instantiated through the factory functions in Extoll
 class RegisterFile
 {
 protected:
-    //! \brief A reference to the remote connection
-    //!
+    //! A reference to the remote connection.
     //! Because of this reference, the class depends on the Extoll object that
     //! was used to create the register file interface.
     Endpoint& _connection;
@@ -27,8 +25,7 @@ protected:
     mutable RMA2_ERROR _status;
 
 public:
-    //! \brief Create a register file interface from a given Endpoint
-    //!
+    //! Create a register file interface from a given Endpoint.
     //! This constructor should not be used directly. Use the factory functions
     //! in Extoll instead.
     explicit RegisterFile(Endpoint&);
