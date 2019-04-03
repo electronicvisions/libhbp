@@ -30,7 +30,7 @@ TEST_CASE("Definition '{{ def.name }}'", "[definitions]")
         {{ init(def) }}
 
         {% for value in test_values %}
-        rf.raw = {{ value|hex }};
+        rf.raw = {{ value|hex }}u;
 
         {% for field in def.fields %}
         {%- set expected = field|cut(value) %}
@@ -41,7 +41,7 @@ TEST_CASE("Definition '{{ def.name }}'", "[definitions]")
         {%- elif field.enum %}
         REQUIRE(rf.{{ field.name }}() == {{def.name}}::{{field.type}}({{field|cut(value)}}));
         {%- else %}
-        REQUIRE(rf.{{ field.name }}() == {{ field|cut(value) }});
+        REQUIRE(rf.{{ field.name }}() == {{ field|cut(value) }}u);
         {%- endif %}
         {%- endfor %}
         {% endfor %}
@@ -56,7 +56,14 @@ TEST_CASE("Definition '{{ def.name }}'", "[definitions]")
         rf.{{ field.name }}({% if field.enum %}{{def.name}}::{{ field.type }}({% endif %}{{ field|cut(value) }}{% if field.enum %}){% endif %});
         {%- endfor %}
 
-        REQUIRE((rf.raw & {{ def|mask|hex }}) == {{ def|cut(value) }});
+        {%- set expected = def|cut((value)) %}
+        {%- if expected == 'false' %}
+        REQUIRE((rf.raw & {{ def|mask|hex }}u) == 0);
+        {%- elif expected == 'true' %}
+        REQUIRE((rf.raw & {{ def|mask|hex }}u) == 1);
+        {%- else %}
+        REQUIRE((rf.raw & {{ def|mask|hex }}u) == {{ def|cut(value) }});
+        {%- endif %}
         {%- endfor %}
     }
 }

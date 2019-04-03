@@ -16,11 +16,11 @@ struct Endpoint
     struct Connection
     {
         //! The network node
-        RMA2_Port port;
+        RMA2_Port port = nullptr;
         //! The handle
-        RMA2_Handle handle;
+        RMA2_Handle handle = nullptr;
         //! The virtual process id
-        RMA2_VPID vpid;
+        RMA2_VPID vpid = RMA2_VPID_ANY;
 
         //! The status of the last `librma2` function call
         RMA2_ERROR status = RMA2_SUCCESS;

@@ -12,8 +12,11 @@ using namespace Catch::Matchers;
 
 std::vector<uint64_t> all_bits(size_t n=64);
 
-extern std::vector<RMA2_Nodeid> NodesWithHicanns;
-extern std::vector<RMA2_Nodeid> NodesWithoutHicanns;
+using Nodes = std::vector<RMA2_Nodeid>;
+
+Nodes& get_nodes_with_hicanns();
+Nodes& get_nodes_without_hicanns();
+
 extern RMA2_Nodeid HostNode;
 extern RMA2_Nodeid NotExistingNode;
 

@@ -15,10 +15,6 @@ class Hicann : public RegisterFile
     const static RMA2_NLA CONFIG_ADDRESS = RMA2_NLA(rf::TestControlType::HicannConfig) << 48ull;
 
     uint8_t _number;
-
-
-    void clear(PhysicalBuffer&, size_t=0);
-    void diff(PhysicalBuffer&, size_t=0);
 public:
     //! Create a Hicann config interface from a given Endpoint and a Hicann.
     //! This constructor should not be used directly. Use the factory functions
@@ -34,11 +30,6 @@ public:
     void send(uint64_t data);
     //! \deprecated
     uint64_t receive();
-
-    //! \deprecated
-    void clear_all();
-    //! \deprecated
-    void diff_all();
 };
 
 }}

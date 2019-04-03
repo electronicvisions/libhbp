@@ -9,15 +9,15 @@ using std::cerr;
 using std::hex;
 
 using namespace extoll::library;
-using namespace rf;
-using namespace jtag;
-
 
 
 #include <cassert>
 
 int _main(RMA2_Nodeid node, uint8_t hicann)
 {
+    using namespace rf;
+    using namespace jtag;
+
     auto rf = Extoll::Instance().register_file(node);
     auto fpga = Extoll::Instance().fpga(node);
     fpga.reset(Fpga::Reset::All);
@@ -36,7 +36,7 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
     int hicanns_in_chain = -1;
     while (shifted)
     {
-        shifted >>= 1;
+        shifted >>= 1u;
         ++hicanns_in_chain;
     }
 
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 {
     if (argc != 3)
     {
-        cerr << "usage: " << argv[0] << " NODE HICANN\n";
+        cerr << "usage: " << argv[0] << " NODE Hicann\n";
         return EXIT_FAILURE;
     }
 
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 
     if (hicann > 7)
     {
-        cerr << "HICANN must be in range [0, 7]\n";
+        cerr << "Hicann must be in range [0, 7]\n";
         return EXIT_FAILURE;
     }
 

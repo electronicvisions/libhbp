@@ -36,7 +36,7 @@ struct FailedToRegisterRegion : RmaError
 struct RraError : RmaError
 {
     //! Creates an exception from a message, a node id and a network logical address
-    RraError(std::string, RMA2_Nodeid, RMA2_NLA);
+    RraError(const std::string&, RMA2_Nodeid, RMA2_NLA);
 
     //! The node id of the node that caused the error
     RMA2_Nodeid node;

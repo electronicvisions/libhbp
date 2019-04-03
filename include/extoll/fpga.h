@@ -25,7 +25,7 @@ struct PartnerHostConfiguration
     //! The network logical address of the Fpga config response buffer
     uint64_t config_put_address;
 
-    //! Configuration values concerning the ringbuffers
+    //! Configuration values concerning the ring-buffers
     struct Ringbuffer
     {
         //! The start address of the memory region
@@ -56,7 +56,7 @@ class Fpga : protected RegisterFile
     const static RMA2_NLA CONFIG_ADDRESS = 0x0c1bull << 48ull;
 public:
     //! Flags for all modules that can be reset on the Fpga
-    enum class Reset
+    enum class Reset : uint8_t
     {
         None = 0,  //! Clears all reset bits
         Core = 1,  //! Resets the core logic
@@ -128,6 +128,8 @@ public:
     const static Reset Arq = Reset::Arq;
     //! Convenience alias
     const static Reset All = Reset::All;
+    //! Convenience alias
+    const static Reset PulseMem = Reset::PulseMem;
     //! Convenience alias
     const static Reset None = Reset::None;
 };

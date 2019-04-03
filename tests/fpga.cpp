@@ -69,7 +69,7 @@ TEST_CASE("Partner Host configuration terminates", "[fpga][partner-host]")
 }
 
 
-TEST_CASE("Partner Host configuration post condiftions hold", "[fpga][partner-host]")
+TEST_CASE("Partner Host configuration post conditions hold", "[fpga][partner-host]")
 {
     auto node = GENERATE(hicann_nodes());
     CAPTURE(node);

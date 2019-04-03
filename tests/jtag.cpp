@@ -3,15 +3,15 @@
 using namespace extoll::library::jtag;
 
 
-TEST_CASE("FPGA without HICANN cannot open JTAG connection", "[jtag][throw]")
+TEST_CASE("Fpga without Hicann cannot open JTAG connection", "[jtag][throw]")
 {
 	auto node = GENERATE(non_hicann_nodes());
 	CAPTURE(node);
 
-	REQUIRE_THROWS_WITH(EX.jtag(node), Contains("no HICANN"));
+	REQUIRE_THROWS_WITH(EX.jtag(node), Contains("no Hicann"));
 }
 
-TEST_CASE("FPGA with HICANN counts HICANNs", "[jtag]")
+TEST_CASE("Fpga with Hicann counts Hicanns", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);
@@ -22,7 +22,7 @@ TEST_CASE("FPGA with HICANN counts HICANNs", "[jtag]")
 }
 
 
-TEST_CASE("FPGA can query static READID", "[jtag]")
+TEST_CASE("Fpga can query static READID", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);
@@ -36,7 +36,7 @@ TEST_CASE("FPGA can query static READID", "[jtag]")
 }
 
 
-TEST_CASE("FPGA can query changing register", "[jtag][ok]")
+TEST_CASE("Fpga can query changing register", "[jtag][ok]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);
@@ -49,7 +49,7 @@ TEST_CASE("FPGA can query changing register", "[jtag][ok]")
 }
 
 
-TEST_CASE("FPGA can read back sent JTAG data", "[jtag]")
+TEST_CASE("Fpga can read back sent JTAG data", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);
@@ -76,7 +76,7 @@ TEST_CASE("FPGA can read back sent JTAG data", "[jtag]")
 	}
 }
 
-TEST_CASE("FPGA can mix read/write to different HICANNs", "[jtag]")
+TEST_CASE("Fpga can mix read/write to different Hicanns", "[jtag]")
 {
 	auto node = GENERATE(hicann_nodes());
 	CAPTURE(node);

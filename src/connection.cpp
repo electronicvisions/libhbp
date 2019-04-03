@@ -12,7 +12,7 @@ using namespace extoll::library;
 
 const int RMA_CONNECTION = RMA2_CONN_DEFAULT;
 const int RRA_BIT = RMA2_CONN_RRA;
-const int RRA_CONNECTION = RMA_CONNECTION | RRA_BIT;
+const int RRA_CONNECTION = uint32_t(RMA_CONNECTION) | uint32_t(RRA_BIT);
 
 Endpoint::Connection::~Connection()
 {
@@ -113,7 +113,7 @@ void Endpoint::perform_read_test(RMA2_NLA address, uint64_t expected)
 
     if (expected != gp_buffer.at<uint64_t>(0))
     {
-        throw FailedToRead("Read test failed", node, address);
+        throw FailedToRead(node, address);
     }
 }
 

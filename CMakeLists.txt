@@ -67,7 +67,8 @@ set(TESTS
     tests/highspeed.cpp
     tests/fpga.cpp
     tests/helper/application_protocol.h
-    tests/helper/application_protocol.cpp)
+    tests/helper/application_protocol.cpp
+    tests/anything_unused.cpp)
 
 add_executable(scratch scratch.cpp)
 target_include_directories(scratch PRIVATE include)

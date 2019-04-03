@@ -19,16 +19,16 @@ TEST_CASE("Failing connections", "[.][rf][throw]")
 	}
 }
 
-TEST_CASE("Successful connections to FPGAs", "[rf][success]")
+TEST_CASE("Successful connections to Fpgas", "[rf][success]")
 {
-	SECTION("FPGA without HICANNs")
+	SECTION("Fpga without Hicanns")
 	{
 		auto node = GENERATE(non_hicann_nodes());
 		CAPTURE(node);
 		REQUIRE_NOTHROW(EX.register_file(node));
 	}
 
-	SECTION("FPGA with HICANNs")
+	SECTION("Fpga with Hicanns")
 	{
 		auto node = GENERATE(hicann_nodes());
 		CAPTURE(node);
@@ -38,7 +38,7 @@ TEST_CASE("Successful connections to FPGAs", "[rf][success]")
 
 TEST_CASE("Read static registers", "[rf][static]")
 {
-	SECTION("FPGA without HICANN")
+	SECTION("Fpga without Hicann")
 	{
 		auto node = GENERATE(non_hicann_nodes());
 		CAPTURE(node);
@@ -48,7 +48,7 @@ TEST_CASE("Read static registers", "[rf][static]")
 		CHECK(r.read<Info>().node_id() == node);
 	}
 
-	SECTION("FPGA with HICANN")
+	SECTION("Fpga with Hicann")
 	{
 		auto node = GENERATE(hicann_nodes());
 		CAPTURE(node);
@@ -62,7 +62,7 @@ TEST_CASE("Read static registers", "[rf][static]")
 
 TEST_CASE("Write and read back", "[rf][rw]")
 {
-	SECTION("FPGA without HICANN")
+	SECTION("Fpga without Hicann")
 	{
 		auto node = GENERATE(non_hicann_nodes());
 		CAPTURE(node);
@@ -78,7 +78,7 @@ TEST_CASE("Write and read back", "[rf][rw]")
 		}
 	}
 
-	SECTION("FPGA with HICANN")
+	SECTION("Fpga with Hicann")
 	{
 		auto node = GENERATE(hicann_nodes());
 		CAPTURE(node);

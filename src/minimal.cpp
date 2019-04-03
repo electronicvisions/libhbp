@@ -5,9 +5,9 @@
 #include <pmap.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <cassert>
 
 #include <extoll/rma.h>
-#include <assert.h>
 
 void check(RMA2_ERROR status, const char* code)
 {
@@ -18,10 +18,6 @@ void check(RMA2_ERROR status, const char* code)
         std::cerr << code << " -> " << buffer << "\n";
         exit(1);
     }
-    else
-    {
-        // std::cout << code << "\n";
-    }
 }
 
 void check_fd(int status, const char* code)
@@ -30,10 +26,6 @@ void check_fd(int status, const char* code)
     {
         std::cerr << code << " -> " << status << "\n";
         exit(1);
-    }
-    else
-    {
-        // std::cout << code << "\n";
     }
 }
 
@@ -59,8 +51,8 @@ Connection setup()
     RMA2_Port port;
     CHECK(rma2_open(&port));
     RMA2_Handle handle;
-    auto vpid = rma2_get_vpid(port);
-    CHECK(rma2_connect(port, 2, vpid, RMA2_CONN_RRA, &handle));
+    auto virtual_process_id = rma2_get_vpid(port);
+    CHECK(rma2_connect(port, 2, virtual_process_id, RMA2_CONN_RRA, &handle));
 
     return {port, handle};
 }
@@ -91,12 +83,11 @@ void virtual_memory(Connection c)
 
     std::cout << "Address: " << std::hex << nla << "\n";
     CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
-    //CHECK(rma2_post_get_qw(c.port, c.handle, region, 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
 
     block(c.port);
 
     std::cout << "Buffer: 0x" << std::hex << buffer[0] << "\n";
-    for (int i = 0; i < (1 << 20L); ++i)
+    for (int i = 0; i < int32_t(1u << 20u); ++i)
     {
         if (buffer[-i] == 0xcafebabe)
         {
@@ -106,16 +97,16 @@ void virtual_memory(Connection c)
     CHECK(rma2_unregister(c.port, region));
 }
 
-#define CHECKFD(x) check_fd(x, #x);
+#define CHECK_FD(x) check_fd(x, #x)
 
 
 void physical_memory(Connection c)
 {
     auto fd = open("/dev/extoll/pmap", O_RDWR);
-    CHECKFD(fd);
+    CHECK_FD(fd);
 
-    CHECKFD(ioctl(fd, PMAP_IOCTL_SET_TYPE, 0));
-    CHECKFD(ioctl(fd, PMAP_IOCTL_SET_SIZE, 4096));
+    CHECK_FD(ioctl(fd, PMAP_IOCTL_SET_TYPE, 0));
+    CHECK_FD(ioctl(fd, PMAP_IOCTL_SET_SIZE, 4096));
 
     auto buffer = static_cast<uint64_t*>(mmap(nullptr, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
 
@@ -126,7 +117,7 @@ void physical_memory(Connection c)
     }
 
     RMA2_NLA nla;
-    CHECKFD(ioctl(fd, PMAP_IOCTL_GET_PADDR, &nla));
+    CHECK_FD(ioctl(fd, PMAP_IOCTL_GET_PADDR, &nla));
     std::cout << "Address: " << std::hex << nla << "\n";
 
     CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));

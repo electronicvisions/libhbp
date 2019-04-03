@@ -5,10 +5,10 @@
 using namespace extoll::library;
 
 NodeIsNoFpga::NodeIsNoFpga(RMA2_Nodeid n, uint32_t d)
-    : ConnectionFailed("Connection to FPGA failed, because node is not an FPGA!"),
+    : ConnectionFailed("Connection to Fpga failed, because node is not an Fpga!"),
     node(n), driver(d) {}
 
-RraError::RraError(std::string msg, RMA2_Nodeid n, RMA2_NLA a)
+RraError::RraError(const std::string& msg, RMA2_Nodeid n, RMA2_NLA a)
     : RmaError(msg),
     node(n), address(a) {}
 

@@ -77,65 +77,7 @@ uint32_t Hicann::read(uint16_t )
 uint64_t Hicann::receive()
 {
     // TODO: look up in the ringbuffer
-    // TODO: wait for notis
+    // TODO: wait for notifications
 
     return _connection.hicann_config[0];
-}
-
-void Hicann::clear(PhysicalBuffer& p, size_t amount)
-{
-    if (amount == 0 || amount > p.capacity())
-    {
-        amount = p.capacity();
-    }
-
-    for (size_t i = 0; i < amount; ++i)
-    {
-        p[i] = 0xdeadbeef;
-    }
-}
-
-void Hicann::diff(PhysicalBuffer& p, size_t amount)
-{
-    if (amount == 0 || amount > p.capacity())
-    {
-        amount = p.capacity();
-    }
-
-    size_t unchanged = 0;
-    for (size_t i = 0; i < amount; ++i)
-    {
-        auto v = p[i];
-        if (v != 0xdeadbeef)
-        {
-            if (unchanged != 0)
-            {
-                std::cout << "unchanged: " << std::dec << unchanged << "/" << amount << "\n";
-                unchanged = 0;
-            }
-            std::cout << i << ": " << v << "\n";
-        }
-        else
-        {
-            ++unchanged;
-        }
-    }
-    if (unchanged != 0)
-    {
-        std::cout << "unchanged: " << std::dec << unchanged << "/" << amount << "\n";
-    }
-}
-
-void Hicann::clear_all()
-{
-    clear(_connection.gp_buffer);
-    clear(_connection.hicann_config);
-    clear(_connection.trace_data);
-}
-
-void Hicann::diff_all()
-{
-    diff(_connection.gp_buffer);
-    diff(_connection.hicann_config);
-    diff(_connection.trace_data);
 }

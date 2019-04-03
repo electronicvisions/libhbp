@@ -36,8 +36,8 @@ void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
 HsStatus highspeed_status(RegisterFile& rf, JTag& jtag, uint8_t hicann)
 {
     return {
-            (rf.read<HicannIfState>().raw & 0x49) == 0x49,
-            (jtag.read<Status>(hicann & 7u) & 0x49) == 0x49
+            (rf.read<HicannIfState>().raw & 0x49u) == 0x49,
+            (jtag.read<Status>(hicann & 7u) & 0x49u) == 0x49
     };
 }
 

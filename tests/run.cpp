@@ -10,12 +10,14 @@ int main(int argc, char** argv)
 {
 	Catch::Session session;
 
+    auto& nodes_with_hicanns = get_nodes_with_hicanns();
+    auto& nodes_without_hicanns = get_nodes_without_hicanns();
 
 	auto cli = session.cli()
-		| Opt(NodesWithHicanns, "hicann nodes")
+		| Opt(nodes_with_hicanns, "hicann nodes")
 			["-y"]["--hicann-nodes"]
 			("Node Id of nodes with Hicanns")
-		| Opt(NodesWithoutHicanns, "non-hicann nodes")
+		| Opt(nodes_without_hicanns, "non-hicann nodes")
 			["-j"]["--non-hicann-nodes"]
 		| Opt(HostNode, "host node")
 			["-k"]["--host-node"]
@@ -41,27 +43,27 @@ int main(int argc, char** argv)
 		std::cout << "Not-existing-node: " << NotExistingNode << "\n";
 	}
 
-	if (NodesWithHicanns.size() == 0)
+	if (nodes_with_hicanns.empty())
 	{
 		std::cout << "No nodes with hicanns provided\n";
 	}
 	else
 	{
 		std::cout << "Nodes with hicanns: ";
-		for (auto n : NodesWithHicanns)
+		for (auto n : nodes_with_hicanns)
 		{
 			std::cout << n << " ";
 		}
 		std::cout << "\n";
 	}
-	if (NodesWithoutHicanns.size() == 0)
+	if (nodes_without_hicanns.empty())
 	{
 		std::cout << "No nodes without hicanns provided\n";
 	}
 	else
 	{
 		std::cout << "Nodes without hicanns: ";
-		for (auto n : NodesWithoutHicanns)
+		for (auto n : nodes_without_hicanns)
 		{
 			std::cout << n << " ";
 		}

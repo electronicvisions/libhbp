@@ -34,7 +34,7 @@ PartnerHostConfiguration Fpga::default_partner_host_parameters()
         rma2_get_nodeid(rma.port),
         0,
         rma.vpid,
-        1 << 2,
+        1u << 2u,
 
         _connection.fpga_config_address(),
 
@@ -63,6 +63,8 @@ PartnerHostConfiguration Fpga::default_partner_host_parameters()
 
 void Fpga::configure_partner_host(const PartnerHostConfiguration& config)
 {
+    using namespace extoll::library::rf;
+
     write_noblock<HostEndpoint>({
         config.local_node,
         config.protection_domain_id,
@@ -136,16 +138,16 @@ Fpga::Config operator|(Fpga::Config flags, Fpga::Config bit)
 Fpga::Reset operator|(Fpga::Reset flags, Fpga::Reset bit)
 {
     return static_cast<Fpga::Reset>(
-        static_cast<uint64_t>(flags) | static_cast<uint64_t>(bit)
+        static_cast<uint8_t>(flags) | static_cast<uint8_t>(bit)
     );
 }
 
 bool operator&(Fpga::Reset flags, Fpga::Reset bit)
 {
-    return static_cast<uint8_t>(bit) & static_cast<uint8_t>(flags);
+    return (static_cast<uint8_t>(bit) & static_cast<uint8_t>(flags)) != 0;
 }
 
 bool operator&(Fpga::Config flags, Fpga::Config bit)
 {
-    return static_cast<uint8_t>(bit) & static_cast<uint8_t>(flags);
+    return (static_cast<uint64_t>(bit) & static_cast<uint64_t>(flags)) != 0;
 }
