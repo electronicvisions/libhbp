@@ -15,10 +15,8 @@ std::vector<uint64_t> all_bits(size_t n=64);
 using Nodes = std::vector<RMA2_Nodeid>;
 
 Nodes& get_nodes_with_hicanns();
-Nodes& get_nodes_without_hicanns();
 
 extern RMA2_Nodeid HostNode;
-extern RMA2_Nodeid NotExistingNode;
 
 template <typename T>
 class VectorGenerator : public Catch::Generators::IGenerator<T>
@@ -37,7 +35,6 @@ template <typename T>
 using Wrapper = Catch::Generators::GeneratorWrapper<T>;
 
 Wrapper<RMA2_Nodeid> hicann_nodes();
-Wrapper<RMA2_Nodeid> non_hicann_nodes();
 
 #define FOR_EACH_HICANN for (uint8_t hicann = 0; hicann < j.active_hicanns(); ++hicann)
 #define EX Extoll::Instance()

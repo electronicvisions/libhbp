@@ -1,26 +1,69 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 
+#include <vector>
+#include <regex>
+
 #include "helper/util.h"
 
 using namespace Catch::clara;
+
+void read_node_ids_from_emp_ctrl(Nodes& nodes)
+{
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("emp-ctrl network listnodes", "r"), pclose);
+
+    if (!pipe)
+    {
+        std::cout << "Could not automatically determine nodes\n";
+        std::exit(1);
+    }
+
+    while (fgets(buffer.data(), int(buffer.size()), pipe.get()) != nullptr)
+    {
+        result += buffer.data();
+    }
+
+    std::size_t pos = result.find_first_of('[');
+
+    while (pos != std::string::npos)
+    {
+        auto sep = result.find_first_of('|', pos);
+        if (sep == std::string::npos)
+        {
+            return;
+        }
+        auto node_id = RMA2_Nodeid(std::stoi(result.substr(pos + 1, sep - pos - 1)));
+        nodes.push_back(node_id);
+
+        pos = result.find_first_of('[', sep);
+    }
+}
+
+void read_node_ids_from_arg(Nodes& nodes, const std::string& arg)
+{
+    std::istringstream node_stream(arg);
+    std::string node;
+
+    while (std::getline(node_stream, node, ','))
+    {
+        nodes.push_back(RMA2_Nodeid(std::stoi(node)));
+    }
+}
 
 #include <iostream>
 int main(int argc, char** argv)
 {
 	Catch::Session session;
 
-    auto& nodes_with_hicanns = get_nodes_with_hicanns();
-    auto& nodes_without_hicanns = get_nodes_without_hicanns();
+    auto& nodes = get_nodes_with_hicanns();
+    std::string nodes_arg;
 
 	auto cli = session.cli()
-		| Opt(nodes_with_hicanns, "hicann nodes")
-			["-y"]["--hicann-nodes"]
-			("Node Id of nodes with Hicanns")
-		| Opt(nodes_without_hicanns, "non-hicann nodes")
-			["-j"]["--non-hicann-nodes"]
-		| Opt(NotExistingNode, "not existing node")
-			["--not-existing-node"];
+		| Opt(nodes_arg, "hicann nodes")
+			["-N"]["--node"]
+			("Node Id of nodes with Hicanns or comma separated list of node Ids");
 
 	session.cli(cli);
 
@@ -31,32 +74,22 @@ int main(int argc, char** argv)
 	HostNode = rma2_get_nodeid(port);
 	rma2_close(port);
 
-	if (nodes_with_hicanns.empty())
-	{
-		std::cout << "No nodes with hicanns provided\n";
-	}
+	if (nodes_arg.empty())
+    {
+	    read_node_ids_from_emp_ctrl(nodes);
+    }
 	else
-	{
-		std::cout << "Nodes with hicanns: ";
-		for (auto n : nodes_with_hicanns)
-		{
-			std::cout << n << " ";
-		}
-		std::cout << "\n";
-	}
-	if (nodes_without_hicanns.empty())
-	{
-		std::cout << "No nodes without hicanns provided\n";
-	}
-	else
-	{
-		std::cout << "Nodes without hicanns: ";
-		for (auto n : nodes_without_hicanns)
-		{
-			std::cout << n << " ";
-		}
-		std::cout << "\n";
-	}
+    {
+	    read_node_ids_from_arg(nodes, nodes_arg);
+    }
+
+    nodes.erase(std::remove(nodes.begin(), nodes.end(), HostNode), nodes.end());
+
+	std::cout << "Host " << HostNode << "\n";
+    for (auto node : nodes)
+    {
+        std::cout << "Node " << node << "\n";
+    }
 
 	if (ret)
 	{
