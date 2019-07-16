@@ -87,7 +87,7 @@ TEST_CASE("Partner Host configuration post conditions hold", "[fpga][partner-hos
     CHECK(rf.read<TraceBufferStart>().data() == trace.address());
     CHECK(rf.read<TraceBufferCurrentAddress>().data() == trace.address());
     CHECK(rf.read<TraceBufferSize>().data() == trace.byte_size());
-    CHECK(rf.read<TraceBufferFreeSpace>().data() == trace.capacity());
+    CHECK(rf.read<TraceBufferFreeSpace>().data() == trace.byte_size());
     CHECK(rf.read<TraceBufferEndAddress>().data() == trace_end);
 
     auto& hicann = EX.hicann_config(node);
@@ -95,7 +95,7 @@ TEST_CASE("Partner Host configuration post conditions hold", "[fpga][partner-hos
     CHECK(rf.read<HicannBufferStart>().data() == hicann.address());
     CHECK(rf.read<HicannBufferCurrentAddress>().data() == hicann.address());
     CHECK(rf.read<HicannBufferSize>().data()== hicann.byte_size());
-    CHECK(rf.read<HicannBufferFreeSpace>().data()== hicann.capacity());
+    CHECK(rf.read<HicannBufferFreeSpace>().data()== hicann.byte_size());
     CHECK(rf.read<HicannBufferEndAddress>().data()== hicann_end);
 
     auto post_trace_counter = rf.read<TraceBufferCounter>();
@@ -124,6 +124,49 @@ TEST_CASE("Can enable TestMode", "[al]")
         TestModeGuard tm{rf};
         CHECK(tm.enabled());
     }
+}
+
+TEST_CASE("Kill with Hicann Config", "[.][kill]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto fpga = EX.fpga(node);
+    auto& buffer = EX.hicann_config(node);
+
+    fpga.configure_partner_host();
+
+    uint16_t delay = 0;
+    std::cout << "Enter delay: ";
+    std::cin >> delay;
+
+    {
+        TestModeGuard tm{rf};
+        tm.type(TestControlType::HicannConfig);
+
+        for (size_t test_run = 0; test_run < 20; ++test_run)
+        {
+            CAPTURE(test_run);
+            tm.run(0x12345678, 255, delay & 0xffu, false);
+
+            buffer.clear();
+            buffer.notify();
+
+            auto future = std::async(std::launch::async, [&]() {
+                return rf.read<Driver>().version();
+            });
+
+            std::chrono::seconds timeout(1);
+            REQUIRE(future.wait_for(timeout) == std::future_status::ready);
+            REQUIRE(future.get() == 0xcafebabe);
+
+            tm.wait();
+        }
+    }
+    while (rf.probe());
+
+    using namespace extoll::library::rf;
+    REQUIRE(rf.read<Driver>().version());
 }
 
 
@@ -184,7 +227,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
 }
 
 
-TEST_CASE("Receives Hicann Config Jtag", "[.][al]")
+TEST_CASE("Receives Hicann Config Jtag Loopback", "[.][al]")
 {
     auto node = GENERATE(hicann_nodes());
     CAPTURE(node);
@@ -199,4 +242,45 @@ TEST_CASE("Receives Hicann Config Jtag", "[.][al]")
 
     CHECK(hicann_config.get() == 0xcafe);
     CHECK(rf.read(HicannConfigReceived::ADDRESS) == (received + 1));
+}
+
+TEST_CASE("Hicann Config Response", "[hicann]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+
+    auto rf = EX.register_file(node);
+    auto jtag = EX.jtag(node);
+    auto fpga = EX.fpga(node);
+    auto hicann = EX.hicann(node, 0);
+    auto& buffer = EX.hicann_config(node);
+
+    fpga.configure_partner_host();
+    highspeed_init(rf, jtag, fpga, 0);
+    auto status = highspeed_status(rf, jtag, 0);
+    REQUIRE((status.fpga_ok && status.hicann_ok));
+
+    auto before = rf.read<HicannConfigReceived>().count();
+    auto x = rf.read(0x18088);
+
+    std::cin.get();
+
+    hicann.write(50, 0xcafe);
+
+    std::cin.get();
+
+    hicann.read(50);
+
+
+
+    auto y = rf.read(0x18088);
+    auto after = rf.read<HicannConfigReceived>().count();
+
+
+    usleep(10000);
+
+    while (rf.probe());
+    std::cout << buffer[0] << "\n";
+    std::cout << before << " -> " << after << "\n";
+    std::cout << std::hex << x << " -> " << std::hex << y << "\n";
 }

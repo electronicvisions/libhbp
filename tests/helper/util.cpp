@@ -19,8 +19,8 @@ Nodes& get_nodes_with_hicanns()
 
 Nodes& get_nodes_without_hicanns()
 {
-  static Nodes nodes_without_hicann;
-  return nodes_without_hicann;
+    static Nodes nodes_without_hicann;
+    return nodes_without_hicann;
 }
 
 
@@ -31,7 +31,12 @@ RMA2_Nodeid NotExistingNode{0};
 template <typename T>
 VectorGenerator<T>::VectorGenerator(const std::vector<T>& vec)
 	: it(vec.cbegin()), end(vec.cend())
-{}
+{
+    if (it == end)
+    {
+        throw std::runtime_error("Empty Generator, skipping tests.");
+    }
+}
 
 template <typename T>
 const T& VectorGenerator<T>::get() const

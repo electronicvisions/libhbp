@@ -85,3 +85,20 @@ TEST_CASE("Highspeed transmission via JTAG from Hicann to Fpga", "[hs]")
 		}
 	}
 }
+
+TEST_CASE("Highspeed write via Hicann Config, read via JTAG", "[.][hs]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto j = EX.jtag(node);
+    auto fpga = EX.fpga(node);
+
+    FOR_EACH_HICANN {
+        highspeed_init(rf, j, fpga, hicann);
+        CAPTURE(highspeed_status(rf, j, hicann));
+        CAPTURE(hicann);
+
+        // TODO
+    }
+}

@@ -26,13 +26,13 @@ static_assert(sizeof(Config) == 8, "Alignment error!");
 Hicann::Hicann(Endpoint& connection, uint8_t number)
     : RegisterFile(connection), _number(number) {}
 
-void Hicann::write(uint16_t , uint32_t )
+void Hicann::write(uint16_t address, uint32_t value)
 {
     Endpoint::Connection& rma = _connection.rma;
 
     Config payload;
-    payload.data.value = 0;
-    payload.data.address = 0;
+    payload.data.value = value;
+    payload.data.address = address & 0x7fffu;
     payload.data.write = true;
     payload.data.tag = false;
     payload.data.hicann = _number & 7u;
@@ -51,12 +51,12 @@ void Hicann::send(uint64_t data)
 }
 
 
-uint32_t Hicann::read(uint16_t )
+uint32_t Hicann::read(uint16_t address)
 {
     Endpoint::Connection& rma = _connection.rma;
 
     Config payload;
-    payload.data.address = 0;
+    payload.data.address = address & 0x7fffu;
     payload.data.read = false;
     payload.data.tag = false;
     payload.data.hicann = _number & 7u;

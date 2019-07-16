@@ -52,7 +52,7 @@ Connection setup()
     CHECK(rma2_open(&port));
     RMA2_Handle handle;
     auto virtual_process_id = rma2_get_vpid(port);
-    CHECK(rma2_connect(port, 2, virtual_process_id, RMA2_CONN_RRA, &handle));
+    CHECK(rma2_connect(port, 3, virtual_process_id, RMA2_CONN_RRA, &handle));
 
     return {port, handle};
 }
@@ -71,25 +71,25 @@ void virtual_memory(Connection c)
     {
         buffer[i] = 0xdead;
     }
-    auto aligned = (reinterpret_cast<std::uintptr_t>(buffer + 512) & 0xfffffffffffff000ull);
-    auto aligned_ptr = reinterpret_cast<uint64_t*>(aligned);
-    assert(aligned_ptr >= buffer && aligned_ptr < (buffer + 1024));
 
-    std::cout << "Aligned: " << std::hex << aligned_ptr << "\n";
     RMA2_Region* region;
-    CHECK(rma2_register(c.port, aligned_ptr, 4096, &region));
+    CHECK(rma2_register(c.port, buffer, 4096, &region));
     RMA2_NLA nla;
     CHECK(rma2_get_nla(region, 0, &nla));
 
     std::cout << "Address: " << std::hex << nla << "\n";
-    CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
+    CHECK(rma2_post_get_qw(c.port, c.handle, region, 0, 8, 0x8000, RMA2_ALL_NOTIFICATIONS, RMA2_CMD_DEFAULT));
 
     block(c.port);
+    block(c.port);
+    block(c.port);
 
+    usleep(1000000);
+ 
     std::cout << "Buffer: 0x" << std::hex << buffer[0] << "\n";
-    for (int i = 0; i < int32_t(1u << 20u); ++i)
+    for (int i = 0; i < 1024; ++i)
     {
-        if (buffer[-i] == 0xcafebabe)
+        if (buffer[i] == 0xcafebabe)
         {
             std::cout << i << ": " << buffer[i] << "\n";
         }
@@ -120,8 +120,10 @@ void physical_memory(Connection c)
     CHECK_FD(ioctl(fd, PMAP_IOCTL_GET_PADDR, &nla));
     std::cout << "Address: " << std::hex << nla << "\n";
 
-    CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT));
+    CHECK(rma2_post_get_qw_direct(c.port, c.handle, nla, 8, 0x8000, RMA2_ALL_NOTIFICATIONS, RMA2_CMD_DEFAULT));
 
+    block(c.port);
+    block(c.port);
     block(c.port);
 
     std::cout << "Buffer: 0x" << std::hex << buffer[0] << "\n";
@@ -129,19 +131,40 @@ void physical_memory(Connection c)
 }
 
 
-int main()
+int main(int argc, char** argv)
 {
+    bool physical = false;
+    bool virtual_ = false;
+
+    for (int i = 1; i < argc; ++i)
+    {
+        if (argv[i][0] == 'p')
+        {
+            physical = true;
+        }
+        else if (argv[i][0] == 'v')
+        {
+            virtual_ = true;
+        }
+    }
+
     Connection connection = setup();
 
-    std::cout << "\nVirtual Memory:\n";
-    std::cout << "===============\n";
+    if (virtual_)
+    {
+        std::cout << "\nVirtual Memory:\n";
+        std::cout << "===============\n";
 
-    virtual_memory(connection);
+        virtual_memory(connection);
+    }
 
-    std::cout << "\nPhysical Memory:\n";
-    std::cout << "================\n";
+    if (physical)
+    {
+        std::cout << "\nPhysical Memory:\n";
+        std::cout << "================\n";
 
-    physical_memory(connection);
+        physical_memory(connection);
+    }
 
     teardown(connection);
 }

@@ -8,7 +8,7 @@ TEST_CASE("Fpga without Hicann cannot open JTAG connection", "[jtag][throw]")
 	auto node = GENERATE(non_hicann_nodes());
 	CAPTURE(node);
 
-	REQUIRE_THROWS_WITH(EX.jtag(node), Contains("no Hicann"));
+	REQUIRE_THROWS_WITH(EX.jtag(node), Contains("no hicanns", Catch::CaseSensitive::No));
 }
 
 TEST_CASE("Fpga with Hicann counts Hicanns", "[jtag]")

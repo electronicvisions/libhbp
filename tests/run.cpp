@@ -19,8 +19,6 @@ int main(int argc, char** argv)
 			("Node Id of nodes with Hicanns")
 		| Opt(nodes_without_hicanns, "non-hicann nodes")
 			["-j"]["--non-hicann-nodes"]
-		| Opt(HostNode, "host node")
-			["-k"]["--host-node"]
 		| Opt(NotExistingNode, "not existing node")
 			["--not-existing-node"];
 
@@ -28,20 +26,10 @@ int main(int argc, char** argv)
 
 	auto ret = session.applyCommandLine(argc, argv);
 
-	if (HostNode == 0)
-	{
-		std::cerr << "Host node must be provided\n";
-		return EXIT_FAILURE;
-	}
-
-	if (NotExistingNode == 0)
-	{
-		std::cout << "Skipping not-existing-node test\n";
-	}
-	else
-	{
-		std::cout << "Not-existing-node: " << NotExistingNode << "\n";
-	}
+	RMA2_Port port;
+	rma2_open(&port);
+	HostNode = rma2_get_nodeid(port);
+	rma2_close(port);
 
 	if (nodes_with_hicanns.empty())
 	{

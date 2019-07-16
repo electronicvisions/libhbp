@@ -65,6 +65,7 @@ set(TESTS
     tests/if.cpp
     tests/rf_definitions.cpp
     tests/highspeed.cpp
+    tests/slowspeed.cpp
     tests/fpga.cpp
     tests/helper/application_protocol.h
     tests/helper/application_protocol.cpp
@@ -106,6 +107,10 @@ target_link_libraries(minimal ${LIBRMARC})
 target_link_libraries(minimal ${LIBRMA})
 target_link_libraries(minimal dl)
 target_link_libraries(minimal rma)
+
+add_executable(kill src/kill.cpp)
+target_include_directories(kill PRIVATE ${RMA_INCLUDE})
+target_link_libraries(kill ${LIBRMA})
 
 add_subdirectory(external/pybind11)
 pybind11_add_module(pyhbp EXCLUDE_FROM_ALL python/pyhbp.cpp)
