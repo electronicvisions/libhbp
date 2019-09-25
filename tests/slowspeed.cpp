@@ -76,7 +76,7 @@ TEST_CASE("Fpga survives slowspeed init", "[ss]")
         guard.send(read);
 
         auto returned = guard.receive();
-        std::cout << "HICANN " << returned << "\n";
+        std::cout << "HICANN " << int16_t(hicann) << " " << std::hex << returned << "\n";
     }
 
     auto rf = EX.register_file(node);

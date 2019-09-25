@@ -50,5 +50,5 @@ TEST_CASE("Exceptions", "[unused][static]")
 
     CHECK_THROWS(do_throw<FailedToRead>(RMA2_NODEID_ANY, RMA2_ANY_NLA));
     CHECK_THROWS(do_throw<FailedToWrite>(RMA2_NODEID_ANY, RMA2_ANY_NLA));
-    CHECK_THROWS(do_throw<JtagIrShiftFailed>(RMA2_NODEID_ANY, 0));
+    CHECK_THROWS(do_throw<JtagIrShiftFailed>(RMA2_NODEID_ANY, uint8_t(0)));
 }

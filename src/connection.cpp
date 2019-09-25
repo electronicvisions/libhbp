@@ -1,3 +1,7 @@
+#include <sys/ioctl.h>
+#include <rma2_ioctl.h>
+
+
 #include <extoll/connection.h>
 
 #include <chrono>
@@ -80,7 +84,7 @@ Endpoint::Endpoint(RMA2_Nodeid n)
     hicann_config(rma.port, rma.handle, 100, Extoll::HICANN_CONFIG)
 {
     RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
-    throw_on_error<FailedToRead>(status, "Failed to query driver", n, 0x8000);
+    throw_on_error<FailedToRead>(status, "Failed to query driver", n, 0x8000u);
     wait_with_timeout(rra.port);
 
     auto driver = gp_buffer.at<uint32_t>(0);

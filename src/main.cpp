@@ -20,7 +20,6 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
 
     auto rf = Extoll::Instance().register_file(node);
     auto fpga = Extoll::Instance().fpga(node);
-    fpga.reset(Fpga::Reset::All);
 
     std::cout << "Driver: 0x" << std::hex << rf.read<Driver>().version() << "\n";
 
@@ -45,6 +44,14 @@ int _main(RMA2_Nodeid node, uint8_t hicann)
     auto jtag = Extoll::Instance().jtag(node);
     jtag.reset();
     std::cout << "Hicann ID: 0x" << std::hex << jtag.read<ID>(hicann) << "\n";
+
+    
+
+    std::cout << "configuring partner host ...\n";
+    fpga.configure_partner_host();
+    std::cout << "done\n";
+
+    
 
     return EXIT_SUCCESS;
 }

@@ -23,7 +23,8 @@ struct TestModeGuard
 
     ~TestModeGuard()
     {
-        rf.write<TestControlEnable>({false});
+        wait();
+        //rf.write<TestControlEnable>({false});
     }
 
     bool enabled()
@@ -169,6 +170,124 @@ TEST_CASE("Kill with Hicann Config", "[.][kill]")
     REQUIRE(rf.read<Driver>().version());
 }
 
+TEST_CASE("Receives Trace Data", "[al][trace]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto fpga = EX.fpga(node);
+    auto& trace_data = EX.trace_pulse(node);
+    uint8_t packets = 10;
+
+    fpga.configure_partner_host();
+    size_t overshot = 0;
+    size_t sent_packets = 0;
+    size_t undefined_host = rf.read(InvalidHost::ADDRESS);
+
+    {
+        TestModeGuard tm{rf};
+        tm.type(TestControlType::TracePulse);
+
+        for (size_t test_run = 0; test_run < 5; ++test_run)
+        {
+            CAPTURE(test_run);
+            REQUIRE(trace_data.size() == 0);
+            uint64_t dummy_value = 0;
+            --packets;
+            tm.run(dummy_value, packets, 100, true);
+            sent_packets += packets;
+            for (size_t packet = 0; packet < packets; ++packet)
+            {
+                CHECK(trace_data.get() == dummy_value++);
+            }
+            tm.wait();
+            try
+            {
+                while (true)
+                {
+                    trace_data.get();
+                    ++overshot;
+                }
+            } 
+            catch (...)
+            {
+            }
+
+                trace_data.notify();
+
+                auto start = rf.read<TraceBufferStart>().data();
+                auto current = rf.read<TraceBufferCurrentAddress>().data();
+                auto hardware_sent = (current - start) / 8;
+                CHECK(hardware_sent == sent_packets);
+                CHECK(rf.read<TraceBufferCounter>().wraps() == 0);
+        }
+    }
+    
+    while (rf.probe());
+    undefined_host = rf.read(InvalidHost::ADDRESS) - undefined_host;
+    REQUIRE(undefined_host == 0);
+    REQUIRE(overshot == 0);
+}
+
+TEST_CASE("Mini Hicann Config", "[.][al]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto fpga = EX.fpga(node);
+    auto& buffer = EX.hicann_config(node);
+    fpga.configure_partner_host();
+
+    {
+        TestModeGuard tm{rf};
+        tm.type(TestControlType::HicannConfig);
+        tm.run(1337, 10, 100, false);
+        tm.wait();
+        size_t counter = 0;
+        std::vector<uint64_t> values;
+        try
+        {
+            for (;; ++counter)
+            {
+                values.push_back(buffer.get());
+                buffer.notify();
+            }
+        }
+        catch (...)
+        {
+        }
+
+        std::cout << "counter: " << std::dec << counter << "\n";
+        std::cout << "values: [";
+        for (auto& v : values)
+        {
+            std::cout << std::dec << v << ", ";
+        }
+        std::cout << "\b\b] \n";
+
+       /* 
+
+        tm.run(1000, 10, 100, true);
+        for (size_t p = 0; p < 10; ++p)
+        {
+            auto got = buffer.get();
+            auto expect = 1000 + p;
+            std::cout << std::dec << p << ": " << got << " == " << expect << "\n";
+        }
+        buffer.notify();
+        tm.wait();
+        usleep(1000);
+        try
+        {
+            auto extra = buffer.get();
+            std::cout << "got extra: " << extra << "\n";
+        }
+        catch (...)
+        {
+        }
+        */
+    }
+}
 
 TEST_CASE("Receives Hicann Config", "[al]")
 {
@@ -177,7 +296,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
     auto rf = EX.register_file(node);
     auto fpga = EX.fpga(node);
     auto& hicann_config = EX.hicann_config(node);
-    uint8_t packets = 30;
+    uint8_t packets = 100;
     fpga.configure_partner_host();
     uint64_t undefined_host = rf.read(InvalidHost::ADDRESS);
     size_t overshot = 0;
@@ -186,11 +305,11 @@ TEST_CASE("Receives Hicann Config", "[al]")
         TestModeGuard tm{rf};
         tm.type(TestControlType::HicannConfig);
 
-        for (size_t test_run = 0; test_run < 20; ++test_run)
+        for (size_t test_run = 0; test_run < 5; ++test_run)
         {
             CAPTURE(test_run);
             REQUIRE(hicann_config.size() == 0);
-            uint64_t dummy_value = 0xfff00ffffff00fff;
+            uint64_t dummy_value = 0;
             --packets;
             tm.run(dummy_value, packets, 100, true);
             sent_packets += packets;
@@ -263,11 +382,9 @@ TEST_CASE("Hicann Config Response", "[hicann]")
     auto before = rf.read<HicannConfigReceived>().count();
     auto x = rf.read(0x18088);
 
-    std::cin.get();
 
     hicann.write(50, 0xcafe);
 
-    std::cin.get();
 
     hicann.read(50);
 
@@ -280,7 +397,14 @@ TEST_CASE("Hicann Config Response", "[hicann]")
     usleep(10000);
 
     while (rf.probe());
-    std::cout << buffer[0] << "\n";
+    std::cout << std::hex << buffer[0] << "\n";
     std::cout << before << " -> " << after << "\n";
     std::cout << std::hex << x << " -> " << std::hex << y << "\n";
+
+    for (size_t i = 0; i < 1000000; ++i)
+    {
+        if (buffer[-i] == 0xcafe) std::cout << "found cafe at " << i << "\n";
+    }
+
+    REQUIRE((buffer[0] == 0xcafe | buffer[1] == 0xcafe)); 
 }

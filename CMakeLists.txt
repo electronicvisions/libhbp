@@ -17,7 +17,6 @@ add_compile_options("-Wall"
                     "-Wdouble-promotion"
                     "-Wformat=2"
                     "-Wlogical-op"
-                    "-Wuseless-cast"
                     "-Wconversion"
                     "-Werror"
                     "-Woverflow")
@@ -107,6 +106,14 @@ target_link_libraries(minimal ${LIBRMARC})
 target_link_libraries(minimal ${LIBRMA})
 target_link_libraries(minimal dl)
 target_link_libraries(minimal rma)
+
+add_executable(al src/al.cpp ${HEADERS})
+target_include_directories(al PRIVATE include)
+target_include_directories(al PRIVATE ${RMA_INCLUDE})
+target_link_libraries(al ${LIBRMARC})
+target_link_libraries(al ${LIBRMA})
+target_link_libraries(al dl)
+target_link_libraries(al rma)
 
 add_executable(kill src/kill.cpp)
 target_include_directories(kill PRIVATE ${RMA_INCLUDE})

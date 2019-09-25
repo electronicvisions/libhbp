@@ -33,7 +33,7 @@ TEST_CASE("Highspeed transmission via JTAG from Fpga to Hicann", "[hs]")
 	auto fpga = EX.fpga(node);
 
 	FOR_EACH_HICANN {
-	    highspeed_init(rf, j, fpga, hicann);
+		highspeed_init(rf, j, fpga, hicann);
 		CAPTURE(highspeed_status(rf, j, hicann));
 		CAPTURE(hicann);
 
