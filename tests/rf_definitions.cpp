@@ -1,6 +1,6 @@
 /*
  * This is a generated file - do not change it
- * 2019-04-02 17:47:04.588305
+ * 2019-10-18 14:27:36.794604
  */
 
 #include <catch.hpp>
@@ -256,7 +256,7 @@ TEST_CASE("Definition 'HicannIfState'", "[definitions]")
 {
     SECTION("write raw - read fields")
     {
-        HicannIfState rf {0, 0, 0};
+        HicannIfState rf {0, 0, 0, 0, 0, 0};
 
         
         rf.raw = 0x0u;
@@ -265,6 +265,9 @@ TEST_CASE("Definition 'HicannIfState'", "[definitions]")
         REQUIRE(rf.channel_status() == 0x0u);
         REQUIRE(rf.crc_count() == 0x0u);
         REQUIRE(rf.systime() == 0x0u);
+        REQUIRE(rf.init_state() == 0x0u);
+        REQUIRE(rf.rx_data() == 0x0u);
+        REQUIRE(rf.tx_data() == 0x0u);
         
         rf.raw = 0xffffffffffffffffu;
 
@@ -272,6 +275,9 @@ TEST_CASE("Definition 'HicannIfState'", "[definitions]")
         REQUIRE(rf.channel_status() == 0xffu);
         REQUIRE(rf.crc_count() == 0xffu);
         REQUIRE(rf.systime() == 0x3fffu);
+        REQUIRE(rf.init_state() == 0x3fu);
+        REQUIRE(rf.rx_data() == 0xffu);
+        REQUIRE(rf.tx_data() == 0xffu);
         
         rf.raw = 0xaaaaaaaaaaaaaaaau;
 
@@ -279,6 +285,9 @@ TEST_CASE("Definition 'HicannIfState'", "[definitions]")
         REQUIRE(rf.channel_status() == 0xaau);
         REQUIRE(rf.crc_count() == 0xaau);
         REQUIRE(rf.systime() == 0x2aaau);
+        REQUIRE(rf.init_state() == 0x2au);
+        REQUIRE(rf.rx_data() == 0xaau);
+        REQUIRE(rf.tx_data() == 0xaau);
         
         rf.raw = 0x5555555555555555u;
 
@@ -286,6 +295,9 @@ TEST_CASE("Definition 'HicannIfState'", "[definitions]")
         REQUIRE(rf.channel_status() == 0x55u);
         REQUIRE(rf.crc_count() == 0x55u);
         REQUIRE(rf.systime() == 0x1555u);
+        REQUIRE(rf.init_state() == 0x15u);
+        REQUIRE(rf.rx_data() == 0x55u);
+        REQUIRE(rf.tx_data() == 0x55u);
         
         rf.raw = 0xcafedeadbabebeefu;
 
@@ -293,39 +305,124 @@ TEST_CASE("Definition 'HicannIfState'", "[definitions]")
         REQUIRE(rf.channel_status() == 0xefu);
         REQUIRE(rf.crc_count() == 0xbeu);
         REQUIRE(rf.systime() == 0x3abeu);
+        REQUIRE(rf.init_state() == 0x36u);
+        REQUIRE(rf.rx_data() == 0xeau);
+        REQUIRE(rf.tx_data() == 0xedu);
         
     }
 
     SECTION("write fields - read raw")
     {
-        HicannIfState rf {0, 0, 0};
+        HicannIfState rf {0, 0, 0, 0, 0, 0};
 
         
         
         rf.channel_status(0x0);
         rf.crc_count(0x0);
         rf.systime(0x0);
-        REQUIRE((rf.raw & 0x3fffffffu) == 0x0);
+        rf.init_state(0x0);
+        rf.rx_data(0x0);
+        rf.tx_data(0x0);
+        REQUIRE((rf.raw & 0xfffffffffffffu) == 0x0);
         
         rf.channel_status(0xff);
         rf.crc_count(0xff);
         rf.systime(0x3fff);
-        REQUIRE((rf.raw & 0x3fffffffu) == 0x3fffffff);
+        rf.init_state(0x3f);
+        rf.rx_data(0xff);
+        rf.tx_data(0xff);
+        REQUIRE((rf.raw & 0xfffffffffffffu) == 0xfffffffffffff);
         
         rf.channel_status(0xaa);
         rf.crc_count(0xaa);
         rf.systime(0x2aaa);
-        REQUIRE((rf.raw & 0x3fffffffu) == 0x2aaaaaaa);
+        rf.init_state(0x2a);
+        rf.rx_data(0xaa);
+        rf.tx_data(0xaa);
+        REQUIRE((rf.raw & 0xfffffffffffffu) == 0xaaaaaaaaaaaaa);
         
         rf.channel_status(0x55);
         rf.crc_count(0x55);
         rf.systime(0x1555);
-        REQUIRE((rf.raw & 0x3fffffffu) == 0x15555555);
+        rf.init_state(0x15);
+        rf.rx_data(0x55);
+        rf.tx_data(0x55);
+        REQUIRE((rf.raw & 0xfffffffffffffu) == 0x5555555555555);
         
         rf.channel_status(0xef);
         rf.crc_count(0xbe);
         rf.systime(0x3abe);
-        REQUIRE((rf.raw & 0x3fffffffu) == 0x3abebeef);
+        rf.init_state(0x36);
+        rf.rx_data(0xea);
+        rf.tx_data(0xed);
+        REQUIRE((rf.raw & 0xfffffffffffffu) == 0xedeadbabebeef);
+    }
+}
+
+TEST_CASE("Definition 'SetHicannIfState'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        SetHicannIfState rf {0, 0};
+
+        
+        rf.raw = 0x0u;
+
+        
+        REQUIRE(rf.data_delay() == 0x0u);
+        REQUIRE(rf.data_delay_dout() == 0x0u);
+        
+        rf.raw = 0xffffffffffffffffu;
+
+        
+        REQUIRE(rf.data_delay() == 0x1fu);
+        REQUIRE(rf.data_delay_dout() == 0x1fu);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaau;
+
+        
+        REQUIRE(rf.data_delay() == 0xau);
+        REQUIRE(rf.data_delay_dout() == 0x15u);
+        
+        rf.raw = 0x5555555555555555u;
+
+        
+        REQUIRE(rf.data_delay() == 0x15u);
+        REQUIRE(rf.data_delay_dout() == 0xau);
+        
+        rf.raw = 0xcafedeadbabebeefu;
+
+        
+        REQUIRE(rf.data_delay() == 0xfu);
+        REQUIRE(rf.data_delay_dout() == 0x17u);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        SetHicannIfState rf {0, 0};
+
+        
+        
+        rf.data_delay(0x0);
+        rf.data_delay_dout(0x0);
+        REQUIRE((rf.raw & 0x3ffu) == 0x0);
+        
+        rf.data_delay(0x1f);
+        rf.data_delay_dout(0x1f);
+        REQUIRE((rf.raw & 0x3ffu) == 0x3ff);
+        
+        rf.data_delay(0xa);
+        rf.data_delay_dout(0x15);
+        REQUIRE((rf.raw & 0x3ffu) == 0x2aa);
+        
+        rf.data_delay(0x15);
+        rf.data_delay_dout(0xa);
+        REQUIRE((rf.raw & 0x3ffu) == 0x155);
+        
+        rf.data_delay(0xf);
+        rf.data_delay_dout(0x17);
+        REQUIRE((rf.raw & 0x3ffu) == 0x2ef);
     }
 }
 
@@ -390,7 +487,7 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
 {
     SECTION("write raw - read fields")
     {
-        HicannIfConfig rf {false, false, false, false, false, false, false, false, 0, 0, false};
+        HicannIfConfig rf {false, false, false, false, false, false, false, false, 0, 0, false, false};
 
         
         rf.raw = 0x0u;
@@ -407,6 +504,7 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         REQUIRE(rf.heap_mode() == 0x0u);
         REQUIRE(rf.limit() == 0x0u);
         REQUIRE(!rf.dc_coding());
+        REQUIRE(!rf.invert_deserializer_data());
         
         rf.raw = 0xffffffffffffffffu;
 
@@ -422,6 +520,7 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         REQUIRE(rf.heap_mode() == 0xffu);
         REQUIRE(rf.limit() == 0x7ffu);
         REQUIRE(rf.dc_coding());
+        REQUIRE(rf.invert_deserializer_data());
         
         rf.raw = 0xaaaaaaaaaaaaaaaau;
 
@@ -437,6 +536,7 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         REQUIRE(rf.heap_mode() == 0xaau);
         REQUIRE(rf.limit() == 0x2aau);
         REQUIRE(rf.dc_coding());
+        REQUIRE(!rf.invert_deserializer_data());
         
         rf.raw = 0x5555555555555555u;
 
@@ -452,6 +552,7 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         REQUIRE(rf.heap_mode() == 0x55u);
         REQUIRE(rf.limit() == 0x555u);
         REQUIRE(!rf.dc_coding());
+        REQUIRE(rf.invert_deserializer_data());
         
         rf.raw = 0xcafedeadbabebeefu;
 
@@ -467,12 +568,13 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         REQUIRE(rf.heap_mode() == 0xbeu);
         REQUIRE(rf.limit() == 0x2beu);
         REQUIRE(rf.dc_coding());
+        REQUIRE(rf.invert_deserializer_data());
         
     }
 
     SECTION("write fields - read raw")
     {
-        HicannIfConfig rf {false, false, false, false, false, false, false, false, 0, 0, false};
+        HicannIfConfig rf {false, false, false, false, false, false, false, false, 0, 0, false, false};
 
         
         
@@ -487,7 +589,8 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         rf.heap_mode(0x0);
         rf.limit(0x0);
         rf.dc_coding(false);
-        REQUIRE((rf.raw & 0xfffffffu) == 0x0);
+        rf.invert_deserializer_data(false);
+        REQUIRE((rf.raw & 0x1fffffffu) == 0x0);
         
         rf.start_link(true);
         rf.loopback_enable(true);
@@ -500,7 +603,8 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         rf.heap_mode(0xff);
         rf.limit(0x7ff);
         rf.dc_coding(true);
-        REQUIRE((rf.raw & 0xfffffffu) == 0xfffffff);
+        rf.invert_deserializer_data(true);
+        REQUIRE((rf.raw & 0x1fffffffu) == 0x1fffffff);
         
         rf.start_link(false);
         rf.loopback_enable(true);
@@ -513,7 +617,8 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         rf.heap_mode(0xaa);
         rf.limit(0x2aa);
         rf.dc_coding(true);
-        REQUIRE((rf.raw & 0xfffffffu) == 0xaaaaaaa);
+        rf.invert_deserializer_data(false);
+        REQUIRE((rf.raw & 0x1fffffffu) == 0xaaaaaaa);
         
         rf.start_link(true);
         rf.loopback_enable(false);
@@ -526,7 +631,8 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         rf.heap_mode(0x55);
         rf.limit(0x555);
         rf.dc_coding(false);
-        REQUIRE((rf.raw & 0xfffffffu) == 0x5555555);
+        rf.invert_deserializer_data(true);
+        REQUIRE((rf.raw & 0x1fffffffu) == 0x15555555);
         
         rf.start_link(true);
         rf.loopback_enable(true);
@@ -539,7 +645,8 @@ TEST_CASE("Definition 'HicannIfConfig'", "[definitions]")
         rf.heap_mode(0xbe);
         rf.limit(0x2be);
         rf.dc_coding(true);
-        REQUIRE((rf.raw & 0xfffffffu) == 0xabebeef);
+        rf.invert_deserializer_data(true);
+        REQUIRE((rf.raw & 0x1fffffffu) == 0x1abebeef);
     }
 }
 
@@ -637,6 +744,73 @@ TEST_CASE("Definition 'HicannIfControls'", "[definitions]")
         rf.channel_reset(true);
         rf.crc_count_reset(false);
         REQUIRE((rf.raw & 0x1fu) == 0xf);
+    }
+}
+
+TEST_CASE("Definition 'HicannIfNeuronAddressFilter'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        HicannIfNeuronAddressFilter rf {0, 0};
+
+        
+        rf.raw = 0x0u;
+
+        
+        REQUIRE(rf.negative_filter_mask() == 0x0u);
+        REQUIRE(rf.positive_filter_mask() == 0x0u);
+        
+        rf.raw = 0xffffffffffffffffu;
+
+        
+        REQUIRE(rf.negative_filter_mask() == 0x1ffu);
+        REQUIRE(rf.positive_filter_mask() == 0x1ffu);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaau;
+
+        
+        REQUIRE(rf.negative_filter_mask() == 0xaau);
+        REQUIRE(rf.positive_filter_mask() == 0x155u);
+        
+        rf.raw = 0x5555555555555555u;
+
+        
+        REQUIRE(rf.negative_filter_mask() == 0x155u);
+        REQUIRE(rf.positive_filter_mask() == 0xaau);
+        
+        rf.raw = 0xcafedeadbabebeefu;
+
+        
+        REQUIRE(rf.negative_filter_mask() == 0xefu);
+        REQUIRE(rf.positive_filter_mask() == 0x15fu);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        HicannIfNeuronAddressFilter rf {0, 0};
+
+        
+        
+        rf.negative_filter_mask(0x0);
+        rf.positive_filter_mask(0x0);
+        REQUIRE((rf.raw & 0x3ffffu) == 0x0);
+        
+        rf.negative_filter_mask(0x1ff);
+        rf.positive_filter_mask(0x1ff);
+        REQUIRE((rf.raw & 0x3ffffu) == 0x3ffff);
+        
+        rf.negative_filter_mask(0xaa);
+        rf.positive_filter_mask(0x155);
+        REQUIRE((rf.raw & 0x3ffffu) == 0x2aaaa);
+        
+        rf.negative_filter_mask(0x155);
+        rf.positive_filter_mask(0xaa);
+        REQUIRE((rf.raw & 0x3ffffu) == 0x15555);
+        
+        rf.negative_filter_mask(0xef);
+        rf.positive_filter_mask(0x15f);
+        REQUIRE((rf.raw & 0x3ffffu) == 0x2beef);
     }
 }
 
@@ -774,90 +948,130 @@ TEST_CASE("Definition 'HicannChannel'", "[definitions]")
     }
 }
 
-TEST_CASE("Definition 'ArqTimings'", "[definitions]")
+TEST_CASE("Definition 'HicannTxIfPower'", "[definitions]")
 {
     SECTION("write raw - read fields")
     {
-        ArqTimings rf {0, 0, 0, false};
+        HicannTxIfPower rf {0, 0, 0, 0, 0, 0, 0, 0};
 
         
         rf.raw = 0x0u;
 
         
-        REQUIRE(rf.master_timeout() == 0x0u);
-        REQUIRE(rf.target_timeout() == 0x0u);
-        REQUIRE(rf.arbiter_delay() == 0x0u);
-        REQUIRE(!rf.bit());
+        REQUIRE(rf.channel0() == 0x0u);
+        REQUIRE(rf.channel1() == 0x0u);
+        REQUIRE(rf.channel2() == 0x0u);
+        REQUIRE(rf.channel3() == 0x0u);
+        REQUIRE(rf.channel4() == 0x0u);
+        REQUIRE(rf.channel5() == 0x0u);
+        REQUIRE(rf.channel6() == 0x0u);
+        REQUIRE(rf.channel7() == 0x0u);
         
         rf.raw = 0xffffffffffffffffu;
 
         
-        REQUIRE(rf.master_timeout() == 0x3ffu);
-        REQUIRE(rf.target_timeout() == 0x3ffu);
-        REQUIRE(rf.arbiter_delay() == 0x1fu);
-        REQUIRE(rf.bit());
+        REQUIRE(rf.channel0() == 0x3u);
+        REQUIRE(rf.channel1() == 0x3u);
+        REQUIRE(rf.channel2() == 0x3u);
+        REQUIRE(rf.channel3() == 0x3u);
+        REQUIRE(rf.channel4() == 0x3u);
+        REQUIRE(rf.channel5() == 0x3u);
+        REQUIRE(rf.channel6() == 0x3u);
+        REQUIRE(rf.channel7() == 0x3u);
         
         rf.raw = 0xaaaaaaaaaaaaaaaau;
 
         
-        REQUIRE(rf.master_timeout() == 0x2aau);
-        REQUIRE(rf.target_timeout() == 0x2aau);
-        REQUIRE(rf.arbiter_delay() == 0xau);
-        REQUIRE(rf.bit());
+        REQUIRE(rf.channel0() == 0x2u);
+        REQUIRE(rf.channel1() == 0x2u);
+        REQUIRE(rf.channel2() == 0x2u);
+        REQUIRE(rf.channel3() == 0x2u);
+        REQUIRE(rf.channel4() == 0x2u);
+        REQUIRE(rf.channel5() == 0x2u);
+        REQUIRE(rf.channel6() == 0x2u);
+        REQUIRE(rf.channel7() == 0x2u);
         
         rf.raw = 0x5555555555555555u;
 
         
-        REQUIRE(rf.master_timeout() == 0x155u);
-        REQUIRE(rf.target_timeout() == 0x155u);
-        REQUIRE(rf.arbiter_delay() == 0x15u);
-        REQUIRE(!rf.bit());
+        REQUIRE(rf.channel0() == 0x1u);
+        REQUIRE(rf.channel1() == 0x1u);
+        REQUIRE(rf.channel2() == 0x1u);
+        REQUIRE(rf.channel3() == 0x1u);
+        REQUIRE(rf.channel4() == 0x1u);
+        REQUIRE(rf.channel5() == 0x1u);
+        REQUIRE(rf.channel6() == 0x1u);
+        REQUIRE(rf.channel7() == 0x1u);
         
         rf.raw = 0xcafedeadbabebeefu;
 
         
-        REQUIRE(rf.master_timeout() == 0x2efu);
-        REQUIRE(rf.target_timeout() == 0x3afu);
-        REQUIRE(rf.arbiter_delay() == 0xbu);
-        REQUIRE(rf.bit());
+        REQUIRE(rf.channel0() == 0x3u);
+        REQUIRE(rf.channel1() == 0x3u);
+        REQUIRE(rf.channel2() == 0x2u);
+        REQUIRE(rf.channel3() == 0x3u);
+        REQUIRE(rf.channel4() == 0x2u);
+        REQUIRE(rf.channel5() == 0x3u);
+        REQUIRE(rf.channel6() == 0x3u);
+        REQUIRE(rf.channel7() == 0x2u);
         
     }
 
     SECTION("write fields - read raw")
     {
-        ArqTimings rf {0, 0, 0, false};
+        HicannTxIfPower rf {0, 0, 0, 0, 0, 0, 0, 0};
 
         
         
-        rf.master_timeout(0x0);
-        rf.target_timeout(0x0);
-        rf.arbiter_delay(0x0);
-        rf.bit(false);
-        REQUIRE((rf.raw & 0x3ffffffu) == 0x0);
+        rf.channel0(0x0);
+        rf.channel1(0x0);
+        rf.channel2(0x0);
+        rf.channel3(0x0);
+        rf.channel4(0x0);
+        rf.channel5(0x0);
+        rf.channel6(0x0);
+        rf.channel7(0x0);
+        REQUIRE((rf.raw & 0xffffu) == 0x0);
         
-        rf.master_timeout(0x3ff);
-        rf.target_timeout(0x3ff);
-        rf.arbiter_delay(0x1f);
-        rf.bit(true);
-        REQUIRE((rf.raw & 0x3ffffffu) == 0x3ffffff);
+        rf.channel0(0x3);
+        rf.channel1(0x3);
+        rf.channel2(0x3);
+        rf.channel3(0x3);
+        rf.channel4(0x3);
+        rf.channel5(0x3);
+        rf.channel6(0x3);
+        rf.channel7(0x3);
+        REQUIRE((rf.raw & 0xffffu) == 0xffff);
         
-        rf.master_timeout(0x2aa);
-        rf.target_timeout(0x2aa);
-        rf.arbiter_delay(0xa);
-        rf.bit(true);
-        REQUIRE((rf.raw & 0x3ffffffu) == 0x2aaaaaa);
+        rf.channel0(0x2);
+        rf.channel1(0x2);
+        rf.channel2(0x2);
+        rf.channel3(0x2);
+        rf.channel4(0x2);
+        rf.channel5(0x2);
+        rf.channel6(0x2);
+        rf.channel7(0x2);
+        REQUIRE((rf.raw & 0xffffu) == 0xaaaa);
         
-        rf.master_timeout(0x155);
-        rf.target_timeout(0x155);
-        rf.arbiter_delay(0x15);
-        rf.bit(false);
-        REQUIRE((rf.raw & 0x3ffffffu) == 0x1555555);
+        rf.channel0(0x1);
+        rf.channel1(0x1);
+        rf.channel2(0x1);
+        rf.channel3(0x1);
+        rf.channel4(0x1);
+        rf.channel5(0x1);
+        rf.channel6(0x1);
+        rf.channel7(0x1);
+        REQUIRE((rf.raw & 0xffffu) == 0x5555);
         
-        rf.master_timeout(0x2ef);
-        rf.target_timeout(0x3af);
-        rf.arbiter_delay(0xb);
-        rf.bit(true);
-        REQUIRE((rf.raw & 0x3ffffffu) == 0x2bebeef);
+        rf.channel0(0x3);
+        rf.channel1(0x3);
+        rf.channel2(0x2);
+        rf.channel3(0x3);
+        rf.channel4(0x2);
+        rf.channel5(0x3);
+        rf.channel6(0x3);
+        rf.channel7(0x2);
+        REQUIRE((rf.raw & 0xffffu) == 0xbeef);
     }
 }
 
@@ -1890,6 +2104,130 @@ TEST_CASE("Definition 'CounterReset'", "[definitions]")
     SECTION("write fields - read raw")
     {
         CounterReset rf {false};
+
+        
+        
+        rf.reset(false);
+        REQUIRE((rf.raw & 0x1u) == 0);
+        
+        rf.reset(true);
+        REQUIRE((rf.raw & 0x1u) == 1);
+        
+        rf.reset(false);
+        REQUIRE((rf.raw & 0x1u) == 0);
+        
+        rf.reset(true);
+        REQUIRE((rf.raw & 0x1u) == 1);
+        
+        rf.reset(true);
+        REQUIRE((rf.raw & 0x1u) == 1);
+    }
+}
+
+TEST_CASE("Definition 'ResponderCounterReset'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        ResponderCounterReset rf {false, 0};
+
+        
+        rf.raw = 0x0u;
+
+        
+        REQUIRE(!rf.reset());
+        REQUIRE(rf.count() == 0x0u);
+        
+        rf.raw = 0xffffffffffffffffu;
+
+        
+        REQUIRE(rf.reset());
+        REQUIRE(rf.count() == 0xffffffffffffu);
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaau;
+
+        
+        REQUIRE(!rf.reset());
+        REQUIRE(rf.count() == 0x555555555555u);
+        
+        rf.raw = 0x5555555555555555u;
+
+        
+        REQUIRE(rf.reset());
+        REQUIRE(rf.count() == 0xaaaaaaaaaaaau);
+        
+        rf.raw = 0xcafedeadbabebeefu;
+
+        
+        REQUIRE(rf.reset());
+        REQUIRE(rf.count() == 0x6f56dd5f5f77u);
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        ResponderCounterReset rf {false, 0};
+
+        
+        
+        rf.reset(false);
+        rf.count(0x0);
+        REQUIRE((rf.raw & 0x1ffffffffffffu) == 0x0);
+        
+        rf.reset(true);
+        rf.count(0xffffffffffff);
+        REQUIRE((rf.raw & 0x1ffffffffffffu) == 0x1ffffffffffff);
+        
+        rf.reset(false);
+        rf.count(0x555555555555);
+        REQUIRE((rf.raw & 0x1ffffffffffffu) == 0xaaaaaaaaaaaa);
+        
+        rf.reset(true);
+        rf.count(0xaaaaaaaaaaaa);
+        REQUIRE((rf.raw & 0x1ffffffffffffu) == 0x1555555555555);
+        
+        rf.reset(true);
+        rf.count(0x6f56dd5f5f77);
+        REQUIRE((rf.raw & 0x1ffffffffffffu) == 0xdeadbabebeef);
+    }
+}
+
+TEST_CASE("Definition 'NhtlCounterReset'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        NhtlCounterReset rf {false};
+
+        
+        rf.raw = 0x0u;
+
+        
+        REQUIRE(!rf.reset());
+        
+        rf.raw = 0xffffffffffffffffu;
+
+        
+        REQUIRE(rf.reset());
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaau;
+
+        
+        REQUIRE(!rf.reset());
+        
+        rf.raw = 0x5555555555555555u;
+
+        
+        REQUIRE(rf.reset());
+        
+        rf.raw = 0xcafedeadbabebeefu;
+
+        
+        REQUIRE(rf.reset());
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        NhtlCounterReset rf {false};
 
         
         

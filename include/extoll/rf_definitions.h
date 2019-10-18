@@ -1,6 +1,6 @@
 /*
  * This is a generated file - do not change it
- * 2019-04-02 17:47:04.588305
+ * 2019-10-18 14:27:36.794604
  */
 
 #pragma once
@@ -270,11 +270,14 @@ struct HicannIfState
     HicannIfState() = default;
 
     //! Initialize all fields with a specific value
-    HicannIfState(uint32_t channel_status_, uint32_t crc_count_, uint32_t systime_)
+    HicannIfState(uint32_t channel_status_, uint32_t crc_count_, uint32_t systime_, uint32_t init_state_, uint32_t rx_data_, uint32_t tx_data_)
     {
         raw |= (uint64_t(channel_status_) & 0xff) << 0;
         raw |= (uint64_t(crc_count_) & 0xff) << 8;
         raw |= (uint64_t(systime_) & 0x3fff) << 16;
+        raw |= (uint64_t(init_state_) & 0x3f) << 30;
+        raw |= (uint64_t(rx_data_) & 0xff) << 36;
+        raw |= (uint64_t(tx_data_) & 0xff) << 44;
     }
     
     //! Read the `channel_status` field
@@ -283,6 +286,12 @@ struct HicannIfState
     uint32_t crc_count() const { return uint32_t(raw >> 8 & 0xff);}
     //! Read the `systime` field
     uint32_t systime() const { return uint32_t(raw >> 16 & 0x3fff);}
+    //! Read the `init_state` field
+    uint32_t init_state() const { return uint32_t(raw >> 30 & 0x3f);}
+    //! Read the `rx_data` field
+    uint32_t rx_data() const { return uint32_t(raw >> 36 & 0xff);}
+    //! Read the `tx_data` field
+    uint32_t tx_data() const { return uint32_t(raw >> 44 & 0xff);}
 
     
     //! Set the `channel_status` field
@@ -291,6 +300,12 @@ struct HicannIfState
     void crc_count(uint32_t value) { raw &= ~(0xffull << 8); raw |= (uint64_t(value) & 0xff) << 8;}
     //! Set the `systime` field
     void systime(uint32_t value) { raw &= ~(0x3fffull << 16); raw |= (uint64_t(value) & 0x3fff) << 16;}
+    //! Set the `init_state` field
+    void init_state(uint32_t value) { raw &= ~(0x3full << 30); raw |= (uint64_t(value) & 0x3f) << 30;}
+    //! Set the `rx_data` field
+    void rx_data(uint32_t value) { raw &= ~(0xffull << 36); raw |= (uint64_t(value) & 0xff) << 36;}
+    //! Set the `tx_data` field
+    void tx_data(uint32_t value) { raw &= ~(0xffull << 44); raw |= (uint64_t(value) & 0xff) << 44;}
     
     //! The hardware address of the register file on the remote Fpga
     constexpr static RMA2_NLA ADDRESS = 0x800;
@@ -301,7 +316,45 @@ struct HicannIfState
 };
 
 
-//! Read-only register file HicannIfRxConfig at address 0x808.
+//! Read-only register file SetHicannIfState at address 0x808.
+struct SetHicannIfState
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    SetHicannIfState() = default;
+
+    //! Initialize all fields with a specific value
+    SetHicannIfState(uint32_t data_delay_, uint32_t data_delay_dout_)
+    {
+        raw |= (uint64_t(data_delay_) & 0x1f) << 0;
+        raw |= (uint64_t(data_delay_dout_) & 0x1f) << 5;
+    }
+    
+    //! Read the `data_delay` field
+    uint32_t data_delay() const { return uint32_t(raw >> 0 & 0x1f);}
+    //! Read the `data_delay_dout` field
+    uint32_t data_delay_dout() const { return uint32_t(raw >> 5 & 0x1f);}
+
+    
+    //! Set the `data_delay` field
+    void data_delay(uint32_t value) { raw &= ~(0x1full << 0); raw |= (uint64_t(value) & 0x1f) << 0;}
+    //! Set the `data_delay_dout` field
+    void data_delay_dout(uint32_t value) { raw &= ~(0x1full << 5); raw |= (uint64_t(value) & 0x1f) << 5;}
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x808;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file HicannIfRxConfig at address 0x810.
 struct HicannIfRxConfig
 {
     //! The raw bits used to send and receive data to and from the hardware.
@@ -321,7 +374,7 @@ struct HicannIfRxConfig
     void data(uint64_t value) { raw = value; }
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x808;
+    constexpr static RMA2_NLA ADDRESS = 0x810;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -329,7 +382,7 @@ struct HicannIfRxConfig
 };
 
 
-//! Read-only register file HicannIfRxPulse at address 0x810.
+//! Read-only register file HicannIfRxPulse at address 0x818.
 struct HicannIfRxPulse
 {
     //! The raw bits used to send and receive data to and from the hardware.
@@ -354,7 +407,7 @@ struct HicannIfRxPulse
     void data(uint32_t value) { raw &= ~(0xffffffull << 0); raw |= (uint64_t(value) & 0xffffff) << 0;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x810;
+    constexpr static RMA2_NLA ADDRESS = 0x818;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -362,7 +415,7 @@ struct HicannIfRxPulse
 };
 
 
-//! Read-write register file HicannIfConfig at address 0x818.
+//! Read-write register file HicannIfConfig at address 0x820.
 struct HicannIfConfig
 {
     //! The raw bits used to send and receive data to and from the hardware.
@@ -374,7 +427,7 @@ struct HicannIfConfig
     HicannIfConfig() = default;
 
     //! Initialize all fields with a specific value
-    HicannIfConfig(bool start_link_, bool loopback_enable_, bool auto_init_, bool init_master_, bool use_timestamp_, bool auto_limit_, bool pulse_protocol_, bool config_protocol_, uint32_t heap_mode_, uint32_t limit_, bool dc_coding_)
+    HicannIfConfig(bool start_link_, bool loopback_enable_, bool auto_init_, bool init_master_, bool use_timestamp_, bool auto_limit_, bool pulse_protocol_, bool config_protocol_, uint32_t heap_mode_, uint32_t limit_, bool dc_coding_, bool invert_deserializer_data_)
     {
         raw |= (uint64_t(start_link_) & 0x1) << 0;
         raw |= (uint64_t(loopback_enable_) & 0x1) << 1;
@@ -387,6 +440,7 @@ struct HicannIfConfig
         raw |= (uint64_t(heap_mode_) & 0xff) << 8;
         raw |= (uint64_t(limit_) & 0x7ff) << 16;
         raw |= (uint64_t(dc_coding_) & 0x1) << 27;
+        raw |= (uint64_t(invert_deserializer_data_) & 0x1) << 28;
     }
     
     //! Read the `start_link` field
@@ -411,6 +465,8 @@ struct HicannIfConfig
     uint32_t limit() const { return uint32_t(raw >> 16 & 0x7ff);}
     //! Read the `dc_coding` field
     bool dc_coding() const { return bool(raw >> 27 & 0x1);}
+    //! Read the `invert_deserializer_data` field
+    bool invert_deserializer_data() const { return bool(raw >> 28 & 0x1);}
 
     
     //! Set the `start_link` field
@@ -435,9 +491,11 @@ struct HicannIfConfig
     void limit(uint32_t value) { raw &= ~(0x7ffull << 16); raw |= (uint64_t(value) & 0x7ff) << 16;}
     //! Set the `dc_coding` field
     void dc_coding(bool value) { raw &= ~(0x1ull << 27); raw |= (uint64_t(value) & 0x1) << 27;}
+    //! Set the `invert_deserializer_data` field
+    void invert_deserializer_data(bool value) { raw &= ~(0x1ull << 28); raw |= (uint64_t(value) & 0x1) << 28;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x818;
+    constexpr static RMA2_NLA ADDRESS = 0x820;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -445,7 +503,7 @@ struct HicannIfConfig
 };
 
 
-//! Write-only register file HicannIfControls at address 0x820.
+//! Write-only register file HicannIfControls at address 0x828.
 struct HicannIfControls
 {
     //! The raw bits used to send and receive data to and from the hardware.
@@ -490,7 +548,7 @@ struct HicannIfControls
     void crc_count_reset(bool value) { raw &= ~(0x1ull << 4); raw |= (uint64_t(value) & 0x1) << 4;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x820;
+    constexpr static RMA2_NLA ADDRESS = 0x828;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = false;
     //! Indicates whether this field can be written on the software side
@@ -498,7 +556,7 @@ struct HicannIfControls
 };
 
 
-//! Read-write register file HicannIfTxData at address 0x828.
+//! Read-write register file HicannIfTxData at address 0x830.
 //! This register can be used to emulate highspeed packets via Jtag
 struct HicannIfTxData
 {
@@ -519,7 +577,7 @@ struct HicannIfTxData
     void data(uint64_t value) { raw = value; }
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x828;
+    constexpr static RMA2_NLA ADDRESS = 0x830;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -527,7 +585,45 @@ struct HicannIfTxData
 };
 
 
-//! Read-write register file HicannPacketGen at address 0x830.
+//! Read-write register file HicannIfNeuronAddressFilter at address 0x838.
+struct HicannIfNeuronAddressFilter
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    HicannIfNeuronAddressFilter() = default;
+
+    //! Initialize all fields with a specific value
+    HicannIfNeuronAddressFilter(uint32_t negative_filter_mask_, uint32_t positive_filter_mask_)
+    {
+        raw |= (uint64_t(negative_filter_mask_) & 0x1ff) << 0;
+        raw |= (uint64_t(positive_filter_mask_) & 0x1ff) << 9;
+    }
+    
+    //! Read the `negative_filter_mask` field
+    uint32_t negative_filter_mask() const { return uint32_t(raw >> 0 & 0x1ff);}
+    //! Read the `positive_filter_mask` field
+    uint32_t positive_filter_mask() const { return uint32_t(raw >> 9 & 0x1ff);}
+
+    
+    //! Set the `negative_filter_mask` field
+    void negative_filter_mask(uint32_t value) { raw &= ~(0x1ffull << 0); raw |= (uint64_t(value) & 0x1ff) << 0;}
+    //! Set the `positive_filter_mask` field
+    void positive_filter_mask(uint32_t value) { raw &= ~(0x1ffull << 9); raw |= (uint64_t(value) & 0x1ff) << 9;}
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x838;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = true;
+};
+
+
+//! Read-write register file HicannPacketGen at address 0x840.
 struct HicannPacketGen
 {
     //! The raw bits used to send and receive data to and from the hardware.
@@ -562,7 +658,7 @@ struct HicannPacketGen
     void enable(bool value) { raw &= ~(0x1ull << 26); raw |= (uint64_t(value) & 0x1) << 26;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x830;
+    constexpr static RMA2_NLA ADDRESS = 0x840;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -570,7 +666,7 @@ struct HicannPacketGen
 };
 
 
-//! Read-write register file HicannChannel at address 0x838.
+//! Read-write register file HicannChannel at address 0x848.
 //! This register selects the Hicann the Fpga will communicate with. Note, that
 //! the DNC order is expected here and not the Jtag order.
 struct HicannChannel
@@ -597,7 +693,7 @@ struct HicannChannel
     void number(uint32_t value) { raw &= ~(0x7ull << 0); raw |= (uint64_t(value) & 0x7) << 0;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x838;
+    constexpr static RMA2_NLA ADDRESS = 0x848;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -605,8 +701,8 @@ struct HicannChannel
 };
 
 
-//! Read-write register file ArqTimings at address 0x840.
-struct ArqTimings
+//! Read-write register file HicannTxIfPower at address 0x868.
+struct HicannTxIfPower
 {
     //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly. The concrete bit-fields are always
@@ -614,38 +710,58 @@ struct ArqTimings
     uint64_t raw = 0;
 
     //! Initialize all fields with zero
-    ArqTimings() = default;
+    HicannTxIfPower() = default;
 
     //! Initialize all fields with a specific value
-    ArqTimings(uint32_t master_timeout_, uint32_t target_timeout_, uint32_t arbiter_delay_, bool bit_)
+    HicannTxIfPower(uint32_t channel0_, uint32_t channel1_, uint32_t channel2_, uint32_t channel3_, uint32_t channel4_, uint32_t channel5_, uint32_t channel6_, uint32_t channel7_)
     {
-        raw |= (uint64_t(master_timeout_) & 0x3ff) << 0;
-        raw |= (uint64_t(target_timeout_) & 0x3ff) << 10;
-        raw |= (uint64_t(arbiter_delay_) & 0x1f) << 20;
-        raw |= (uint64_t(bit_) & 0x1) << 25;
+        raw |= (uint64_t(channel0_) & 0x3) << 0;
+        raw |= (uint64_t(channel1_) & 0x3) << 2;
+        raw |= (uint64_t(channel2_) & 0x3) << 4;
+        raw |= (uint64_t(channel3_) & 0x3) << 6;
+        raw |= (uint64_t(channel4_) & 0x3) << 8;
+        raw |= (uint64_t(channel5_) & 0x3) << 10;
+        raw |= (uint64_t(channel6_) & 0x3) << 12;
+        raw |= (uint64_t(channel7_) & 0x3) << 14;
     }
     
-    //! Read the `master_timeout` field
-    uint32_t master_timeout() const { return uint32_t(raw >> 0 & 0x3ff);}
-    //! Read the `target_timeout` field
-    uint32_t target_timeout() const { return uint32_t(raw >> 10 & 0x3ff);}
-    //! Read the `arbiter_delay` field
-    uint32_t arbiter_delay() const { return uint32_t(raw >> 20 & 0x1f);}
-    //! Read the `bit` field
-    bool bit() const { return bool(raw >> 25 & 0x1);}
+    //! Read the `channel0` field
+    uint32_t channel0() const { return uint32_t(raw >> 0 & 0x3);}
+    //! Read the `channel1` field
+    uint32_t channel1() const { return uint32_t(raw >> 2 & 0x3);}
+    //! Read the `channel2` field
+    uint32_t channel2() const { return uint32_t(raw >> 4 & 0x3);}
+    //! Read the `channel3` field
+    uint32_t channel3() const { return uint32_t(raw >> 6 & 0x3);}
+    //! Read the `channel4` field
+    uint32_t channel4() const { return uint32_t(raw >> 8 & 0x3);}
+    //! Read the `channel5` field
+    uint32_t channel5() const { return uint32_t(raw >> 10 & 0x3);}
+    //! Read the `channel6` field
+    uint32_t channel6() const { return uint32_t(raw >> 12 & 0x3);}
+    //! Read the `channel7` field
+    uint32_t channel7() const { return uint32_t(raw >> 14 & 0x3);}
 
     
-    //! Set the `master_timeout` field
-    void master_timeout(uint32_t value) { raw &= ~(0x3ffull << 0); raw |= (uint64_t(value) & 0x3ff) << 0;}
-    //! Set the `target_timeout` field
-    void target_timeout(uint32_t value) { raw &= ~(0x3ffull << 10); raw |= (uint64_t(value) & 0x3ff) << 10;}
-    //! Set the `arbiter_delay` field
-    void arbiter_delay(uint32_t value) { raw &= ~(0x1full << 20); raw |= (uint64_t(value) & 0x1f) << 20;}
-    //! Set the `bit` field
-    void bit(bool value) { raw &= ~(0x1ull << 25); raw |= (uint64_t(value) & 0x1) << 25;}
+    //! Set the `channel0` field
+    void channel0(uint32_t value) { raw &= ~(0x3ull << 0); raw |= (uint64_t(value) & 0x3) << 0;}
+    //! Set the `channel1` field
+    void channel1(uint32_t value) { raw &= ~(0x3ull << 2); raw |= (uint64_t(value) & 0x3) << 2;}
+    //! Set the `channel2` field
+    void channel2(uint32_t value) { raw &= ~(0x3ull << 4); raw |= (uint64_t(value) & 0x3) << 4;}
+    //! Set the `channel3` field
+    void channel3(uint32_t value) { raw &= ~(0x3ull << 6); raw |= (uint64_t(value) & 0x3) << 6;}
+    //! Set the `channel4` field
+    void channel4(uint32_t value) { raw &= ~(0x3ull << 8); raw |= (uint64_t(value) & 0x3) << 8;}
+    //! Set the `channel5` field
+    void channel5(uint32_t value) { raw &= ~(0x3ull << 10); raw |= (uint64_t(value) & 0x3) << 10;}
+    //! Set the `channel6` field
+    void channel6(uint32_t value) { raw &= ~(0x3ull << 12); raw |= (uint64_t(value) & 0x3) << 12;}
+    //! Set the `channel7` field
+    void channel7(uint32_t value) { raw &= ~(0x3ull << 14); raw |= (uint64_t(value) & 0x3) << 14;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x840;
+    constexpr static RMA2_NLA ADDRESS = 0x868;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -1955,7 +2071,7 @@ struct InvalidMode
 };
 
 
-//! Read-only register file InvalidRraAddress at address 0x1178.
+//! Read-only register file InvalidRraAddress at address 0x1208.
 //! Number of invalid Rra-addresses received.
 struct InvalidRraAddress
 {
@@ -1976,7 +2092,7 @@ struct InvalidRraAddress
     void count(uint64_t value) { raw = value; }
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x1178;
+    constexpr static RMA2_NLA ADDRESS = 0x1208;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -1984,38 +2100,7 @@ struct InvalidRraAddress
 };
 
 
-//! Read-only register file InvalidHost at address 0x1180.
-//! Number of attempts to send data to an unconfigured host.
-//! 
-//! See Fpga::configure_partner_host
-struct InvalidHost
-{
-    //! The raw bits used to send and receive data to and from the hardware.
-    //! This member my be accessed directly. The concrete bit-fields are always
-    //! synchronized with this value.
-    uint64_t raw = 0;
-
-    //! Initialize all fields with zero
-    InvalidHost() = default;
-    //! Initialize the single field with a specific value
-    InvalidHost(uint64_t value)
-    : raw(value & 0xffffffffffff) {}
-
-    //! Read the single field
-    uint64_t count() const { return raw & 0xffffffffffff;};
-    //! Set the single field
-    void count(uint64_t value) { raw = value; }
-    
-    //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x1180;
-    //! Indicates whether this field can be read on the software side
-    constexpr static bool READABLE = true;
-    //! Indicates whether this field can be written on the software side
-    constexpr static bool WRITABLE = false;
-};
-
-
-//! Read-only register file ConfigAddressReinit at address 0x1188.
+//! Read-only register file ConfigAddressReinit at address 0x1210.
 //! Number of attempts to reinit the host-addresses for fpga-config answers.
 //! 
 //! Note: this is an error in the original register file documentation, but should
@@ -2039,6 +2124,64 @@ struct ConfigAddressReinit
     void count(uint64_t value) { raw = value; }
     
     //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x1210;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file UndefinedHost at address 0x1180.
+//! Number of attempts to send data to an unconfigured host.
+struct UndefinedHost
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    UndefinedHost() = default;
+    //! Initialize the single field with a specific value
+    UndefinedHost(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x1180;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file RraGetResponsesSent at address 0x1188.
+//! Number of RRA-get-responses sent in responder.
+struct RraGetResponsesSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    RraGetResponsesSent() = default;
+    //! Initialize the single field with a specific value
+    RraGetResponsesSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
     constexpr static RMA2_NLA ADDRESS = 0x1188;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
@@ -2047,7 +2190,311 @@ struct ConfigAddressReinit
 };
 
 
-//! Read-write register file HostEndpoint at address 0x1190.
+//! Read-only register file RmaPutRequestsSent at address 0x1190.
+//! Number of RMA-put-requests sent in responder.
+struct RmaPutRequestsSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    RmaPutRequestsSent() = default;
+    //! Initialize the single field with a specific value
+    RmaPutRequestsSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x1190;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file ReceiptNotificationPutRequestsSent at address 0x1198.
+//! Number of RMA-notification-put-requests sent in responder
+struct ReceiptNotificationPutRequestsSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    ReceiptNotificationPutRequestsSent() = default;
+    //! Initialize the single field with a specific value
+    ReceiptNotificationPutRequestsSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x1198;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file PayloadNotificationPutRequestsSent at address 0x11a0.
+//! ...
+struct PayloadNotificationPutRequestsSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    PayloadNotificationPutRequestsSent() = default;
+    //! Initialize the single field with a specific value
+    PayloadNotificationPutRequestsSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11a0;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file TraceDataSent at address 0x11a8.
+//! Number of Trace-Pulse-Data packets sent in responder.
+struct TraceDataSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    TraceDataSent() = default;
+    //! Initialize the single field with a specific value
+    TraceDataSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11a8;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file FpagConfigSent at address 0x11b0.
+//! Number of Fpga-Configuration packets sent in responder.
+struct FpagConfigSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    FpagConfigSent() = default;
+    //! Initialize the single field with a specific value
+    FpagConfigSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11b0;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file HicannConfigSent at address 0x11b8.
+//! Number of Hicann-Configuration answer packets sent in responder.
+struct HicannConfigSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    HicannConfigSent() = default;
+    //! Initialize the single field with a specific value
+    HicannConfigSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11b8;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file JtagDataSent at address 0x11c0.
+//! Number of Jtag-data packets sent in responder.
+struct JtagDataSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    JtagDataSent() = default;
+    //! Initialize the single field with a specific value
+    JtagDataSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11c0;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file NeighbourPulseSend at address 0x11c8.
+//! Number of Neighbour-Pulse-data packets sent in responder.
+struct NeighbourPulseSend
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    NeighbourPulseSend() = default;
+    //! Initialize the single field with a specific value
+    NeighbourPulseSend(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11c8;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Write-only register file ResponderCounterReset at address 0x11d0.
+//! Reset performance and error counters.
+struct ResponderCounterReset
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    ResponderCounterReset() = default;
+
+    //! Initialize all fields with a specific value
+    ResponderCounterReset(bool reset_, uint64_t count_)
+    {
+        raw |= (uint64_t(reset_) & 0x1) << 0;
+        raw |= (uint64_t(count_) & 0xffffffffffff) << 1;
+    }
+    
+    //! Read the `reset` field
+    bool reset() const { return bool(raw >> 0 & 0x1);}
+    //! Read the `count` field
+    uint64_t count() const { return uint64_t(raw >> 1 & 0xffffffffffff);}
+
+    
+    //! Set the `reset` field
+    void reset(bool value) { raw &= ~(0x1ull << 0); raw |= (uint64_t(value) & 0x1) << 0;}
+    //! Set the `count` field
+    void count(uint64_t value) { raw &= ~(0xffffffffffffull << 1); raw |= (uint64_t(value) & 0xffffffffffff) << 1;}
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x11d0;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = false;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = true;
+};
+
+
+//! Write-only register file NhtlCounterReset at address 0x1200.
+struct NhtlCounterReset
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    NhtlCounterReset() = default;
+
+    //! Initialize all fields with a specific value
+    NhtlCounterReset(bool reset_)
+    {
+        raw |= (uint64_t(reset_) & 0x1) << 0;
+    }
+    
+    //! Read the `reset` field
+    bool reset() const { return bool(raw >> 0 & 0x1);}
+
+    
+    //! Set the `reset` field
+    void reset(bool value) { raw &= ~(0x1ull << 0); raw |= (uint64_t(value) & 0x1) << 0;}
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x1200;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = false;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = true;
+};
+
+
+//! Read-write register file HostEndpoint at address 0x1218.
 //! Configures the Fpga with data from the local node.
 //! 
 //! The node id, protection domain and virtual process id all refer to the
@@ -2098,7 +2545,7 @@ struct HostEndpoint
     void mode(uint32_t value) { raw &= ~(0x3full << 42); raw |= (uint64_t(value) & 0x3f) << 42;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x1190;
+    constexpr static RMA2_NLA ADDRESS = 0x1218;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -2106,7 +2553,7 @@ struct HostEndpoint
 };
 
 
-//! Read-write register file ConfigResponse at address 0x1198.
+//! Read-write register file ConfigResponse at address 0x1220.
 //! Address of the Fpga config response packets.
 //! 
 //! This can be a physical or a logical address. For a logical address
@@ -2130,7 +2577,7 @@ struct ConfigResponse
     void address(uint64_t value) { raw = value; }
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x1198;
+    constexpr static RMA2_NLA ADDRESS = 0x1220;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -2138,7 +2585,7 @@ struct ConfigResponse
 };
 
 
-//! Read-write register file TraceNotificationBehaviour at address 0x11a0.
+//! Read-write register file TraceNotificationBehaviour at address 0x1228.
 //! The notification behavior of the trace-pulse data ringbuffer.
 //! 
 //! Frequency is the number of packets after which the Fpga will send a payload
@@ -2174,7 +2621,7 @@ struct TraceNotificationBehaviour
     void frequency(uint32_t value) { raw &= ~(0xffffffffull << 32); raw |= (uint64_t(value) & 0xffffffff) << 32;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x11a0;
+    constexpr static RMA2_NLA ADDRESS = 0x1228;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
@@ -2182,7 +2629,7 @@ struct TraceNotificationBehaviour
 };
 
 
-//! Read-write register file HicannNotificationBehaviour at address 0x11a8.
+//! Read-write register file HicannNotificationBehaviour at address 0x1230.
 //! The notification behavior of the hicann config ringbuffer.
 //! 
 //! Frequency is the number of packets after which the Fpga will send a payload
@@ -2218,11 +2665,44 @@ struct HicannNotificationBehaviour
     void frequency(uint32_t value) { raw &= ~(0xffffffffull << 32); raw |= (uint64_t(value) & 0xffffffff) << 32;}
     
     //! The hardware address of the register file on the remote Fpga
-    constexpr static RMA2_NLA ADDRESS = 0x11a8;
+    constexpr static RMA2_NLA ADDRESS = 0x1230;
     //! Indicates whether this field can be read on the software side
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
     constexpr static bool WRITABLE = true;
+};
+
+
+//! Read-only register file Version at address 0x4000.
+//! A static register file that contains the version number of the register-file.
+//! 
+//! The version number will be incremented every time a change is made to the
+//! verilog register file definitions. This library will only work when the
+//! version number is exactly the same as expected.
+struct Version
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    Version() = default;
+    //! Initialize the single field with a specific value
+    Version(uint64_t value)
+    : raw(value & 0xffffffffffffffff) {}
+
+    //! Read the single field
+    uint64_t number() const { return raw & 0xffffffffffffffff;};
+    //! Set the single field
+    void number(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0x4000;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
 };
 
 

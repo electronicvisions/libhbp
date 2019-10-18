@@ -103,17 +103,25 @@ class HicannIfState(Address(0x800), ReadOnly):
     channel_status: 8
     crc_count: 8
     systime: 14
+    init_state: 6
+    rx_data: 8
+    tx_data: 8
 
 
-class HicannIfRxConfig(Address(0x808), ReadOnly):
+class SetHicannIfState(Address(0x808), ReadOnly):
+    data_delay: 5
+    data_delay_dout: 5
+
+
+class HicannIfRxConfig(Address(0x810), ReadOnly):
     data: 64
 
 
-class HicannIfRxPulse(Address(0x810), ReadOnly):
+class HicannIfRxPulse(Address(0x818), ReadOnly):
     data: 24
 
 
-class HicannIfConfig(Address(0x818), ReadWrite):
+class HicannIfConfig(Address(0x820), ReadWrite):
     start_link: 1
     loopback_enable: 1
     auto_init: 1
@@ -125,9 +133,10 @@ class HicannIfConfig(Address(0x818), ReadWrite):
     heap_mode: 8
     limit: 11
     dc_coding: 1
+    invert_deserializer_data: 1
 
 
-class HicannIfControls(Address(0x820), WriteOnly):
+class HicannIfControls(Address(0x828), WriteOnly):
     tx_hicann_pulse_enable: 1
     tx_hicann_config_enable: 1
     routing_data_enable: 1
@@ -135,20 +144,25 @@ class HicannIfControls(Address(0x820), WriteOnly):
     crc_count_reset: 1
 
 
-class HicannIfTxData(Address(0x828), ReadWrite):
+class HicannIfTxData(Address(0x830), ReadWrite):
     """
     This register can be used to emulate highspeed packets via Jtag
     """
     data: 64
 
 
-class HicannPacketGen(Address(0x830), ReadWrite):
+class HicannIfNeuronAddressFilter(Address(0x838), ReadWrite):
+    negative_filter_mask: 9
+    positive_filter_mask: 9
+
+
+class HicannPacketGen(Address(0x840), ReadWrite):
     count: 25
     error: 1
     enable: 1
 
 
-class HicannChannel(Address(0x838), ReadWrite):
+class HicannChannel(Address(0x848), ReadWrite):
     """
     This register selects the Hicann the Fpga will communicate with. Note, that
     the DNC order is expected here and not the Jtag order.
@@ -156,11 +170,15 @@ class HicannChannel(Address(0x838), ReadWrite):
     number: 3
 
 
-class ArqTimings(Address(0x840), ReadWrite):
-    master_timeout: 10
-    target_timeout: 10
-    arbiter_delay: 5
-    bit: 1
+class HicannTxIfPower(Address(0x868), ReadWrite):
+    channel0: 2
+    channel1: 2
+    channel2: 2
+    channel3: 2
+    channel4: 2
+    channel5: 2
+    channel6: 2
+    channel7: 2
 
 
 # Application Layer Test Interface
@@ -511,23 +529,14 @@ class InvalidMode(Address(0x1170), ReadOnly):
     count: 48
 
 
-class InvalidRraAddress(Address(0x1178), ReadOnly):
+class InvalidRraAddress(Address(0x1208), ReadOnly):
     """
     Number of invalid Rra-addresses received.
     """
     count: 48
 
 
-class InvalidHost(Address(0x1180), ReadOnly):
-    """
-    Number of attempts to send data to an unconfigured host.
-
-    See Fpga::configure_partner_host
-    """
-    count: 48
-
-
-class ConfigAddressReinit(Address(0x1188), ReadOnly):
+class ConfigAddressReinit(Address(0x1210), ReadOnly):
     """
     Number of attempts to reinit the host-addresses for fpga-config answers.
 
@@ -536,9 +545,92 @@ class ConfigAddressReinit(Address(0x1188), ReadOnly):
     """
     count: 48
 
+# Responder Counters
+class UndefinedHost(Address(0x1180), ReadOnly):
+    """
+    Number of attempts to send data to an unconfigured host.
+    """
+    count: 48
+
+
+class RraGetResponsesSent(Address(0x1188), ReadOnly):
+    """
+    Number of RRA-get-responses sent in responder.
+    """
+    count: 48
+
+
+class RmaPutRequestsSent(Address(0x1190), ReadOnly):
+    """
+    Number of RMA-put-requests sent in responder.
+    """
+    count: 48
+
+
+class ReceiptNotificationPutRequestsSent(Address(0x1198), ReadOnly):
+    """
+    Number of RMA-notification-put-requests sent in responder
+    """
+    count: 48
+
+
+class PayloadNotificationPutRequestsSent(Address(0x11a0), ReadOnly):
+    """
+    ...
+    """
+    count: 48
+
+
+class TraceDataSent(Address(0x11a8), ReadOnly):
+    """
+    Number of Trace-Pulse-Data packets sent in responder.
+    """
+    count: 48
+
+
+class FpagConfigSent(Address(0x11b0), ReadOnly):
+    """
+    Number of Fpga-Configuration packets sent in responder.
+    """
+    count: 48
+
+
+class HicannConfigSent(Address(0x11b8), ReadOnly):
+    """
+    Number of Hicann-Configuration answer packets sent in responder.
+    """
+    count: 48
+
+
+class JtagDataSent(Address(0x11c0), ReadOnly):
+    """
+    Number of Jtag-data packets sent in responder.
+    """
+    count: 48
+
+
+class NeighbourPulseSend(Address(0x11c8), ReadOnly):
+    """
+    Number of Neighbour-Pulse-data packets sent in responder.
+    """
+    count: 48
+
+
+class ResponderCounterReset(Address(0x11d0), WriteOnly):
+    """
+    Reset performance and error counters.
+    """
+    reset: 1
+
+    count: 48
+
+
+class NhtlCounterReset(Address(0x1200), WriteOnly):
+    reset: 1
+
 
 # Partner Host Configuration
-class HostEndpoint(Address(0x1190), ReadWrite):
+class HostEndpoint(Address(0x1218), ReadWrite):
     """
     Configures the Fpga with data from the local node.
 
@@ -558,7 +650,7 @@ class HostEndpoint(Address(0x1190), ReadWrite):
     mode: 6
 
 
-class ConfigResponse(Address(0x1198), ReadWrite):
+class ConfigResponse(Address(0x1220), ReadWrite):
     """
     Address of the Fpga config response packets.
 
@@ -568,7 +660,7 @@ class ConfigResponse(Address(0x1198), ReadWrite):
     address: 64
 
 
-class TraceNotificationBehaviour(Address(0x11a0), ReadWrite):
+class TraceNotificationBehaviour(Address(0x1228), ReadWrite):
     """
     The notification behavior of the trace-pulse data ringbuffer.
 
@@ -581,7 +673,7 @@ class TraceNotificationBehaviour(Address(0x11a0), ReadWrite):
     frequency: 32
 
 
-class HicannNotificationBehaviour(Address(0x11a8), ReadWrite):
+class HicannNotificationBehaviour(Address(0x1230), ReadWrite):
     """
     The notification behavior of the hicann config ringbuffer.
 
@@ -593,6 +685,16 @@ class HicannNotificationBehaviour(Address(0x11a8), ReadWrite):
     timeout: 32
     frequency: 32
 
+# Version Register
+class Version(Address(0x4000), ReadOnly):
+    """
+    A static register file that contains the version number of the register-file.
+
+    The version number will be incremented every time a change is made to the
+    verilog register file definitions. This library will only work when the
+    version number is exactly the same as expected.
+    """
+    number: 64
 
 # Info Registers
 class Driver(Address(0x8000), ReadOnly):
