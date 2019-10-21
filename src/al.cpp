@@ -49,13 +49,15 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
     auto fpga = Extoll::Instance().fpga(node);
     auto& buffer = Extoll::Instance().hicann_config(node);
 
+    cout << "INFO: current version: " << rf.read<Version>().number() << "\n";
+
     if (rf.read<TestControlEnable>().enable())
     {
         cout << "WARNING: test mode was already enabled\n";
     }
 
     fpga.configure_partner_host();
-
+    std::cout << "INFO: host endpoint: 0x" << hex << rf.read<HostEndpoint>().raw << "\n";
     auto start_address = rf.read<HicannBufferCurrentAddress>().data();
     std::cout << "INFO: current address: 0x" << hex << start_address << "\n";
 
@@ -63,7 +65,7 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
     {
         TestMode tm{rf};
 
-        rf.write<TestControlType>({TestControlType::FpgaConfig});
+        rf.write<TestControlType>({TestControlType::HicannConfig});
         rf.write<TestControlData>({value});
         rf.write<TestControlConfig>({uint32_t(count), uint32_t(delay), increment});
         rf.write<TestControlStart>({true});
@@ -77,9 +79,9 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
                 buffer.notify();
             }
         }
-        catch (...)
+        catch (const std::exception& e)
         {
-            
+            std::cout << "EXCEPTION: " << e.what() << "\n";
         }
     }
 

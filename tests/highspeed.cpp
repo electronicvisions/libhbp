@@ -19,7 +19,7 @@ TEST_CASE("Highspeed Init succeeds", "[hs]")
 	    highspeed_init(rf, j, fpga, hicann);
 		auto status = highspeed_status(rf, j, hicann);
 
-		REQUIRE(status.fpga_ok);
+		CHECK(status.fpga_ok);
 		REQUIRE(status.hicann_ok);
 	}
 }

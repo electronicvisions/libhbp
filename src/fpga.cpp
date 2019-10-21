@@ -104,6 +104,8 @@ void Fpga::configure_partner_host(const PartnerHostConfiguration& config)
 
     _connection.hicann_config.reset();
     _connection.trace_data.reset();
+
+
 }
 
 void Fpga::configure_partner_host()

@@ -182,7 +182,7 @@ TEST_CASE("Receives Trace Data", "[al][trace]")
     fpga.configure_partner_host();
     size_t overshot = 0;
     size_t sent_packets = 0;
-    size_t undefined_host = rf.read(InvalidHost::ADDRESS);
+    size_t undefined_host = rf.read(UndefinedHost::ADDRESS);
 
     {
         TestModeGuard tm{rf};
@@ -224,7 +224,7 @@ TEST_CASE("Receives Trace Data", "[al][trace]")
     }
     
     while (rf.probe());
-    undefined_host = rf.read(InvalidHost::ADDRESS) - undefined_host;
+    undefined_host = rf.read(UndefinedHost::ADDRESS) - undefined_host;
     REQUIRE(undefined_host == 0);
     REQUIRE(overshot == 0);
 }
@@ -298,7 +298,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
     auto& hicann_config = EX.hicann_config(node);
     uint8_t packets = 100;
     fpga.configure_partner_host();
-    uint64_t undefined_host = rf.read(InvalidHost::ADDRESS);
+    uint64_t undefined_host = rf.read(UndefinedHost::ADDRESS);
     size_t overshot = 0;
     uint64_t sent_packets = 0;
     {
@@ -340,7 +340,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
         }
     }
     while (rf.probe());
-    undefined_host = rf.read(InvalidHost::ADDRESS) - undefined_host;
+    undefined_host = rf.read(UndefinedHost::ADDRESS) - undefined_host;
     REQUIRE(undefined_host == 0);
     REQUIRE(overshot == 0);
 }
