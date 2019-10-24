@@ -235,6 +235,50 @@ class TestControlType(Address(0xc20), ReadWrite):
         HicannConfig = 0x2a1b
 
 
+class AlTestCounterReset(Address(0xc28), WriteOnly):
+    reset: 1
+
+
+class AlHicannConfigReceived(Address(0xc30), ReadOnly):
+    count: 48
+
+
+class AlFpgaConfigReceived(Address(0xc38), ReadOnly):
+    count: 48
+
+
+class AlPlaybackDataReceived(Address(0xc40), ReadOnly):
+    count: 48
+
+
+class AlJtagReceived(Address(0xc48), ReadOnly):
+    count: 48
+
+
+class AlErrorUnknownTypeReceived(Address(0xc50), ReadOnly):
+    count: 48
+
+
+class AlHicannConfigSent(Address(0xc58), ReadOnly):
+    count: 48
+
+
+class AlFpgaConfigSent(Address(0xc60), ReadOnly):
+    count: 48
+
+
+class AlTracePulseSent(Address(0xc68), ReadOnly):
+    count: 48
+
+
+class AlJtagSent(Address(0xc70), ReadOnly):
+    count: 48
+
+
+class AlErrorUnknownTypeSent(Address(0xc78),ReadOnly):
+    count: 48
+
+
 # Trace Ringbuffer
 class TraceBufferStart(Address(0x1000), ReadWrite):
     """

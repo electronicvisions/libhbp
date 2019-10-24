@@ -61,6 +61,8 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
     auto start_address = rf.read<HicannBufferCurrentAddress>().data();
     std::cout << "INFO: current address: 0x" << hex << start_address << "\n";
 
+    rf.write<AlTestCounterReset>({true});
+
     std::vector<uint64_t> result;
     {
         TestMode tm{rf};
@@ -76,25 +78,41 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
             {
                 auto v = buffer.get();
                 result.push_back(v);
-                buffer.notify();
+                //buffer.notify();
             }
         }
         catch (const std::exception& e)
         {
             std::cout << "EXCEPTION: " << e.what() << "\n";
         }
-    }
 
-    auto end_address = rf.read<HicannBufferCurrentAddress>().data();
-    cout << "INFO: current address: 0x" << hex << end_address << "\n";
-    cout << "INFO: difference: " << dec << end_address - start_address << "\n";
-    cout << "INFO: result length: " << dec << result.size() << "\n";
-    cout << "[";
-    for (auto& v : result)
-    {
-        cout << dec << v << " ";
+        auto end_address = rf.read<HicannBufferCurrentAddress>().data();
+        cout << "INFO: current address: 0x" << hex << end_address << "\n";
+        cout << "INFO: difference: " << dec << end_address - start_address << "\n";
+        cout << "INFO: result length: " << dec << result.size() << "\n";
+        cout << "[";
+        for (auto& v : result)
+        {
+            cout << dec << v << " ";
+        }
+        cout << "\b]\n";
+
+        cout << "INFO: hicann config (s/r): ";
+        cout << std::dec << rf.read<AlHicannConfigSent>().count() << " ";
+        cout << std::dec << rf.read<AlHicannConfigReceived>().count() << "\n";
+        cout << "INFO: fpga config   (s/r): ";
+        cout << rf.read<AlFpgaConfigSent>().count() << " ";
+        cout << rf.read<AlFpgaConfigReceived>().count() << "\n";
+        cout << "INFO: jtag          (s/r): ";
+        cout << rf.read<AlJtagSent>().count() << " ";
+        cout << rf.read<AlJtagReceived>().count() << "\n";
+        cout << "INFO: unknown type  (s/r): ";
+        cout << rf.read<AlErrorUnknownTypeSent>().count() << " ";
+        cout << rf.read<AlErrorUnknownTypeReceived>().count() << "\n";
+        cout << "INFO: tracepulse/playback: ";
+        cout << rf.read<AlTracePulseSent>().count() << " ";
+        cout << rf.read<AlPlaybackDataReceived>().count() << "\n";
     }
-    cout << "\b]\n";
 }   
 
 int print_usage(const char* program)
@@ -137,9 +155,9 @@ int main(int argc, char** argv)
         return print_usage(argv[0]);
     }
 
-    if (delay > 255 || delay < 1)
+    if (delay > 255 || delay < 0)
     {
-        cerr << "DELAY must be in range [1, 255]\n";
+        cerr << "DELAY must be in range [0, 255]\n";
         return print_usage(argv[0]);
     }
 

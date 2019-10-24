@@ -88,14 +88,15 @@ uint64_t RingBuffer::get()
 
 void RingBuffer::notify()
 {
-    if (read_words == 0)
+    while (read_words > 0)
     {
-        return;
-    }
-    uint64_t payload = (_type << 16u) | (read_words << 32u);
-    rma2_post_notification(_port, _handle, 0, payload, RMA2_NO_NOTIFICATION, RMA2_CMD_DEFAULT);
+        auto  words_to_notify = std::min(read_words, 0x1ffffffful);
 
-    read_words = 0;
+        uint64_t payload = (_type << 48u) | words_to_notify;
+        rma2_post_notification(_port, _handle, 0, payload, RMA2_NO_NOTIFICATION, RMA2_CMD_DEFAULT);
+
+        read_words -= words_to_notify;
+    }
 }
 
 RingBuffer::~RingBuffer()

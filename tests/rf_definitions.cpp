@@ -1,6 +1,6 @@
 /*
  * This is a generated file - do not change it
- * 2019-10-18 14:27:36.794604
+ * 2019-10-24 13:43:28.016555
  */
 
 #include <catch.hpp>
@@ -1320,6 +1320,63 @@ TEST_CASE("Definition 'TestControlType'", "[definitions]")
         
         rf.type(TestControlType::Type(0xbeef));
         REQUIRE((rf.raw & 0xffffu) == 0xbeef);
+    }
+}
+
+TEST_CASE("Definition 'AlTestCounterReset'", "[definitions]")
+{
+    SECTION("write raw - read fields")
+    {
+        AlTestCounterReset rf {false};
+
+        
+        rf.raw = 0x0u;
+
+        
+        REQUIRE(!rf.reset());
+        
+        rf.raw = 0xffffffffffffffffu;
+
+        
+        REQUIRE(rf.reset());
+        
+        rf.raw = 0xaaaaaaaaaaaaaaaau;
+
+        
+        REQUIRE(!rf.reset());
+        
+        rf.raw = 0x5555555555555555u;
+
+        
+        REQUIRE(rf.reset());
+        
+        rf.raw = 0xcafedeadbabebeefu;
+
+        
+        REQUIRE(rf.reset());
+        
+    }
+
+    SECTION("write fields - read raw")
+    {
+        AlTestCounterReset rf {false};
+
+        
+        
+        rf.reset(false);
+        REQUIRE((rf.raw & 0x1u) == 0);
+        
+        rf.reset(true);
+        REQUIRE((rf.raw & 0x1u) == 1);
+        
+        rf.reset(false);
+        REQUIRE((rf.raw & 0x1u) == 0);
+        
+        rf.reset(true);
+        REQUIRE((rf.raw & 0x1u) == 1);
+        
+        rf.reset(true);
+        REQUIRE((rf.raw & 0x1u) == 1);
     }
 }
 

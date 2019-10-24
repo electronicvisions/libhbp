@@ -1,6 +1,6 @@
 /*
  * This is a generated file - do not change it
- * 2019-10-18 14:27:36.794604
+ * 2019-10-24 13:43:28.016555
  */
 
 #pragma once
@@ -964,6 +964,319 @@ struct TestControlType
     constexpr static bool READABLE = true;
     //! Indicates whether this field can be written on the software side
     constexpr static bool WRITABLE = true;
+};
+
+
+//! Write-only register file AlTestCounterReset at address 0xc28.
+struct AlTestCounterReset
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlTestCounterReset() = default;
+
+    //! Initialize all fields with a specific value
+    AlTestCounterReset(bool reset_)
+    {
+        raw |= (uint64_t(reset_) & 0x1) << 0;
+    }
+    
+    //! Read the `reset` field
+    bool reset() const { return bool(raw >> 0 & 0x1);}
+
+    
+    //! Set the `reset` field
+    void reset(bool value) { raw &= ~(0x1ull << 0); raw |= (uint64_t(value) & 0x1) << 0;}
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc28;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = false;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = true;
+};
+
+
+//! Read-only register file AlHicannConfigReceived at address 0xc30.
+struct AlHicannConfigReceived
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlHicannConfigReceived() = default;
+    //! Initialize the single field with a specific value
+    AlHicannConfigReceived(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc30;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlFpgaConfigReceived at address 0xc38.
+struct AlFpgaConfigReceived
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlFpgaConfigReceived() = default;
+    //! Initialize the single field with a specific value
+    AlFpgaConfigReceived(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc38;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlPlaybackDataReceived at address 0xc40.
+struct AlPlaybackDataReceived
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlPlaybackDataReceived() = default;
+    //! Initialize the single field with a specific value
+    AlPlaybackDataReceived(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc40;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlJtagReceived at address 0xc48.
+struct AlJtagReceived
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlJtagReceived() = default;
+    //! Initialize the single field with a specific value
+    AlJtagReceived(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc48;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlErrorUnknownTypeReceived at address 0xc50.
+struct AlErrorUnknownTypeReceived
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlErrorUnknownTypeReceived() = default;
+    //! Initialize the single field with a specific value
+    AlErrorUnknownTypeReceived(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc50;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlHicannConfigSent at address 0xc58.
+struct AlHicannConfigSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlHicannConfigSent() = default;
+    //! Initialize the single field with a specific value
+    AlHicannConfigSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc58;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlFpgaConfigSent at address 0xc60.
+struct AlFpgaConfigSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlFpgaConfigSent() = default;
+    //! Initialize the single field with a specific value
+    AlFpgaConfigSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc60;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlTracePulseSent at address 0xc68.
+struct AlTracePulseSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlTracePulseSent() = default;
+    //! Initialize the single field with a specific value
+    AlTracePulseSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc68;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlJtagSent at address 0xc70.
+struct AlJtagSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlJtagSent() = default;
+    //! Initialize the single field with a specific value
+    AlJtagSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc70;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
+};
+
+
+//! Read-only register file AlErrorUnknownTypeSent at address 0xc78.
+struct AlErrorUnknownTypeSent
+{
+    //! The raw bits used to send and receive data to and from the hardware.
+    //! This member my be accessed directly. The concrete bit-fields are always
+    //! synchronized with this value.
+    uint64_t raw = 0;
+
+    //! Initialize all fields with zero
+    AlErrorUnknownTypeSent() = default;
+    //! Initialize the single field with a specific value
+    AlErrorUnknownTypeSent(uint64_t value)
+    : raw(value & 0xffffffffffff) {}
+
+    //! Read the single field
+    uint64_t count() const { return raw & 0xffffffffffff;};
+    //! Set the single field
+    void count(uint64_t value) { raw = value; }
+    
+    //! The hardware address of the register file on the remote Fpga
+    constexpr static RMA2_NLA ADDRESS = 0xc78;
+    //! Indicates whether this field can be read on the software side
+    constexpr static bool READABLE = true;
+    //! Indicates whether this field can be written on the software side
+    constexpr static bool WRITABLE = false;
 };
 
 

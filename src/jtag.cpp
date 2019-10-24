@@ -117,6 +117,10 @@ JTag::JTag(Endpoint& connection)
 
     set_bypass();
 
+    RegisterFile::write(JtagSend::ADDRESS, 0);
+    RegisterFile::write<JtagCmd>({Cmd::DR, 9, false, true});
+    wait_until_finished();
+
     RegisterFile::write(JtagSend::ADDRESS, 1);
     RegisterFile::write<JtagCmd>({Cmd::DR, 9, false, true});
     wait_until_finished();
