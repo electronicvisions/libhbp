@@ -127,7 +127,22 @@ void Fpga::send(Fpga::Config config)
 
 uint64_t Fpga::config_response() const
 {
-    return _connection.fpga_config_response();
+
+    RMA2_Notification* notification;
+
+    for (unsigned int sleep = 1; sleep < 100000; sleep *= 10)
+    {
+        if (rma2_noti_probe(_connection.rra.port, &notification) == RMA2_SUCCESS)
+        {
+            // uint64_t payload = rma2_noti_get_notiput_payload(notification);
+            // uint16_t cls = rma2_noti_get_notiput_class(notification);
+            rma2_noti_free(_connection.rra.port, notification);
+            
+            return _connection.fpga_config_response();
+        }
+    }
+
+    throw std::runtime_error("fail");
 }
 
 Fpga::Config operator|(Fpga::Config flags, Fpga::Config bit)

@@ -127,18 +127,17 @@ void RingBuffer::clear()
 bool RingBuffer::receive(bool throw_on_timeout)
 {
     RMA2_Notification* notification;
+    RMA2_Class cls = (_type >> 4) & 0xff;
 
     for (unsigned int sleep = 1; sleep < 100000; sleep *= 10)
-    {
-        if (rma2_noti_probe(_port, &notification) == RMA2_SUCCESS)
+    {        
+        if (rma2_noti_noti_match(_port, cls, RMA2_NODEID_ANY, RMA2_VPID_ANY, &notification) == RMA2_SUCCESS)
         {
             uint64_t payload = rma2_noti_get_notiput_payload(notification);
-            uint16_t cls = rma2_noti_get_notiput_class(notification);
             rma2_noti_free(_port, notification);
             readable_words += payload & 0xffffffff;
 
-
-            std::cout << "got notification " << (payload & 0xffffffff) << " " << std::hex << cls <<
+            std::cout << "got notification " << (payload & 0xffffffff) << " " << std::hex << uint16_t(cls) <<
             "#" << _type << "\n";
             return true;
         }

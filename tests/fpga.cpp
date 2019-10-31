@@ -127,49 +127,6 @@ TEST_CASE("Can enable TestMode", "[al]")
     }
 }
 
-TEST_CASE("Kill with Hicann Config", "[.][kill]")
-{
-    auto node = GENERATE(hicann_nodes());
-    CAPTURE(node);
-    auto rf = EX.register_file(node);
-    auto fpga = EX.fpga(node);
-    auto& buffer = EX.hicann_config(node);
-
-    fpga.configure_partner_host();
-
-    uint16_t delay = 0;
-    std::cout << "Enter delay: ";
-    std::cin >> delay;
-
-    {
-        TestModeGuard tm{rf};
-        tm.type(TestControlType::HicannConfig);
-
-        for (size_t test_run = 0; test_run < 20; ++test_run)
-        {
-            CAPTURE(test_run);
-            tm.run(0x12345678, 255, delay & 0xffu, false);
-
-            buffer.clear();
-            buffer.notify();
-
-            auto future = std::async(std::launch::async, [&]() {
-                return rf.read<Driver>().version();
-            });
-
-            std::chrono::seconds timeout(1);
-            REQUIRE(future.wait_for(timeout) == std::future_status::ready);
-            REQUIRE(future.get() == 0xcafebabe);
-
-            tm.wait();
-        }
-    }
-    while (rf.probe());
-
-    using namespace extoll::library::rf;
-    REQUIRE(rf.read<Driver>().version());
-}
-
 TEST_CASE("Receives Trace Data", "[al][trace]")
 {
     auto node = GENERATE(hicann_nodes());
@@ -195,12 +152,17 @@ TEST_CASE("Receives Trace Data", "[al][trace]")
             uint64_t dummy_value = 0;
             --packets;
             tm.run(dummy_value, packets, 100, true);
-            sent_packets += packets;
+            sent_packets += packets + 1u;
+            tm.wait();
+            tm.run(0x4000e11d00000000, 1, 100, false);
             for (size_t packet = 0; packet < packets; ++packet)
             {
                 CHECK(trace_data.get() == dummy_value++);
             }
             tm.wait();
+
+            CHECK(trace_data.get() == 0x4000e11d00000000);
+            
             try
             {
                 while (true)
@@ -213,13 +175,13 @@ TEST_CASE("Receives Trace Data", "[al][trace]")
             {
             }
 
-                trace_data.notify();
+            trace_data.notify();
 
-                auto start = rf.read<TraceBufferStart>().data();
-                auto current = rf.read<TraceBufferCurrentAddress>().data();
-                auto hardware_sent = (current - start) / 8;
-                CHECK(hardware_sent == sent_packets);
-                CHECK(rf.read<TraceBufferCounter>().wraps() == 0);
+            auto start = rf.read<TraceBufferStart>().data();
+            auto current = rf.read<TraceBufferCurrentAddress>().data();
+            auto hardware_sent = (current - start) / 8;
+            CHECK(hardware_sent == sent_packets);
+            CHECK(rf.read<TraceBufferCounter>().wraps() == 0);
         }
     }
     
@@ -227,66 +189,6 @@ TEST_CASE("Receives Trace Data", "[al][trace]")
     undefined_host = rf.read(UndefinedHost::ADDRESS) - undefined_host;
     REQUIRE(undefined_host == 0);
     REQUIRE(overshot == 0);
-}
-
-TEST_CASE("Mini Hicann Config", "[.][al]")
-{
-    auto node = GENERATE(hicann_nodes());
-    CAPTURE(node);
-    auto rf = EX.register_file(node);
-    auto fpga = EX.fpga(node);
-    auto& buffer = EX.hicann_config(node);
-    fpga.configure_partner_host();
-
-    {
-        TestModeGuard tm{rf};
-        tm.type(TestControlType::HicannConfig);
-        tm.run(1337, 10, 100, false);
-        tm.wait();
-        size_t counter = 0;
-        std::vector<uint64_t> values;
-        try
-        {
-            for (;; ++counter)
-            {
-                values.push_back(buffer.get());
-                buffer.notify();
-            }
-        }
-        catch (...)
-        {
-        }
-
-        std::cout << "counter: " << std::dec << counter << "\n";
-        std::cout << "values: [";
-        for (auto& v : values)
-        {
-            std::cout << std::dec << v << ", ";
-        }
-        std::cout << "\b\b] \n";
-
-       /* 
-
-        tm.run(1000, 10, 100, true);
-        for (size_t p = 0; p < 10; ++p)
-        {
-            auto got = buffer.get();
-            auto expect = 1000 + p;
-            std::cout << std::dec << p << ": " << got << " == " << expect << "\n";
-        }
-        buffer.notify();
-        tm.wait();
-        usleep(1000);
-        try
-        {
-            auto extra = buffer.get();
-            std::cout << "got extra: " << extra << "\n";
-        }
-        catch (...)
-        {
-        }
-        */
-    }
 }
 
 TEST_CASE("Receives Hicann Config", "[al]")

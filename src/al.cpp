@@ -43,11 +43,40 @@ struct TestMode
     }
 };
 
-void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, int64_t delay)
+void run_fpga_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, int64_t delay)
 {
     auto rf = Extoll::Instance().register_file(node);
     auto fpga = Extoll::Instance().fpga(node);
-    auto& buffer = Extoll::Instance().hicann_config(node);
+
+    if (rf.read<TestControlEnable>().enable())
+    {
+        cout << "WARNING: test mode was already enabled\n";
+    }
+
+    fpga.configure_partner_host();
+    cout << "INFO: fpga put address: 0x" << hex << rf.read<ConfigResponse>().address() << "\n";
+
+    rf.write<AlTestCounterReset>({true});
+
+    {
+        TestMode tm{rf};
+
+        rf.write<TestControlType>({TestControlType::FpgaConfig});
+        rf.write<TestControlData>({value});
+        rf.write<TestControlConfig>({uint32_t(count), uint32_t(delay), increment});
+        rf.write<TestControlStart>({true});
+
+        cout << "INFO: config response: " << fpga.config_response() << "\n";
+    }
+}
+
+void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, int64_t delay,
+TestControlType::Type type)
+{
+    auto rf = Extoll::Instance().register_file(node);
+    auto fpga = Extoll::Instance().fpga(node);
+    auto& buffer = (type == TestControlType::HicannConfig)? Extoll::Instance().hicann_config(node)
+        : Extoll::Instance().trace_pulse(node);
 
     cout << "INFO: current version: " << rf.read<Version>().number() << "\n";
 
@@ -67,7 +96,7 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
     {
         TestMode tm{rf};
 
-        rf.write<TestControlType>({TestControlType::HicannConfig});
+        rf.write<TestControlType>({type});
         rf.write<TestControlData>({value});
         rf.write<TestControlConfig>({uint32_t(count), uint32_t(delay), increment});
         rf.write<TestControlStart>({true});
@@ -91,11 +120,20 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
         cout << "INFO: difference: " << dec << end_address - start_address << "\n";
         cout << "INFO: result length: " << dec << result.size() << "\n";
         cout << "[";
+        auto before = value - increment;
+        bool increment_correct = true;
         for (auto& v : result)
         {
-            cout << dec << v << " ";
+            cout << hex << v << " ";
+            if (v != (before + increment))
+            {
+                increment_correct = false;
+            }
+            before = v;
         }
         cout << "\b]\n";
+        cout << "INFO: increment correct: " << std::boolalpha << increment_correct << "\n";
+
 
         cout << "INFO: hicann config (s/r): ";
         cout << std::dec << rf.read<AlHicannConfigSent>().count() << " ";
@@ -117,19 +155,20 @@ void run_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t count, i
 
 int print_usage(const char* program)
 {
-    cerr << "ERROR: usage: " << program << " NODE:int VALUE:uint INCREMENT:bool COUNT:int DELAY:int\n";
+    cerr << "ERROR: usage: " << program << " NODE:int VALUE:uint INCREMENT:bool COUNT:int DELAY:int TYPE:str\n";
     return EXIT_FAILURE;
 }
 
 int main(int argc, char** argv)
 {
-    if (argc != 6)
+    if (argc != 7)
     {
         return print_usage(argv[0]);
     }
 
     auto node = RMA2_Nodeid(std::stoi(argv[1], nullptr, 0));
     auto value = std::stoull(argv[2], nullptr, 0);
+    auto type = std::string(argv[6]);
     bool increment;
 
     if (!strcmp(argv[3], "true"))
@@ -161,5 +200,30 @@ int main(int argc, char** argv)
         return print_usage(argv[0]);
     }
 
-    run_test(node, value, increment, count, delay);
+    TestControlType::Type hex_type ;
+    if (type == "hicann")
+    {
+        hex_type = TestControlType::HicannConfig;
+    }
+    else if (type == "trace")
+    {
+        hex_type = TestControlType::TracePulse;
+    }
+    else if (type == "fpga")
+    {
+        hex_type = TestControlType::FpgaConfig;
+    }
+    else {
+        cerr << "TYPE must be either 'hicann', 'trace' or 'fpga'\n";
+        return print_usage(argv[0]);
+    }
+
+    if (hex_type == TestControlType::FpgaConfig)
+    {
+        run_fpga_test(node, value, increment, count, delay);
+    }
+    else
+    {
+        run_test(node, value, increment, count, delay, hex_type);
+    }
 }
