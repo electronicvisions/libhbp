@@ -125,6 +125,11 @@ void Fpga::send(Fpga::Config config)
     std::cout << "GP:   " << std::hex << _connection.fpga_config_response() << "\n";
 }
 
+uint64_t Fpga::config_response_no_wait() const
+{
+    return _connection.fpga_config_response();
+}
+
 uint64_t Fpga::config_response() const
 {
 

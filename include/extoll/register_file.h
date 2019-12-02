@@ -92,6 +92,8 @@ public:
     //! is readable nor does it unpack the bytes into the matching RF fields.
     uint64_t read(RMA2_NLA) const;
 
+    uint64_t read_noblock(RMA2_NLA) const;
+
     //! \brief A non-template version of the write_noblock method.
     //!
     //! This method is untyped and neither checks whether the remote register file

@@ -24,7 +24,7 @@ struct TestModeGuard
     ~TestModeGuard()
     {
         wait();
-        //rf.write<TestControlEnable>({false});
+        rf.write<TestControlEnable>({false});
     }
 
     bool enabled()
@@ -247,6 +247,46 @@ TEST_CASE("Receives Hicann Config", "[al]")
     REQUIRE(overshot == 0);
 }
 
+
+TEST_CASE("Mix Hicann and Trace", "[al]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto fpga = EX.fpga(node);
+    auto& hicann_config = EX.hicann_config(node);
+    auto& trace_data = EX.trace_pulse(node);
+    fpga.configure_partner_host();
+
+    {
+        TestModeGuard tm{rf};
+
+        tm.type(TestControlType::HicannConfig);
+        tm.run(0xcafe, 20, 10, false);
+        tm.wait();
+
+        usleep(100000);
+
+        tm.type(TestControlType::TracePulse);
+        tm.run(0xdead, 10, 10, false);
+        tm.wait();
+        tm.run(0x4000e11d00000000, 1, 10, false);
+        tm.wait();
+
+        usleep(100000);
+
+        for(size_t i = 0; i < 20; ++i)
+        {
+            CHECK(hicann_config.get() == 0xcafe);
+        }
+
+        for(size_t i = 0; i < 10; ++i)
+        {
+            CHECK(trace_data.get() == 0xdead);
+        }        
+        CHECK(trace_data.get() == 0x4000e11d00000000);
+    }
+}
 
 TEST_CASE("Receives Hicann Config Jtag Loopback", "[.][al]")
 {

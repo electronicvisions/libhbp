@@ -134,11 +134,13 @@ bool RingBuffer::receive(bool throw_on_timeout)
         if (rma2_noti_noti_match(_port, cls, RMA2_NODEID_ANY, RMA2_VPID_ANY, &notification) == RMA2_SUCCESS)
         {
             uint64_t payload = rma2_noti_get_notiput_payload(notification);
+            uint16_t actual_cls = rma2_noti_get_notiput_class(notification);
             rma2_noti_free(_port, notification);
             readable_words += payload & 0xffffffff;
 
-            std::cout << "got notification " << (payload & 0xffffffff) << " " << std::hex << uint16_t(cls) <<
+            std::cout << "got notification " << std::dec << (payload & 0xffffffff) << " " << std::hex << uint16_t(cls) <<
             "#" << _type << "\n";
+            std::cout << "actual notification class: " << std::hex << actual_cls << "\n";
             return true;
         }
         usleep(sleep);

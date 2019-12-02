@@ -49,6 +49,8 @@ Endpoint::Connection::Connection(RMA2_Nodeid node, bool rra)
     throw_on_error<ConnectionFailed>(status, "Failed to open port!");
     vpid = rma2_get_vpid(port);
 
+    std::cout << "got vpid " << vpid << " << " << rra << "\n";
+
     int options = rra? RRA_CONNECTION : RMA_CONNECTION;
     status = rma2_connect(port, node, vpid, RMA2_Connection_Options(options), &handle);
     throw_on_error<ConnectionFailed>(status, "Failed to connect!");

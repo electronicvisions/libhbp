@@ -13,6 +13,17 @@ RegisterFile::RegisterFile(Endpoint& connection)
 {
 }
 
+uint64_t RegisterFile::read_noblock(RMA2_NLA address) const
+{
+    _status = rma2_post_get_qw(_connection.rra.port, _connection.rra.handle,
+    _connection.gp_buffer.region(), 0, 8, address, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    throw_on_error<FailedToRead>(_status, _connection.node, address);
+
+    usleep(1000);
+
+    return _connection.gp_buffer[0];
+}
+
 uint64_t RegisterFile::read(RMA2_NLA address) const
 {
     _status = rma2_post_get_qw(
