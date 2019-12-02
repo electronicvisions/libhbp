@@ -117,7 +117,7 @@ void Fpga::send(Fpga::Config config)
 {
     const Endpoint::Connection& rma = _connection.rma;
 
-    _connection.gp_buffer[512] = 0xdeadbeef;
+    _connection.rma_buffer[512] = 0xdeadbeef;
     auto payload = static_cast<uint64_t>(config);
     rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     wait_for_rma_notification();

@@ -44,8 +44,11 @@ struct Endpoint
     //! A remote memory access connection
     Connection rma;
 
-    //! A general purpose physical buffer
-    PhysicalBuffer gp_buffer;
+    //! A buffer for RRA responses
+    PhysicalBuffer rra_buffer;
+    //! A buffer for RMA interactions
+    PhysicalBuffer rma_buffer;
+
     //! The trace-pulse data ringbuffer
     RingBuffer trace_data;
     //! The hicann config ringbuffer

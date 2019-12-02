@@ -81,15 +81,15 @@ static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> time
 
 Endpoint::Endpoint(RMA2_Nodeid n)
     : node(n), rra(n, true), rma(n, false),
-    gp_buffer(rra.port, 1),
+    rra_buffer(rra.port, 1), rma_buffer(rma.port, 1),
     trace_data(rma.port, rma.handle, 100, Extoll::TRACE_PULSE),
     hicann_config(rma.port, rma.handle, 100, Extoll::HICANN_CONFIG)
 {
-    RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, rra_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     throw_on_error<FailedToRead>(status, "Failed to query driver", n, 0x8000u);
     wait_with_timeout(rra.port);
 
-    auto driver = gp_buffer.at<uint32_t>(0);
+    auto driver = rra_buffer.at<uint32_t>(0);
     if (driver != 0xcafebabe)
     {
         throw NodeIsNoFpga(n, driver);
@@ -113,11 +113,11 @@ void Endpoint::perform_write_test(RMA2_NLA address, uint64_t value)
 
 void Endpoint::perform_read_test(RMA2_NLA address, uint64_t expected)
 {
-    RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, gp_buffer.region(), 0, 8, address, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
+    RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, rra_buffer.region(), 0, 8, address, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     throw_on_error<FailedToRead>(status, "Failed to send read command", node, address);
     wait_with_timeout(rra.port);
 
-    if (expected != gp_buffer.at<uint64_t>(0))
+    if (expected != rra_buffer.at<uint64_t>(0))
     {
         throw FailedToRead(node, address);
     }
@@ -125,10 +125,10 @@ void Endpoint::perform_read_test(RMA2_NLA address, uint64_t expected)
 
 uint64_t Endpoint::fpga_config_response() const
 {
-    return gp_buffer[512];
+    return rma_buffer[512];
 }
 
 RMA2_NLA Endpoint::fpga_config_address() const
 {
-    return gp_buffer.address(512);
+    return rma_buffer.address(512);
 }
