@@ -113,15 +113,15 @@ void Fpga::configure_partner_host()
     configure_partner_host(default_partner_host_parameters());
 }
 
-void Fpga::send(Fpga::Config config)
+uint64_t Fpga::send(Fpga::Config config)
 {
     const Endpoint::Connection& rma = _connection.rma;
 
     _connection.rma_buffer[0] = 0xdeadbeef;
     auto payload = static_cast<uint64_t>(config);
-    rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
-    wait_for_rma_notification();
-    usleep(100000);
+    rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_NO_NOTIFICATION,RMA2_CMD_DEFAULT);
+    
+    return config_response();
 }
 
 uint64_t Fpga::config_response_no_wait() const

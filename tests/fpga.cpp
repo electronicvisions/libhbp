@@ -15,21 +15,22 @@ struct TestModeGuard
 {
     extoll::library::RegisterFile& rf;
 
-    explicit TestModeGuard(extoll::library::RegisterFile& rf_)
+    explicit TestModeGuard(extoll::library::RegisterFile& rf_, uint16_t mode)
         : rf(rf_)
     {
-        rf.write<TestControlEnable>({true});
+        rf.write<TestControlMode>({mode & 0x3u});
     }
 
     ~TestModeGuard()
     {
         wait();
-        rf.write<TestControlEnable>({false});
+        rf.write<TestControlMode>({0});
     }
 
     bool enabled()
     {
-        return rf.read<TestControlEnable>().enable();
+        auto mode = rf.read<TestControlMode>().mode();
+        return (mode == 1) || (mode == 2);
     }
 
     void type(TestControlType::Type value)
@@ -122,7 +123,7 @@ TEST_CASE("Can enable TestMode", "[al]")
     auto rf = EX.register_file(node);
 
     {
-        TestModeGuard tm{rf};
+        TestModeGuard tm{rf, 1};
         CHECK(tm.enabled());
     }
 }
@@ -142,7 +143,7 @@ TEST_CASE("Receives Trace Data", "[al][trace]")
     size_t undefined_host = rf.read(UndefinedHost::ADDRESS);
 
     {
-        TestModeGuard tm{rf};
+        TestModeGuard tm{rf, 1};
         tm.type(TestControlType::TracePulse);
 
         for (size_t test_run = 0; test_run < 5; ++test_run)
@@ -204,7 +205,7 @@ TEST_CASE("Receives Hicann Config", "[al]")
     size_t overshot = 0;
     uint64_t sent_packets = 0;
     {
-        TestModeGuard tm{rf};
+        TestModeGuard tm{rf, 1};
         tm.type(TestControlType::HicannConfig);
 
         for (size_t test_run = 0; test_run < 5; ++test_run)
@@ -247,8 +248,50 @@ TEST_CASE("Receives Hicann Config", "[al]")
     REQUIRE(overshot == 0);
 }
 
+TEST_CASE("Receives Fpga Config", "[al]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto fpga = EX.fpga(node);
+    fpga.configure_partner_host();
 
-TEST_CASE("Mix Hicann and Trace", "[al]")
+    {
+        TestModeGuard tm{rf, 1};
+        tm.type(TestControlType::FpgaConfig);
+    
+        for (size_t packet = 0; packet < 20; ++packet)
+        {
+            tm.run(packet, 1, 100, true);
+            tm.wait();
+            auto received = fpga.config_response();
+
+            CHECK(received == packet);
+        }
+    }
+}
+
+TEST_CASE("Receives Fpga Config Loopback", "[al]")
+{
+    auto node = GENERATE(hicann_nodes());
+    CAPTURE(node);
+    auto rf = EX.register_file(node);
+    auto fpga = EX.fpga(node);
+    fpga.configure_partner_host();
+
+    {
+        TestModeGuard tm{rf, 2};
+        tm.type(TestControlType::FpgaConfig);
+    
+        for (size_t packet = 0; packet < 20; ++packet)
+        {
+            auto received = fpga.send(static_cast<Fpga::Config>(packet));
+            CHECK(received == packet);
+        }
+    }
+}
+
+TEST_CASE("Mix Hicann and Trace", "[.][al]")
 {
     auto node = GENERATE(hicann_nodes());
     CAPTURE(node);
@@ -259,7 +302,7 @@ TEST_CASE("Mix Hicann and Trace", "[al]")
     fpga.configure_partner_host();
 
     {
-        TestModeGuard tm{rf};
+        TestModeGuard tm{rf, 1};
 
         tm.type(TestControlType::HicannConfig);
         tm.run(0xcafe, 20, 10, false);

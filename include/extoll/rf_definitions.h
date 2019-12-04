@@ -1,6 +1,6 @@
 /*
  * This is a generated file - do not change it
- * 2019-10-24 13:43:28.016555
+ * 2019-12-04 14:27:54.187816
  */
 
 #pragma once
@@ -769,9 +769,9 @@ struct HicannTxIfPower
 };
 
 
-//! Read-write register file TestControlEnable at address 0xc00.
+//! Read-write register file TestControlMode at address 0xc00.
 //! This enabled the application layer test mode
-struct TestControlEnable
+struct TestControlMode
 {
     //! The raw bits used to send and receive data to and from the hardware.
     //! This member my be accessed directly. The concrete bit-fields are always
@@ -779,20 +779,20 @@ struct TestControlEnable
     uint64_t raw = 0;
 
     //! Initialize all fields with zero
-    TestControlEnable() = default;
+    TestControlMode() = default;
 
     //! Initialize all fields with a specific value
-    TestControlEnable(bool enable_)
+    TestControlMode(uint32_t mode_)
     {
-        raw |= (uint64_t(enable_) & 0x1) << 0;
+        raw |= (uint64_t(mode_) & 0x3) << 0;
     }
     
-    //! Read the `enable` field
-    bool enable() const { return bool(raw >> 0 & 0x1);}
+    //! Read the `mode` field
+    uint32_t mode() const { return uint32_t(raw >> 0 & 0x3);}
 
     
-    //! Set the `enable` field
-    void enable(bool value) { raw &= ~(0x1ull << 0); raw |= (uint64_t(value) & 0x1) << 0;}
+    //! Set the `mode` field
+    void mode(uint32_t value) { raw &= ~(0x3ull << 0); raw |= (uint64_t(value) & 0x3) << 0;}
     
     //! The hardware address of the register file on the remote Fpga
     constexpr static RMA2_NLA ADDRESS = 0xc00;

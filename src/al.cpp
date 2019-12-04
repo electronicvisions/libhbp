@@ -17,20 +17,21 @@ struct TestMode
 
     explicit TestMode(RegisterFile& rf_) : rf(rf_)
     {
-        rf.write<TestControlEnable>({true});
+        rf.write<TestControlMode>({0x1u});
         cout << "INFO: test mode is enabled: " << std::boolalpha << enabled() << "\n";
     }
 
     bool enabled()
     {
-        return rf.read<TestControlEnable>().enable();
+        auto mode = rf.read<TestControlMode>().mode();
+        return (mode == 1) || (mode == 2);
     }
 
     ~TestMode()
     {
         cout << "INFO: waiting...\n";
         wait();
-        rf.write<TestControlEnable>({false});
+        rf.write<TestControlMode>({0});
         cout << "INFO: test mode is disabled: " << std::boolalpha << !enabled() << "\n";
     }
 
@@ -48,7 +49,8 @@ void run_fpga_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t cou
     auto rf = Extoll::Instance().register_file(node);
     auto fpga = Extoll::Instance().fpga(node);
 
-    if (rf.read<TestControlEnable>().enable())
+    auto mode = rf.read<TestControlMode>().mode();
+    if (mode == 1 || mode == 2)
     {
         cout << "WARNING: test mode was already enabled\n";
     }
@@ -91,7 +93,8 @@ TestControlType::Type type)
 
     cout << "INFO: current version: " << rf.read<Version>().number() << "\n";
 
-    if (rf.read<TestControlEnable>().enable())
+    auto mode = rf.read<TestControlMode>().mode();
+    if (mode == 1 || mode == 2)
     {
         cout << "WARNING: test mode was already enabled\n";
     }
