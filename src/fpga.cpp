@@ -117,12 +117,11 @@ void Fpga::send(Fpga::Config config)
 {
     const Endpoint::Connection& rma = _connection.rma;
 
-    _connection.rma_buffer[512] = 0xdeadbeef;
+    _connection.rma_buffer[0] = 0xdeadbeef;
     auto payload = static_cast<uint64_t>(config);
     rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     wait_for_rma_notification();
     usleep(100000);
-    std::cout << "GP:   " << std::hex << _connection.fpga_config_response() << "\n";
 }
 
 uint64_t Fpga::config_response_no_wait() const
@@ -137,14 +136,13 @@ uint64_t Fpga::config_response() const
 
     for (unsigned int sleep = 1; sleep < 100000; sleep *= 10)
     {
-        if (rma2_noti_probe(_connection.rra.port, &notification) == RMA2_SUCCESS)
+        if (rma2_noti_probe(_connection.rma.port, &notification) == RMA2_SUCCESS)
         {
-            // uint64_t payload = rma2_noti_get_notiput_payload(notification);
-            // uint16_t cls = rma2_noti_get_notiput_class(notification);
-            rma2_noti_free(_connection.rra.port, notification);
+            rma2_noti_free(_connection.rma.port, notification);
             
             return _connection.fpga_config_response();
         }
+        usleep(sleep);
     }
 
     throw std::runtime_error("fail");
