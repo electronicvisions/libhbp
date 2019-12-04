@@ -12,7 +12,7 @@ uint8_t dnc_index(extoll::library::JTag& jtag, uint8_t hicann)
 
 void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
 {
-    fpga.reset_set_only(Fpga::Reset::Arq);
+    fpga.reset_set_only(Fpga::Reset::All);
     rf.write<HicannChannel>({dnc_index(jtag, hicann) & 7u});
 
     HicannIfConfig stop;
