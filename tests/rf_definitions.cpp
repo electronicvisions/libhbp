@@ -1,6 +1,6 @@
 /*
  * This is a generated file - do not change it
- * 2019-10-24 13:43:28.016555
+ * 2019-12-04 14:27:54.187816
  */
 
 #include <catch.hpp>
@@ -1075,60 +1075,60 @@ TEST_CASE("Definition 'HicannTxIfPower'", "[definitions]")
     }
 }
 
-TEST_CASE("Definition 'TestControlEnable'", "[definitions]")
+TEST_CASE("Definition 'TestControlMode'", "[definitions]")
 {
     SECTION("write raw - read fields")
     {
-        TestControlEnable rf {false};
+        TestControlMode rf {0};
 
         
         rf.raw = 0x0u;
 
         
-        REQUIRE(!rf.enable());
+        REQUIRE(rf.mode() == 0x0u);
         
         rf.raw = 0xffffffffffffffffu;
 
         
-        REQUIRE(rf.enable());
+        REQUIRE(rf.mode() == 0x3u);
         
         rf.raw = 0xaaaaaaaaaaaaaaaau;
 
         
-        REQUIRE(!rf.enable());
+        REQUIRE(rf.mode() == 0x2u);
         
         rf.raw = 0x5555555555555555u;
 
         
-        REQUIRE(rf.enable());
+        REQUIRE(rf.mode() == 0x1u);
         
         rf.raw = 0xcafedeadbabebeefu;
 
         
-        REQUIRE(rf.enable());
+        REQUIRE(rf.mode() == 0x3u);
         
     }
 
     SECTION("write fields - read raw")
     {
-        TestControlEnable rf {false};
+        TestControlMode rf {0};
 
         
         
-        rf.enable(false);
-        REQUIRE((rf.raw & 0x1u) == 0);
+        rf.mode(0x0);
+        REQUIRE((rf.raw & 0x3u) == 0x0);
         
-        rf.enable(true);
-        REQUIRE((rf.raw & 0x1u) == 1);
+        rf.mode(0x3);
+        REQUIRE((rf.raw & 0x3u) == 0x3);
         
-        rf.enable(false);
-        REQUIRE((rf.raw & 0x1u) == 0);
+        rf.mode(0x2);
+        REQUIRE((rf.raw & 0x3u) == 0x2);
         
-        rf.enable(true);
-        REQUIRE((rf.raw & 0x1u) == 1);
+        rf.mode(0x1);
+        REQUIRE((rf.raw & 0x3u) == 0x1);
         
-        rf.enable(true);
-        REQUIRE((rf.raw & 0x1u) == 1);
+        rf.mode(0x3);
+        REQUIRE((rf.raw & 0x3u) == 0x3);
     }
 }
 

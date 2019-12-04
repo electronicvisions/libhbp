@@ -28,6 +28,7 @@ void highspeed_init(RegisterFile& rf, JTag& jtag, Fpga& fpga, uint8_t hicann)
     start.raw = 0x4000d;
     rf.write<HicannIfConfig>(std::move(start));
 
+    fpga.reset_set_only(Fpga::Reset::None);
     usleep(10000);
 }
 

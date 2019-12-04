@@ -116,7 +116,7 @@ public:
     void configure_partner_host(const PartnerHostConfiguration&);
 
     //! Send a config packet
-    void send(Config);
+    uint64_t send(Config);
     //! Read the config response after a config packet has been send
     uint64_t config_response() const;
 

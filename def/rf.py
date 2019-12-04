@@ -182,11 +182,11 @@ class HicannTxIfPower(Address(0x868), ReadWrite):
 
 
 # Application Layer Test Interface
-class TestControlEnable(Address(0xc00), ReadWrite):
+class TestControlMode(Address(0xc00), ReadWrite):
     """
     This enabled the application layer test mode
     """
-    enable: 1
+    mode: 2
 
 
 class TestControlConfig(Address(0xc08), ReadWrite):
