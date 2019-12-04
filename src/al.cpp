@@ -64,16 +64,16 @@ void run_fpga_test(RMA2_Nodeid node, uint64_t value, bool increment, int64_t cou
         rf.write<TestControlType>({TestControlType::FpgaConfig});
         rf.write<TestControlData>({value});
         rf.write<TestControlConfig>({uint32_t(count), uint32_t(delay), increment});
-        rf.write_noblock<TestControlStart>({true});
+        rf.write<TestControlStart>({true});
         std::cout << "INFO: started test run\n";
 
-        while(rf.read_noblock(TestControlStart::ADDRESS))
+        while(rf.read<TestControlStart>().start())
         {
             std::cout << "INFO: still running\n";
             usleep(1000);
         }
 
-        cout << "INFO: config response: " << fpga.config_response_no_wait() << "\n";
+        cout << "INFO: config response: " << fpga.config_response() << "\n";
     }
 
     cout << "INFO: any notifications?\n";

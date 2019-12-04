@@ -49,8 +49,6 @@ Endpoint::Connection::Connection(RMA2_Nodeid node, bool rra)
     throw_on_error<ConnectionFailed>(status, "Failed to open port!");
     vpid = rma2_get_vpid(port);
 
-    std::cout << "got vpid " << vpid << " << " << rra << "\n";
-
     int options = rra? RRA_CONNECTION : RMA_CONNECTION;
     status = rma2_connect(port, node, vpid, RMA2_Connection_Options(options), &handle);
     throw_on_error<ConnectionFailed>(status, "Failed to connect!");
@@ -125,10 +123,10 @@ void Endpoint::perform_read_test(RMA2_NLA address, uint64_t expected)
 
 uint64_t Endpoint::fpga_config_response() const
 {
-    return rma_buffer[512];
+    return rma_buffer[0];
 }
 
 RMA2_NLA Endpoint::fpga_config_address() const
 {
-    return rma_buffer.address(512);
+    return rma_buffer.address(0);
 }

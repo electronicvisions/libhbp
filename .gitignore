@@ -8,3 +8,4 @@ waf*
 *.swp
 docs/*
 !docs/Doxyfile
+**/.vscode/*
