@@ -3,6 +3,7 @@
 
 #include <extoll/rma.h>
 #include <extoll/buffer.h>
+#include <extoll/notification_poller.h>
 
 namespace extoll {
 namespace library {
@@ -48,6 +49,8 @@ struct Endpoint
     PhysicalBuffer rra_buffer;
     //! A buffer for RMA interactions
     PhysicalBuffer rma_buffer;
+
+    NotificationPoller poller;
 
     //! The trace-pulse data ringbuffer
     RingBuffer trace_data;

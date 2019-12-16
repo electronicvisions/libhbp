@@ -62,8 +62,9 @@ uint32_t PhysicalBuffer::byte_size() const
     return uint32_t(capacity() * sizeof(uint64_t));
 }
 
-RingBuffer::RingBuffer(RMA2_Port port, RMA2_Handle handle, size_t pages, uint16_t type)
-    : PhysicalBuffer(port, pages), _handle(handle), _type(type)
+RingBuffer::RingBuffer(RMA2_Port port, RMA2_Handle handle, size_t pages, uint16_t type,
+NotificationPoller& p)
+    : PhysicalBuffer(port, pages), _handle(handle), _type(type), poller(p)
 {
 
 }
@@ -126,19 +127,16 @@ void RingBuffer::clear()
 
 bool RingBuffer::receive(bool throw_on_timeout)
 {
-    RMA2_Notification* notification;
-    RMA2_Class cls = (_type >> 4) & 0xff;
+    for (uint32_t sleep = 10u; sleep < 1000000u; sleep *= 10u)
+    {
+        uint64_t packets = poller.consume_packets(_type);
+        readable_words += packets;
 
-    for (unsigned int sleep = 1; sleep < 100000; sleep *= 10)
-    {        
-        if (rma2_noti_noti_match(_port, cls, RMA2_NODEID_ANY, RMA2_VPID_ANY, &notification) == RMA2_SUCCESS)
+        if (packets != 0)
         {
-            uint64_t payload = rma2_noti_get_notiput_payload(notification);
-            rma2_noti_free(_port, notification);
-            readable_words += payload & 0xffffffff;
-
             return true;
         }
+
         usleep(sleep);
     }
 
@@ -146,6 +144,7 @@ bool RingBuffer::receive(bool throw_on_timeout)
     {
         throw HicannResponseTimedOut();
     }
+
     return false;
 }
 

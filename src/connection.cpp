@@ -80,8 +80,9 @@ static void wait_with_timeout(RMA2_Port port, std::chrono::duration<double> time
 Endpoint::Endpoint(RMA2_Nodeid n)
     : node(n), rra(n, true), rma(n, false),
     rra_buffer(rra.port, 1), rma_buffer(rma.port, 1),
-    trace_data(rma.port, rma.handle, 100, Extoll::TRACE_PULSE),
-    hicann_config(rma.port, rma.handle, 100, Extoll::HICANN_CONFIG)
+    poller(rma.port),
+    trace_data(rma.port, rma.handle, 100, Extoll::TRACE_PULSE, poller),
+    hicann_config(rma.port, rma.handle, 100, Extoll::HICANN_CONFIG, poller)
 {
     RMA2_ERROR status = rma2_post_get_qw(rra.port, rra.handle, rra_buffer.region(), 0, 8, 0x8000, RMA2_COMPLETER_NOTIFICATION, RMA2_CMD_DEFAULT);
     throw_on_error<FailedToRead>(status, "Failed to query driver", n, 0x8000u);

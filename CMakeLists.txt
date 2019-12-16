@@ -43,7 +43,9 @@ set(HEADERS
     include/extoll/rf_definitions.h
     include/extoll/hicann.h
     include/extoll/jtag_definitions.h
-    include/extoll/utility/rng.h)
+    include/extoll/utility/rng.h
+    include/extoll/notification_poller.h)
+
 
 set(SOURCES
     src/buffer.cpp
@@ -54,7 +56,8 @@ set(SOURCES
     src/jtag.cpp
     src/fpga.cpp
     src/exception.cpp
-    src/hicann.cpp)
+    src/hicann.cpp
+    src/notification_poller.cpp)
 
 set(TESTS
     tests/helper/util.h
@@ -80,6 +83,7 @@ target_include_directories(rma PRIVATE ${RMA_INCLUDE})
 target_link_libraries(rma ${LIBRMARC})
 target_link_libraries(rma ${LIBRMA})
 target_link_libraries(rma dl)
+target_link_libraries(rma pthread)
 
 add_executable(tests tests/run.cpp ${TESTS} ${HEADERS})
 target_include_directories(tests PRIVATE include)

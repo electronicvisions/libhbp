@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <extoll/rma.h>
+#include <extoll/notification_poller.h>
 
 namespace extoll {
 namespace library {
@@ -64,11 +65,12 @@ class RingBuffer : public PhysicalBuffer
     size_t read_words = 0;
     RMA2_Handle _handle = nullptr;
     uint64_t _type = 0;
+    NotificationPoller& poller;
 
     bool receive(bool throw_on_timeout);
 public:
     //! Creates a ringbuffer from an Rma network port and handle, the number of pages and the payload type to expect
-    RingBuffer(RMA2_Port port, RMA2_Handle handle, size_t pages, uint16_t type);
+    RingBuffer(RMA2_Port port, RMA2_Handle handle, size_t pages, uint16_t type, NotificationPoller&);
     //! Frees all resources and does a last sync with the remote Fpga
     ~RingBuffer();
 
