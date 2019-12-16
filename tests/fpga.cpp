@@ -291,7 +291,7 @@ TEST_CASE("Receives Fpga Config Loopback", "[al]")
     }
 }
 
-TEST_CASE("Mix Hicann and Trace", "[.][al]")
+TEST_CASE("Mix Hicann and Trace", "[al]")
 {
     auto node = GENERATE(hicann_nodes());
     CAPTURE(node);
@@ -318,16 +318,27 @@ TEST_CASE("Mix Hicann and Trace", "[.][al]")
 
         usleep(100000);
 
-        for(size_t i = 0; i < 20; ++i)
-        {
-            CHECK(hicann_config.get() == 0xcafe);
-        }
+        tm.type(TestControlType::HicannConfig);
+        tm.run(0xbeef, 20, 10, false);
+        tm.wait();
 
+        usleep(100000);
+        
         for(size_t i = 0; i < 10; ++i)
         {
             CHECK(trace_data.get() == 0xdead);
         }        
         CHECK(trace_data.get() == 0x4000e11d00000000);
+
+        for(size_t i = 0; i < 20; ++i)
+        {
+            CHECK(hicann_config.get() == 0xcafe);
+        }
+
+        for(size_t i = 0; i < 20; ++i)
+        {
+            CHECK(hicann_config.get() == 0xbeef);
+        }
     }
 }
 

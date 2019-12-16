@@ -17,10 +17,12 @@ private:
     std::atomic<uint64_t> hicann_packets{0};
     std::atomic<uint64_t> trace_packets{0};
     std::thread thread;
+    bool running;
 
     void poll_notifications();
 public:
     NotificationPoller(RMA2_Port rma);
+    ~NotificationPoller();
 
     uint64_t consume_packets(uint64_t type);
     void consume_response();

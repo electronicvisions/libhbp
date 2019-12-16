@@ -2,19 +2,25 @@
 
 #include <extoll/extoll.h>
 
+#include <iostream>
 
 using namespace extoll::library;
 
 NotificationPoller::NotificationPoller(RMA2_Port p)
-    : rma(p), thread(&NotificationPoller::poll_notifications, this)
+    : rma(p), thread(&NotificationPoller::poll_notifications, this), running(true)
 {
-        
+    
 }
 
+NotificationPoller::~NotificationPoller()
+{
+    running = false;
+    thread.join();
+}
 
 void NotificationPoller::poll_notifications()
 {
-    while (true)
+    while (running)
     {
         RMA2_Notification* notification;
         RMA2_ERROR status = rma2_noti_probe(rma, &notification);
@@ -26,7 +32,7 @@ void NotificationPoller::poll_notifications()
         }
 
         RMA2_Class cls = rma2_noti_get_notiput_class(notification);
-        uint64_t payload = rma2_noti_get_notiput_payload(notification);
+        uint64_t payload = rma2_noti_get_notiput_payload(notification) & 0xffffffff;
 
         switch (cls)
         {
@@ -48,8 +54,11 @@ void NotificationPoller::poll_notifications()
     }
 }
 
+
+
 void NotificationPoller::consume_response()
 {
+    // TODO: dont wait on atomic, use condition variable instead
     while (rma_responses.load() == 0)
     {
         usleep(100);   
@@ -59,6 +68,7 @@ void NotificationPoller::consume_response()
 
 uint64_t NotificationPoller::consume_packets(uint64_t type)
 {
+    // TODO: block if no packets for given type have arrived (e.g. hicann_packets == 0)
     switch (type)
     {
     case Extoll::HICANN_CONFIG:
