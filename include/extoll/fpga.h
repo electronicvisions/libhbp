@@ -120,8 +120,6 @@ public:
     //! Read the config response after a config packet has been send
     uint64_t config_response() const;
 
-    uint64_t config_response_no_wait() const;
-
     //! Convenience alias
     const static Reset Core = Reset::Core;
     //! Convenience alias

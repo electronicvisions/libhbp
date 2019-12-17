@@ -2,19 +2,25 @@
 
 #include <extoll/extoll.h>
 
+#include <chrono>
 #include <iostream>
 
 using namespace extoll::library;
 
 NotificationPoller::NotificationPoller(RMA2_Port p)
-    : rma(p), thread(&NotificationPoller::poll_notifications, this), running(true)
+    : 
+    rma{p},
+    running{true},
+    thread{&NotificationPoller::poll_notifications, this},
+    mutex{},
+    cv{}
 {
     
 }
 
 NotificationPoller::~NotificationPoller()
 {
-    running = false;
+    running.store(false);
     thread.join();
 }
 
@@ -33,50 +39,102 @@ void NotificationPoller::poll_notifications()
 
         RMA2_Class cls = rma2_noti_get_notiput_class(notification);
         uint64_t payload = rma2_noti_get_notiput_payload(notification) & 0xffffffff;
-
-        switch (cls)
-        {
-        case 0xca:
-            trace_packets.fetch_add(payload);
-            break;
-        case 0xa1:
-            hicann_packets.fetch_add(payload);
-            break;
-        case 0:
-            ++rma_responses;
-            break;
-        default:
-            rma2_noti_free(rma, notification);
-            throw std::runtime_error("Unknown noti class");
-        }
-
         rma2_noti_free(rma, notification);
+        {
+            std::lock_guard<std::mutex> lock{mutex};
+
+            switch (cls)
+            {
+            case 0xca:
+                trace_packets += payload;
+                break;
+            case 0xa1:
+                hicann_packets += payload;
+                break;
+            case 0x7:
+                ++fpga_response;
+                break;
+            case 0:
+                ++rma_responses;
+                break;
+            default:
+                std::cerr << "Unknown notification class: " << uint16_t(cls) << "\n";
+                throw std::runtime_error("Unknown notification class");
+            }
+        }
+        cv.notify_all();        
     }
 }
 
 
 
-void NotificationPoller::consume_response()
+bool NotificationPoller::consume_response(std::chrono::milliseconds timeout)
 {
-    // TODO: dont wait on atomic, use condition variable instead
-    while (rma_responses.load() == 0)
+    std::unique_lock<std::mutex> lock{mutex};
+
+    if (rma_responses > 0)
     {
-        usleep(100);   
+        --rma_responses;
+        return true;
     }
-    --rma_responses;
+
+    cv.wait_for(lock, timeout, [this]{ return this->rma_responses > 0; });
+    if (rma_responses > 0)
+    {
+        --rma_responses;
+        return true;
+    }
+    return false;
 }
 
-uint64_t NotificationPoller::consume_packets(uint64_t type)
+bool NotificationPoller::consume_fpga_response(std::chrono::milliseconds timeout)
 {
-    // TODO: block if no packets for given type have arrived (e.g. hicann_packets == 0)
+    std::unique_lock<std::mutex> lock{mutex};
+
+    if (fpga_response > 0)
+    {
+        --fpga_response;
+        return true;
+    }
+
+    cv.wait_for(lock, timeout, [this]{ return this->fpga_response > 0; });
+    if (fpga_response > 0)
+    {
+        --fpga_response;
+        return true;
+    }
+    return false;
+}
+
+uint64_t NotificationPoller::consume_packets(uint64_t type, std::chrono::milliseconds timeout)
+{
+    uint64_t* packets = nullptr;
     switch (type)
     {
     case Extoll::HICANN_CONFIG:
-        return std::atomic_exchange(&hicann_packets, 0ul);
+        packets = &hicann_packets;
+        break;
     case Extoll::TRACE_PULSE:
-        return std::atomic_exchange(&trace_packets, 0ul);
+        packets = &trace_packets;
+        break;
     default:
-        throw std::runtime_error("No packets");        
+        return 0;   
     }
+
+    std::unique_lock<std::mutex> lock{mutex};
+
+
+    uint64_t tmp = *packets;
+    if (tmp > 0)
+    {
+        *packets = 0;
+        return tmp;
+    }
+
+    cv.wait_for(lock, timeout, [packets]{ return *packets > 0; });
+    tmp = *packets;
+
+    *packets = 0;
+    return tmp;
 }
 

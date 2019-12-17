@@ -120,32 +120,17 @@ uint64_t Fpga::send(Fpga::Config config)
     _connection.rma_buffer[0] = 0xdeadbeef;
     auto payload = static_cast<uint64_t>(config);
     rma2_post_immediate_put(rma.port, rma.handle, 8, payload, CONFIG_ADDRESS, RMA2_NO_NOTIFICATION,RMA2_CMD_DEFAULT);
-    
-    return config_response();
-}
+    if (!_connection.poller.consume_fpga_response(std::chrono::milliseconds(1)))
+    {
+        throw std::runtime_error("No Fpga Config Response");
+    }
 
-uint64_t Fpga::config_response_no_wait() const
-{
-    return _connection.fpga_config_response();
+    return config_response();
 }
 
 uint64_t Fpga::config_response() const
 {
-
-    RMA2_Notification* notification;
-
-    for (unsigned int sleep = 1; sleep < 100000; sleep *= 10)
-    {
-        if (rma2_noti_probe(_connection.rma.port, &notification) == RMA2_SUCCESS)
-        {
-            rma2_noti_free(_connection.rma.port, notification);
-            
-            return _connection.fpga_config_response();
-        }
-        usleep(sleep);
-    }
-
-    throw std::runtime_error("fail");
+    return _connection.fpga_config_response();
 }
 
 Fpga::Config operator|(Fpga::Config flags, Fpga::Config bit)

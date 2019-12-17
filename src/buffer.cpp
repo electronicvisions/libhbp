@@ -127,25 +127,16 @@ void RingBuffer::clear()
 
 bool RingBuffer::receive(bool throw_on_timeout)
 {
-    for (uint32_t sleep = 10u; sleep < 1000000u; sleep *= 10u)
-    {
-        uint64_t packets = poller.consume_packets(_type);
-        readable_words += packets;
 
-        if (packets != 0)
-        {
-            return true;
-        }
+    uint64_t packets = poller.consume_packets(_type, std::chrono::milliseconds(1));
+    readable_words += packets;
 
-        usleep(sleep);
-    }
-
-    if (throw_on_timeout)
+    if (packets == 0 && throw_on_timeout)
     {
         throw HicannResponseTimedOut();
     }
 
-    return false;
+    return packets != 0;
 }
 
 void RingBuffer::reset()

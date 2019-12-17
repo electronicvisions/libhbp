@@ -3,6 +3,9 @@
 
 #include <atomic>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
 
 #include <extoll/rma.h>
 
@@ -13,19 +16,24 @@ class NotificationPoller
 {
 private:
     RMA2_Port rma;
-    std::atomic<uint64_t> rma_responses{0};
-    std::atomic<uint64_t> hicann_packets{0};
-    std::atomic<uint64_t> trace_packets{0};
+    uint64_t rma_responses{0};
+    uint64_t hicann_packets{0};
+    uint64_t trace_packets{0};
+    uint64_t fpga_response{0};
+
+    std::atomic<bool> running;
     std::thread thread;
-    bool running;
+    std::mutex mutex;
+    std::condition_variable cv;
 
     void poll_notifications();
 public:
     NotificationPoller(RMA2_Port rma);
     ~NotificationPoller();
 
-    uint64_t consume_packets(uint64_t type);
-    void consume_response();
+    uint64_t consume_packets(uint64_t type, std::chrono::milliseconds);
+    bool consume_response(std::chrono::milliseconds);
+    bool consume_fpga_response(std::chrono::milliseconds);
 };
 
 }
