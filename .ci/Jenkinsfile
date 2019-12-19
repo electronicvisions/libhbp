@@ -1,0 +1,6 @@
+@Library("jenlib") _
+
+wafDefaultPipeline(projects: ["libhbp"],
+                   container: [app: "visionary-wafer"],
+                   testSlurmResource: [partition: "extoll"],
+                   notificationChannel: "#visionary-wafer-users")
