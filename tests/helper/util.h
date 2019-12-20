@@ -1,7 +1,7 @@
 #ifndef __EXTOLL_TEST_RUNNER_HELPER__
 #define __EXTOLL_TEST_RUNNER_HELPER__
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <extoll/extoll.h>
 #include <vector>

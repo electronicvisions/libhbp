@@ -13,6 +13,7 @@ def configure(cfg):
     cfg.check_cc(lib='rma2', uselib_store='RMA2')
     cfg.check_cc(lib='dl')
     cfg.check_cc(lib='rma2rc', use='DL RMA2')
+    cfg.check_cxx(header_name = "catch2/catch.hpp")
 
 
 def build(bld):
