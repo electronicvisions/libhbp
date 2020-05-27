@@ -44,13 +44,13 @@ public:
     T roll();
 };
 
-template<typename T, typename Distribution>
-Rng<T, Distribution>::Rng(T min, T max)
-    : generator(std::random_device()()), distribution(min, max) {}
+template <typename T, typename Distribution>
+Rng<T, Distribution>::Rng(T mini, T maxi) :
+    generator(std::random_device()()), distribution(mini, maxi)
+{}
 
-template<typename T, typename Distribution>
-Rng<T, Distribution>::Rng(T min, T max, T seed)
-    : generator(seed), distribution(min, max)
+template <typename T, typename Distribution>
+Rng<T, Distribution>::Rng(T mini, T maxi, T seed) : generator(seed), distribution(mini, maxi)
 {}
 
 template<typename T, typename Distribution>
