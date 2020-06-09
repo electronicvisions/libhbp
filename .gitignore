@@ -9,3 +9,4 @@ waf*
 docs/*
 !docs/Doxyfile
 **/.vscode/*
+*.user
