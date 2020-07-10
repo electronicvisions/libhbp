@@ -7,7 +7,7 @@ It is used to generate a file which is why it includes that message
  * {{ datetime }}
  */
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include {{ test_include }}
 
