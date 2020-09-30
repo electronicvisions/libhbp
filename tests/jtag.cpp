@@ -21,7 +21,8 @@ TEST_CASE("Fpga can query static READID", "[jtag]")
 
 	auto j = EX.jtag(node);
 
-	FOR_EACH_HICANN {
+	FOR_EACH_HICANN
+	{
 		CHECK(j.read<ID>(hicann) == 0x14849434);
 		CHECK(j.read<ID>(hicann) == 0x14849434);
 	}
@@ -35,7 +36,8 @@ TEST_CASE("Fpga can query changing register", "[jtag][ok]")
 
 	auto j = EX.jtag(node);
 
-	FOR_EACH_HICANN {
+	FOR_EACH_HICANN
+	{
 		CHECK(j.read<Systime>(hicann) != j.read<Systime>(hicann));
 	}
 }
@@ -50,7 +52,8 @@ TEST_CASE("Fpga can read back sent JTAG data", "[jtag]")
 
 	SECTION("writing a certain value")
 	{
-		FOR_EACH_HICANN {
+		FOR_EACH_HICANN
+		{
 			j.write<IBias>(0x7fff, hicann);
 			CHECK(j.write<IBias>(0x0, hicann) == 0x7fff);
 		}
@@ -58,9 +61,9 @@ TEST_CASE("Fpga can read back sent JTAG data", "[jtag]")
 
 	SECTION("writing all bits")
 	{
-		FOR_EACH_HICANN {
-			for (auto bit : all_bits(15))
-			{
+		FOR_EACH_HICANN
+		{
+			for (auto bit : all_bits(15)) {
 				CHECK(j.write<IBias>(bit, hicann) == 0x0);
 				CHECK(j.write<IBias>(0x0, hicann) == bit);
 			}

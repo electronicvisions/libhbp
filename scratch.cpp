@@ -1,22 +1,22 @@
-#include <iostream>
-#include <cstring>
 #include <bitset>
 #include <cinttypes>
+#include <cstring>
+#include <iostream>
 #include <type_traits>
 
 
 template <size_t WIDTH>
-union Pack {
-    uint64_t full;
-    uint64_t half : WIDTH;
+union Pack
+{
+	uint64_t full;
+	uint64_t half : WIDTH;
 };
 
 int main()
 {
-    Pack<3> p;
-    p.full = 0xabcdabcdabcdabcd;
-    p.half = 1;
+	Pack<3> p;
+	p.full = 0xabcdabcdabcdabcd;
+	p.half = 1;
 
-    std::cout << std::hex << p.full << "\n";
-
+	std::cout << std::hex << p.full << "\n";
 }

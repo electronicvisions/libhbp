@@ -1,5 +1,5 @@
-#include "helper/util.h"
 #include "helper/application_protocol.h"
+#include "helper/util.h"
 
 using namespace extoll::library::rf;
 using namespace extoll::library::jtag;
@@ -14,9 +14,10 @@ TEST_CASE("Highspeed Init succeeds", "[hs]")
 	auto j = EX.jtag(node);
 	auto fpga = EX.fpga(node);
 
-	FOR_EACH_HICANN {
-        CAPTURE(hicann);
-	    highspeed_init(rf, j, fpga, hicann);
+	FOR_EACH_HICANN
+	{
+		CAPTURE(hicann);
+		highspeed_init(rf, j, fpga, hicann);
 		auto status = highspeed_status(rf, j, hicann);
 
 		CHECK(status.fpga_ok);
@@ -32,7 +33,8 @@ TEST_CASE("Highspeed transmission via JTAG from Fpga to Hicann", "[hs]")
 	auto j = EX.jtag(node);
 	auto fpga = EX.fpga(node);
 
-	FOR_EACH_HICANN {
+	FOR_EACH_HICANN
+	{
 		highspeed_init(rf, j, fpga, hicann);
 		CAPTURE(highspeed_status(rf, j, hicann));
 		CAPTURE(hicann);
@@ -41,8 +43,7 @@ TEST_CASE("Highspeed transmission via JTAG from Fpga to Hicann", "[hs]")
 		rf.write<HicannChannel>({dnc_index(j, hicann) & 7u});
 		rf.write<HicannPacketGen>({0, false, false});
 
-		for (size_t i = 0; i < 10; ++i)
-		{
+		for (size_t i = 0; i < 10; ++i) {
 			uint64_t sent = 0x1234ull << (i % 8u);
 			rf.write<HicannIfTxData>({sent});
 			rf.write<HicannIfControls>({false, true, false, false, false});
@@ -63,8 +64,9 @@ TEST_CASE("Highspeed transmission via JTAG from Hicann to Fpga", "[hs]")
 	auto j = EX.jtag(node);
 	auto fpga = EX.fpga(node);
 
-	FOR_EACH_HICANN {
-	    highspeed_init(rf, j, fpga, hicann);
+	FOR_EACH_HICANN
+	{
+		highspeed_init(rf, j, fpga, hicann);
 		CAPTURE(highspeed_status(rf, j, hicann));
 		CAPTURE(hicann);
 
@@ -72,8 +74,7 @@ TEST_CASE("Highspeed transmission via JTAG from Hicann to Fpga", "[hs]")
 		rf.write<HicannChannel>({dnc_index(j, hicann) & 7u});
 		rf.write<HicannPacketGen>({0, false, false});
 
-		for (size_t i = 0; i < 10; ++i)
-		{
+		for (size_t i = 0; i < 10; ++i) {
 			uint64_t sent = 0xfedcba98ull << (i % 32u);
 			j.write<TxData>(sent, hicann);
 			j.trigger<StartConfigPackage>(hicann);
@@ -94,11 +95,12 @@ TEST_CASE("Highspeed write via Hicann Config, read via JTAG", "[.][hs]")
     auto j = EX.jtag(node);
     auto fpga = EX.fpga(node);
 
-    FOR_EACH_HICANN {
-        highspeed_init(rf, j, fpga, hicann);
-        CAPTURE(highspeed_status(rf, j, hicann));
-        CAPTURE(hicann);
+	FOR_EACH_HICANN
+	{
+		highspeed_init(rf, j, fpga, hicann);
+		CAPTURE(highspeed_status(rf, j, hicann));
+		CAPTURE(hicann);
 
-        // TODO
-    }
+		// TODO
+	}
 }

@@ -38,7 +38,7 @@ TEST_CASE("Fpga methods", "[unused]")
 }
 
 template <typename E, typename... Args>
-bool do_throw(Args ...args)
+bool do_throw(Args... args)
 {
     throw E(args...);
     return false;

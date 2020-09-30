@@ -4,7 +4,6 @@ using namespace extoll::library::rf;
 
 TEST_CASE("Failing connections", "[.][rf][throw]")
 {
-
 	SECTION("Cannot connect to host")
 	{
 		REQUIRE_THROWS(EX.register_file(HostNode));
@@ -46,8 +45,7 @@ TEST_CASE("Write and read back", "[rf][rw]")
 		r.write<JtagSend>({0xdeadbeef});
 		CHECK(r.read<JtagSend>().data() == 0xdeadbeef);
 
-		for (auto bit : all_bits())
-		{
+		for (auto bit : all_bits()) {
 			r.write<JtagSend>({bit});
 
 			CHECK(r.read<JtagSend>().data() == bit);

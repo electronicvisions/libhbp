@@ -3,14 +3,14 @@
 
 #include <catch2/catch.hpp>
 
-#include <extoll/extoll.h>
 #include <vector>
+#include <extoll/extoll.h>
 
 using Extoll = extoll::library::Extoll;
 using JTag = extoll::library::JTag;
 using namespace Catch::Matchers;
 
-std::vector<uint64_t> all_bits(size_t n=64);
+std::vector<uint64_t> all_bits(size_t n = 64);
 
 using Nodes = std::vector<RMA2_Nodeid>;
 

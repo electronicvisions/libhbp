@@ -12,6 +12,7 @@ namespace extoll {
 namespace library {
 void wait_for_notification(RMA2_Port);
 void wait_for_n_notifications(RMA2_Port, int);
-}}
+}
+}
 
-#endif //LIBHBP_CPP_RMA_H
+#endif // LIBHBP_CPP_RMA_H

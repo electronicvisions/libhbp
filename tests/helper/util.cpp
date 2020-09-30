@@ -2,31 +2,28 @@
 
 std::vector<uint64_t> all_bits(size_t n)
 {
-    std::vector<uint64_t> bits;
-    for (uint64_t i = 0; i < n; ++i)
-    {
-        bits.push_back(1ull << i);
-    }
+	std::vector<uint64_t> bits;
+	for (uint64_t i = 0; i < n; ++i) {
+		bits.push_back(1ull << i);
+	}
 
-    return bits;
+	return bits;
 }
 
 Nodes& get_nodes_with_hicanns()
 {
-    static Nodes nodes_with_hicann;
-    return nodes_with_hicann;
+	static Nodes nodes_with_hicann;
+	return nodes_with_hicann;
 }
 
 RMA2_Nodeid HostNode{0};
 
 template <typename T>
-VectorGenerator<T>::VectorGenerator(const std::vector<T>& vec)
-	: it(vec.cbegin()), end(vec.cend())
+VectorGenerator<T>::VectorGenerator(const std::vector<T>& vec) : it(vec.cbegin()), end(vec.cend())
 {
-    if (it == end)
-    {
-        throw std::runtime_error("Empty Generator, skipping tests.");
-    }
+	if (it == end) {
+		throw std::runtime_error("Empty Generator, skipping tests.");
+	}
 }
 
 template <typename T>
