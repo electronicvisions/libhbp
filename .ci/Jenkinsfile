@@ -2,5 +2,5 @@
 
 wafDefaultPipeline(projects: ["libhbp"],
                    container: [app: "visionary-wafer"],
-                   testSlurmResource: [partition: "extoll", "cpus-per-task": "4"],
+                   testSlurmResource: [partition: "extoll", "cpus-per-task": "4", "mem": "8G"],
                    notificationChannel: "#visionary-wafer-users")
