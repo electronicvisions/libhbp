@@ -87,7 +87,7 @@ TEST_CASE("Fpga can mix read/write to different Hicanns", "[jtag]")
 
 		FOR_EACH_HICANN
 		{
-			CHECK(j.write<IBias>(0, hicann) == 0xc4 + hicann);
+			CHECK(j.write<IBias>(0, hicann) == 0xc4ul + hicann);
 		}
 	}
 }
